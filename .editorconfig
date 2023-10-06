@@ -1,0 +1,15 @@
+
+[*]
+
+# ReSharper properties
+resharper_blank_lines_around_single_line_auto_property=1
+resharper_blank_lines_around_single_line_field=0
+resharper_csharp_int_align_comments=true
+resharper_instance_members_qualify_declared_in=base_class
+resharper_int_align_assignments=true
+resharper_place_accessorholder_attribute_on_same_line=false
+resharper_place_field_attribute_on_same_line=false
+
+
+# IDE0079: Remove unnecessary suppression
+dotnet_diagnostic.ide0079.severity=none
