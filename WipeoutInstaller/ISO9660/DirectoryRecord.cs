@@ -12,6 +12,11 @@ public sealed class DirectoryRecord
 
         LengthOfDirectoryRecord = new Iso711(reader);
 
+        if (LengthOfDirectoryRecord == 0)
+        {
+            return;
+        }
+
         ExtendedAttributeRecordLength = new Iso711(reader);
 
         LocationOfExtent = new Iso733(reader);
@@ -30,7 +35,14 @@ public sealed class DirectoryRecord
 
         LengthOfFileIdentifier = new Iso711(reader);
 
-        FileIdentifier = reader.ReadBytes(LengthOfFileIdentifier); // TODO, outside this
+        FileIdentifier = new IsoStringD(reader, LengthOfFileIdentifier);
+
+        FileIdentifier = (string)FileIdentifier switch
+        {
+            "\u0000" => new IsoStringD("."),
+            "\u0001" => new IsoStringD(".."),
+            _        => FileIdentifier
+        };
 
         PaddingField = LengthOfFileIdentifier % 2 is 0
             ? reader.ReadByte()
@@ -40,6 +52,11 @@ public sealed class DirectoryRecord
         var suLen = (int)(LengthOfDirectoryRecord - drLen);
 
         SystemUse = reader.ReadBytes(suLen);
+    }
+
+    public override string ToString()
+    {
+        return $"{nameof(FileFlags)}: {FileFlags}, {nameof(FileIdentifier)}: {FileIdentifier}, {nameof(DataLength)}: {DataLength}, {nameof(LocationOfExtent)}: {LocationOfExtent}";
     }
 
     public Iso711 LengthOfDirectoryRecord { get; }
@@ -62,9 +79,9 @@ public sealed class DirectoryRecord
 
     public Iso711 LengthOfFileIdentifier { get; }
 
-    public byte[] FileIdentifier { get; }
+    public IsoStringD FileIdentifier { get; } = null!;
 
     public byte? PaddingField { get; }
 
-    public byte[] SystemUse { get; }
+    public byte[] SystemUse { get; } = null!;
 }

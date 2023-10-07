@@ -15,4 +15,9 @@ public readonly struct Iso731 : IIsoNumber1<uint>
     {
         return $"{Value}";
     }
+
+    public static implicit operator int(Iso731 iso731)
+    {
+        return Convert.ToInt32(iso731.Value);
+    }
 }

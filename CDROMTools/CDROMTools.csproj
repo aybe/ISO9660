@@ -1,0 +1,160 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2DF53035-D506-43C5-ACA4-1A63AFC1405D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CDROMTools</RootNamespace>
+    <AssemblyName>CDROMTools</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\CDROMTools.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="JetBrains.Annotations, Version=10.0.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Annotations.10.0.0\lib\net20\JetBrains.Annotations.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CDROM.cs" />
+    <Compile Include="CDROMFile.cs" />
+    <Compile Include="CDROMFileMode.cs" />
+    <Compile Include="CDROMSectorMode.cs" />
+    <Compile Include="CDROMTrack.cs" />
+    <Compile Include="CDROMTrackType.cs" />
+    <Compile Include="Interop\AdrSubChannelQField.cs" />
+    <Compile Include="Interop\CdRomToc.cs" />
+    <Compile Include="Interop\LargeInteger.cs" />
+    <Compile Include="Interop\LargeIntegerPart.cs" />
+    <Compile Include="Interop\NativeConstants.cs" />
+    <Compile Include="Interop\NativeMethods.cs" />
+    <Compile Include="Interop\Overlapped.cs" />
+    <Compile Include="Interop\OverlappedOffset.cs" />
+    <Compile Include="Interop\OverlappedOffsetShim.cs" />
+    <Compile Include="Interop\ScsiPassThroughDirect.cs" />
+    <Compile Include="Interop\SubChannelQControlBits.cs" />
+    <Compile Include="Interop\TrackData.cs" />
+    <Compile Include="ISector.cs" />
+    <Compile Include="ISectorExtensions.cs" />
+    <Compile Include="Iso9660\BootRecord.cs" />
+    <Compile Include="Iso9660\PrimaryVolumeDescriptor.cs" />
+    <Compile Include="Iso9660\SupplementaryVolumeDescriptor.cs" />
+    <Compile Include="Iso9660\VolumeDescriptorSetTerminator.cs" />
+    <Compile Include="Iso9660\VolumeFlags.cs" />
+    <Compile Include="Iso9660\VolumePartitionDescriptor.cs" />
+    <Compile Include="Iso9660\DirectoryRecord.cs" />
+    <Compile Include="Iso9660\FileFlags.cs" />
+    <Compile Include="Iso9660\Iso711.cs" />
+    <Compile Include="Iso9660\Iso712.cs" />
+    <Compile Include="Iso9660\Iso721.cs" />
+    <Compile Include="Iso9660\Iso722.cs" />
+    <Compile Include="Iso9660\Iso723.cs" />
+    <Compile Include="Iso9660\Iso731.cs" />
+    <Compile Include="Iso9660\Iso732.cs" />
+    <Compile Include="Iso9660\Iso733.cs" />
+    <Compile Include="Iso9660\IsoDateTimeUtils.cs" />
+    <Compile Include="Iso9660\IsoLongDateTime.cs" />
+    <Compile Include="Iso9660\IsoShortDateTime.cs" />
+    <Compile Include="Iso9660\PathTableRecord.cs" />
+    <Compile Include="Iso9660\VolumeDescriptor.cs" />
+    <Compile Include="Iso9660\VolumeDescriptorType.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sector.cs" />
+    <Compile Include="SectorAddress.cs" />
+    <Compile Include="SectorBlock.cs" />
+    <Compile Include="SectorHeader.cs" />
+    <Compile Include="SectorMode.cs" />
+    <Compile Include="SectorMode0.cs" />
+    <Compile Include="SectorMode1.cs" />
+    <Compile Include="SectorMode2Form1.cs" />
+    <Compile Include="SectorMode2Form1SubHeader.cs" />
+    <Compile Include="SectorMode2Form1SubHeaderSubMode.cs" />
+    <Compile Include="SectorMode2Form2.cs" />
+    <Compile Include="SectorMode2Formless.cs" />
+    <Compile Include="SectorUtils.cs" />
+    <Compile Include="Utils\BinaryReaderExtensions.cs" />
+    <Compile Include="Utils\BitUtils.cs" />
+    <Compile Include="Utils\EdcHelper.cs" />
+    <Compile Include="Utils\PinnedScope.cs" />
+    <Compile Include="Utils\ProgressHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

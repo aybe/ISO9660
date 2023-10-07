@@ -28,7 +28,9 @@ public static class BinaryReaderExtensions
 
     public static string ReadStringAscii(this BinaryReader reader, int length)
     {
-        return Encoding.ASCII.GetString(reader.ReadBytes(length));
+        var bytes = reader.ReadBytes(length);
+        var ascii = Encoding.ASCII.GetString(bytes);
+        return ascii;
     }
 
     public static long Seek(this BinaryReader reader, long offset, SeekOrigin origin = SeekOrigin.Current)

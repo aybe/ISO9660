@@ -16,6 +16,6 @@ public readonly struct Iso723 : IIsoNumber2<ushort>
 
     public override string ToString()
     {
-        return $"{Value1} | {Value2}";
+        return $"{Value1}";
     }
 }

@@ -1,0 +1,42 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:local="clr-namespace:TinyTree"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    mc:Ignorable="d">
+
+    <!--  Styling example  -->
+
+    <local:TinyTreeNodeToImageSourceConverter x:Key="TinyTreeNodeToImageSourceConverter" />
+
+    <HierarchicalDataTemplate x:Key="TinyTreeFolderTemplate"
+                              DataType="local:DirectoryNode"
+                              ItemsSource="{Binding Directories}">
+        <StackPanel Margin="2" Orientation="Horizontal">
+            <Image Width="16"
+                   Height="16"
+                   Source="{Binding Converter={StaticResource TinyTreeNodeToImageSourceConverter}}" />
+            <TextBlock Margin="5,0,0,0"
+                       VerticalAlignment="Center"
+                       Text="{Binding Name}" />
+        </StackPanel>
+    </HierarchicalDataTemplate>
+
+    <GridView x:Key="TinyTreeFileView" d:DataContext="{d:DesignInstance local:Node}">
+        <GridViewColumn Width="200" Header="Name">
+            <GridViewColumn.CellTemplate>
+                <DataTemplate>
+                    <DockPanel LastChildFill="True">
+                        <Image Width="16"
+                               Height="16"
+                               Source="{Binding Converter={StaticResource TinyTreeNodeToImageSourceConverter}}" />
+                        <TextBlock Margin="5,0,0,0"
+                                   VerticalAlignment="Center"
+                                   Text="{Binding Name}" />
+                    </DockPanel>
+                </DataTemplate>
+            </GridViewColumn.CellTemplate>
+        </GridViewColumn>
+    </GridView>
+
+</ResourceDictionary>

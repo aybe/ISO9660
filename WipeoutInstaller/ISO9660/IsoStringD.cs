@@ -2,10 +2,12 @@ namespace WipeoutInstaller.Iso9660;
 
 public sealed class IsoStringD : IsoString
 {
-    private const string Chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_" + " "; // BUG isn't SPC missing?
+    internal IsoStringD(string value) : base(value)
+    {
+    }
 
     public IsoStringD(BinaryReader reader, int length)
-        : base(reader, length, Chars)
+        : base(reader, length, CharsD)
     {
     }
 }

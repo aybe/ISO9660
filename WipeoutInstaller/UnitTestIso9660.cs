@@ -4,10 +4,8 @@
 
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 using WipeoutInstaller.Extensions;
 using WipeoutInstaller.Iso9660;
-using WipeoutInstaller.JSON;
 using WipeoutInstaller.XA;
 
 namespace WipeoutInstaller;
@@ -15,6 +13,10 @@ namespace WipeoutInstaller;
 [TestClass]
 public class UnitTestIso9660
 {
+    private readonly bool PrintDirectoryRecord = false;
+
+    private readonly bool PrintPathTableRecord = false;
+
     [PublicAPI]
     public required TestContext TestContext { get; set; }
 
@@ -32,13 +34,9 @@ public class UnitTestIso9660
 
         while (true)
         {
-            WriteLine($"Reading descriptor @ {stream.Position}");
-
             var sectorMode2 = ReadSectorMode2(reader);
 
             var descriptor = ReadVolumeDescriptor(sectorMode2);
-
-            WriteLine(descriptor.GetType());
 
             descriptors.Add(descriptor);
 
@@ -48,17 +46,78 @@ public class UnitTestIso9660
             }
         }
 
-        var settings = new JsonSerializerSettings
+        var pvd = descriptors.OfType<PrimaryVolumeDescriptor>().Single();
+
+        SetSector(pvd.LocationOfOccurrenceOfTypeLPathTable);
+
+        using var pvdReader = ReadSector(pvd.LocationOfOccurrenceOfTypeLPathTable, reader).GetUserData()
+            .ToBinaryReader();
+
+        var records = new List<PathTableRecord>();
+        var dictionary = new Dictionary<PathTableRecord, List<DirectoryRecord>>();
+        while (pvdReader.BaseStream.Position < pvd.PathTableSize)
         {
-            Formatting       = Formatting.Indented,
-            ContractResolver = new BaseFirstContractResolver()
-        };
+            var record = new PathTableRecord(pvdReader);
 
-        var json = JsonConvert.SerializeObject(descriptors, settings);
+            records.Add(record);
+            dictionary.Add(record, new List<DirectoryRecord>());
+            if (PrintPathTableRecord)
+            {
+                Print($"{record}, {record.ParentDirectoryNumber}, {record.LocationOfExtent}");
+                PrintJson(record);
+                Print();
+            }
+        }
 
-        WriteLine(json);
+        foreach (var record in records)
+        {
+            var recordExtent = record.LocationOfExtent;
 
-        throw new NotImplementedException(reader.BaseStream.Position.ToString());
+            SetSector(recordExtent);
+            if (PrintDirectoryRecord)
+            {
+                Print($"Reading records, sector {recordExtent}, user data @ {stream.Position}");
+
+                Print($"\tIdentifiers: {record.LengthOfDirectoryIdentifier}");
+            }
+
+            for (;;)
+            {
+                var item = new DirectoryRecord(reader);
+
+                if (item.LengthOfDirectoryRecord == 0)
+                {
+                    break;
+                }
+
+                dictionary[record].Add(item);
+                if (PrintDirectoryRecord)
+                {
+                    Print(
+                        $"\t\tName: {item.FileIdentifier}, Position: {item.LocationOfExtent}, Length: {item.DataLength}, Flags: {item.FileFlags}, Folder: {record.ParentDirectoryNumber}");
+
+                    PrintJson(item);
+                }
+            }
+        }
+        
+        IsoFileSystemEntry.Build(dictionary, records);
+
+        throw new NotImplementedException(reader.BaseStream.Position.ToString("N0"));
+
+        PrintJson(descriptors);
+
+        void SetSector(int index)
+        {
+            stream.Position = index * SectorMode2.Size + SectorMode2.UserDataPosition;
+        }
+    }
+
+
+    private SectorMode2 ReadSector(int number, BinaryReader reader)
+    {
+        reader.BaseStream.Position = number * SectorMode2.Size;
+        return ReadSectorMode2(reader);
     }
 
     private SectorMode2 ReadSectorMode2(BinaryReader reader)
@@ -68,11 +127,23 @@ public class UnitTestIso9660
         var sector = MemoryMarshal.AsRef<SectorMode2>(bytes);
 
         Assert.IsTrue(sector.SubHeaderBlock.IsValid);
+        return sector;
         WriteLine("Reading sector...");
         WriteLine(sector.Header);
         WriteLine(sector.SubHeaderBlock.Header1);
         WriteLine(sector.SubHeaderBlock.Header2);
-        return sector;
+    }
+
+    private void PrintJson(object? value)
+    {
+        var json = JsonUtility.ToJson(value);
+
+        Print(json);
+    }
+
+    private void Print(object? value = null)
+    {
+        WriteLine(value);
     }
 
     private void WriteLine(object? value = null)

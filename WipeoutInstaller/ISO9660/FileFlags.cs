@@ -3,6 +3,7 @@ namespace WipeoutInstaller.Iso9660;
 [Flags]
 public enum FileFlags : byte
 {
+    None = 0,
     Existence = 1 << 0,
     Directory = 1 << 1,
     AssociatedFile = 1 << 2,

@@ -1,6 +1,6 @@
 namespace WipeoutInstaller.Iso9660;
 
-public sealed class RecordingDateAndTime
+public readonly struct RecordingDateAndTime
 {
     public RecordingDateAndTime(BinaryReader reader)
     {
@@ -10,7 +10,7 @@ public sealed class RecordingDateAndTime
         HourOfTheDay                = new Iso711(reader);
         MinuteOfTheHour             = new Iso711(reader);
         SecondOfTheMinute           = new Iso711(reader);
-        OffsetFromGreenwichMeanTime = new Iso711(reader);
+        OffsetFromGreenwichMeanTime = new Iso712(reader);
     }
 
     public Iso711 NumberOfYearsSince1900 { get; }
@@ -25,5 +25,5 @@ public sealed class RecordingDateAndTime
 
     public Iso711 SecondOfTheMinute { get; }
 
-    public Iso711 OffsetFromGreenwichMeanTime { get; }
+    public Iso712 OffsetFromGreenwichMeanTime { get; }
 }

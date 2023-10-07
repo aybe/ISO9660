@@ -16,6 +16,11 @@ public readonly struct Iso733 : IIsoNumber2<uint>
 
     public override string ToString()
     {
-        return $"{Value1} | {Value2}";
+        return $"{Value1}";
+    }
+
+    public static implicit operator int(Iso733 iso733)
+    {
+        return Convert.ToInt32(iso733.Value1);
     }
 }
