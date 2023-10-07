@@ -13,3 +13,11 @@ public enum FileFlags : byte
     Reserved2 = 1 << 6,
     MultiExtent = 1 << 7
 }
+
+public static class FileFlagsExtensions
+{
+    public static bool HasFlagFast(this FileFlags value, FileFlags flag)
+    {
+        return (value & flag) != 0;
+    }
+}

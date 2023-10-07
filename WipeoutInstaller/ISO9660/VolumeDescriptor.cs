@@ -1,11 +1,14 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace WipeoutInstaller.Iso9660;
 
 public class VolumeDescriptor
 {
-    public VolumeDescriptor()
+    internal VolumeDescriptor()
     {
     }
 
+    [SetsRequiredMembers]
     protected VolumeDescriptor(VolumeDescriptor descriptor)
     {
         VolumeDescriptorType    = descriptor.VolumeDescriptorType;
@@ -13,9 +16,9 @@ public class VolumeDescriptor
         VolumeDescriptorVersion = descriptor.VolumeDescriptorVersion;
     }
 
-    public VolumeDescriptorType VolumeDescriptorType { get; init; }
+    public required VolumeDescriptorType VolumeDescriptorType { get; init; }
 
-    public string StandardIdentifier { get; init; }
+    public required string StandardIdentifier { get; init; }
 
-    public Iso711 VolumeDescriptorVersion { get; init; }
+    public required Iso711 VolumeDescriptorVersion { get; init; }
 }

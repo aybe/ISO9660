@@ -20,4 +20,9 @@ public readonly struct Iso731 : IIsoNumber1<uint>
     {
         return Convert.ToInt32(iso731.Value);
     }
+
+    public int ToInt32()
+    {
+        return Convert.ToInt32(Value);
+    }
 }
