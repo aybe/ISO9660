@@ -12,6 +12,20 @@ public sealed class IsoImage : Disposable
 
     public IsoImage(Stream stream)
     {
+        var length = stream.Length;
+
+        var type = true switch
+        {
+            true when length % 2048 == 0 => IsoImageSectorType.Cooked,
+            true when length % 2352 == 0 => IsoImageSectorType.Raw,
+            _                            => IsoImageSectorType.Unknown
+        };
+
+        if (type is not IsoImageSectorType.Raw)
+        {
+            throw new NotImplementedException(type.ToString());
+        }
+
         Reader = new BinaryReader(stream, Encoding.ASCII, true);
 
         Descriptors = GetVolumeDescriptors();
