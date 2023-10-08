@@ -5,36 +5,62 @@ using WipeoutInstaller.Extensions;
 namespace WipeoutInstaller.Iso9660;
 
 [DebuggerDisplay("{Value}")]
-public abstract class IsoString // TODO rename to Iso76, pass flags for allowed chars
+public class IsoString // TODO rename to Iso76, pass flags for allowed chars
 {
-    public const string ACharacters = """ !"%&'()*+,-./0123456789:;<=>?ABCDEFGHIJKLMNOPQRSTUVWXYZ_"""; // TODO
-    public const string DCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_";                         // TODO
-    public const string Separator1 = ".";                                                              // TODO
-    public const string Separator2 = ";";                                                              // TODO
-    protected const string CharsA = ACharacters;// """ !"%&'()*+,-./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_""";
-    protected const string CharsD = DCharacters + " " + "\u0000" + "\u0001" + Separator1 + Separator2; // "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_" + " "; // BUG isn't SPC missing?
+    private const string ACharacters = """!"%&'()*+,-./0123456789:;<=>?ABCDEFGHIJKLMNOPQRSTUVWXYZ_""" + Space;
+    private const string DCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_" + Space;
+    private const string Separator1 = ".";
+    private const string Separator2 = ";";
+    private const string Space = " ";
+    private const string Byte00 = "\u0000";
+    private const string Byte01 = "\u0001";
 
-    private protected IsoString(string value)
+    public IsoString(in BinaryReader reader, in int length, IsoStringFlags flags)
     {
-        Value = value;
-    }
+        var ascii = reader.ReadStringAscii(length);
 
-    protected IsoString(BinaryReader reader, int length, string chars)
-    {
-        var value = reader.ReadStringAscii(length);
+        var chars = new StringBuilder();
 
-        if (value.Any(c => !chars.Contains(c)))
+        if (flags.HasFlags(IsoStringFlags.ACharacters))
         {
-            var message = $"The string '{value}' ({string.Join(", ", Encoding.ASCII.GetBytes(value))}) contains invalid characters" +
+            chars.Append(ACharacters);
+        }
+
+        if (flags.HasFlags(IsoStringFlags.DCharacters))
+        {
+            chars.Append(DCharacters);
+        }
+
+        if (flags.HasFlags(IsoStringFlags.Separator1))
+        {
+            chars.Append(Separator1);
+        }
+
+        if (flags.HasFlags(IsoStringFlags.Separator2))
+        {
+            chars.Append(Separator2);
+        }
+
+        if (flags.HasFlags(IsoStringFlags.Byte00))
+        {
+            chars.Append(Byte00);
+        }
+
+        if (flags.HasFlags(IsoStringFlags.Byte01))
+        {
+            chars.Append(Byte01);
+        }
+
+        if (ascii.Any(c => !chars.ToString().Contains(c)))
+        {
+            var message = $"The string '{ascii}' ({string.Join(", ", Encoding.ASCII.GetBytes(ascii))}) contains invalid characters" +
                           $"{Environment.NewLine}" +
                           $"The allowed characters are: '{chars}'.";
-            //BUG fails on XA attributes
-            //Debug.WriteLine(
-            //    $"Invalid characters: {string.Join(", ", Encoding.ASCII.GetBytes(value).Select(s => s.ToString("X2")))}");
+
             throw new InvalidDataException(message);
         }
 
-        Value = value;
+        Value = ascii;
     }
 
     public string Value { get; }

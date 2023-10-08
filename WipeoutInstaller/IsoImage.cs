@@ -157,7 +157,7 @@ public sealed class IsoImage : Disposable
             {
                 if (record.FileFlags.HasFlagFast(FileFlags.Directory))
                 {
-                    if ((string)record.FileIdentifier is "." or "..")
+                    if ((string)record.FileIdentifier is "\u0000" or "\u0001" or  "." or "..")
                     {
                         continue;
                     }
