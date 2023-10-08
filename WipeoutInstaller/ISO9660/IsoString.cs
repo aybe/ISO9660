@@ -12,8 +12,8 @@ public class IsoString // TODO rename to Iso76, pass flags for allowed chars
     private const string Separator1 = ".";
     private const string Separator2 = ";";
     private const string Space = " ";
-    private const string Byte00 = "\u0000";
-    private const string Byte01 = "\u0001";
+    public const string Byte00 = "\u0000";
+    public const string Byte01 = "\u0001";
 
     public IsoString(in BinaryReader reader, in int length, IsoStringFlags flags)
     {
