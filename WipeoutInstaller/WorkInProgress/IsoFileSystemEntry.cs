@@ -10,7 +10,7 @@ public abstract partial class IsoFileSystemEntry
     [PublicAPI]
     public const char DirectorySeparator = '/';
 
-    private readonly DirectoryRecord Record;
+    protected readonly DirectoryRecord Record;
 
     protected IsoFileSystemEntry(IsoDirectory? parent, DirectoryRecord record)
     {
