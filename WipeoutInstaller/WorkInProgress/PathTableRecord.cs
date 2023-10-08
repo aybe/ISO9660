@@ -17,7 +17,8 @@ public sealed class PathTableRecord
 
         ParentDirectoryNumber = new Iso721(reader);
 
-        DirectoryIdentifier = new IsoString(reader, LengthOfDirectoryIdentifier, IsoStringFlags.DCharacters | IsoStringFlags.Byte00 | IsoStringFlags.Byte01);
+        DirectoryIdentifier = new IsoString(reader, LengthOfDirectoryIdentifier,
+            IsoStringFlags.DCharacters | IsoStringFlags.Byte00 | IsoStringFlags.Byte01);
 
         PaddingField = LengthOfDirectoryIdentifier % 2 is not 0 // TODO add method but invert
             ? reader.ReadByte()

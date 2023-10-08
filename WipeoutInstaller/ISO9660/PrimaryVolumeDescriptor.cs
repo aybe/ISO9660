@@ -51,7 +51,7 @@ public class PrimaryVolumeDescriptor : VolumeDescriptor
 
         AbstractFileIdentifier = new IsoString(reader, 37, IsoStringFlags.DCharacters | IsoStringFlags.Separator1 | IsoStringFlags.Separator2);
 
-        BibliographicFileIdentifier = new IsoString(reader, 37, IsoStringFlags.DCharacters | IsoStringFlags.Separator1 | IsoStringFlags.Separator2); 
+        BibliographicFileIdentifier = new IsoString(reader, 37, IsoStringFlags.DCharacters | IsoStringFlags.Separator1 | IsoStringFlags.Separator2);
 
         VolumeCreationDateAndTime = new DateAndTimeFormat(reader);
 

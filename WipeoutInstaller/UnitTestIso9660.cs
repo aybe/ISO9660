@@ -25,7 +25,7 @@ public class UnitTestIso9660
 
         var rootDirectory = fs.GetRootDirectory();
 
-        var entries = new Stack<WorkInProgress.IsoFileSystemEntry>();
+        var entries = new Stack<IsoFileSystemEntry>();
 
         entries.Push(rootDirectory);
 

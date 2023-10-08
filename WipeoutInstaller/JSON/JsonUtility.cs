@@ -7,8 +7,8 @@ public static class JsonUtility
 {
     private static readonly JsonSerializerSettings Settings = new()
     {
-        Formatting       = Formatting.Indented,
-        ContractResolver = new BaseFirstContractResolver(), 
+        Formatting                 = Formatting.Indented,
+        ContractResolver           = new BaseFirstContractResolver(),
         PreserveReferencesHandling = PreserveReferencesHandling.All
     };
 
