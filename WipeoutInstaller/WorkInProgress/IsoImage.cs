@@ -128,7 +128,7 @@ public sealed class IsoImage : Disposable
 
     private void SetSectorUserData(int sector)
     {
-        Reader.BaseStream.Position = sector * SectorMode2.Size + SectorMode2.UserDataPosition; // TODO support other sector types
+        Reader.BaseStream.Position = sector * SectorConstants.Size + SectorConstants.UserDataPosition; // TODO support other sector types
     }
 
     private void Log(object? value = null)
