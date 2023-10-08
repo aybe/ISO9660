@@ -1,38 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
-  <Class Name="WipeoutInstaller.ISO9660.DirectoryRecord">
+  <Class Name="WipeoutInstaller.Iso9660.DirectoryRecord">
     <Position X="5.75" Y="9" Width="3" />
     <TypeIdentifier>
-      <HashCode>AACCAAAAABAAAAAAgQQCQAAAAAAAAQEBQAAAAAAAAAA=</HashCode>
+      <HashCode>AACCAAAAABAAAAAEgQQCQAAAAAAAAQEBQAAAAAAAAAA=</HashCode>
       <FileName>Iso9660\DirectoryRecord.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Property Name="RecordingDateAndTime" />
       <Property Name="FileFlags" />
+      <Property Name="RecordingDateAndTime" />
     </ShowAsAssociation>
   </Class>
-  <Class Name="WipeoutInstaller.ISO9660.IsoString">
-    <Position X="12.75" Y="16.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAIAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
-      <FileName>Iso9660\IsoString.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="WipeoutInstaller.ISO9660.IsoStringA">
-    <Position X="11.5" Y="19" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Iso9660\IsoStringA.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="WipeoutInstaller.ISO9660.IsoStringD">
-    <Position X="13.75" Y="19" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Iso9660\IsoStringD.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="WipeoutInstaller.ISO9660.PrimaryVolumeDescriptor">
+  <Class Name="WipeoutInstaller.Iso9660.PrimaryVolumeDescriptor">
     <Position X="11" Y="6" Width="4" />
     <TypeIdentifier>
       <HashCode>SQAAAAAIDBgAIQAQQAAAAkAkAAAQAACAAIAAECACCAA=</HashCode>
@@ -46,14 +25,7 @@
       <Property Name="VolumeEffectiveDateAndTime" />
     </ShowAsAssociation>
   </Class>
-  <Class Name="WipeoutInstaller.ISO9660.RecordingDateAndTime">
-    <Position X="5.75" Y="13.5" Width="3" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAIAAAAAAAAAoAAAAAAAABACAAAAAAAACAABAA=</HashCode>
-      <FileName>Iso9660\RecordingDateAndTime.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="WipeoutInstaller.ISO9660.VolumeDescriptor">
+  <Class Name="WipeoutInstaller.Iso9660.VolumeDescriptor">
     <Position X="10" Y="3.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAEAAAAAACAAAAAAAAAAAAAAAIAAA=</HashCode>
@@ -63,21 +35,71 @@
       <Property Name="VolumeDescriptorType" />
     </ShowAsAssociation>
   </Class>
-  <Class Name="WipeoutInstaller.ISO9660.VolumeDescriptorSetTerminator">
+  <Class Name="WipeoutInstaller.Iso9660.VolumeDescriptorSetTerminator">
     <Position X="7.75" Y="6" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Iso9660\VolumeDescriptorSetTerminator.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WipeoutInstaller.ISO9660.DateAndTimeFormat">
+  <Class Name="WipeoutInstaller.Iso9660.DateAndTimeFormat">
     <Position X="17.5" Y="7.25" Width="3" />
     <TypeIdentifier>
       <HashCode>AAAAAAAIBAAAAAAAAoAAAAAAAAAACAAAAAAAACAABAA=</HashCode>
       <FileName>Iso9660\DateAndTimeFormat.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Struct Name="WipeoutInstaller.ISO9660.Iso711" BaseTypeListCollapsed="true">
+  <Class Name="WipeoutInstaller.Extensions.TestContextExtensions" Collapsed="true">
+    <Position X="4" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Extensions\TestContextExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WipeoutInstaller.Extensions.EnumExtensions" Collapsed="true">
+    <Position X="2.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAA=</HashCode>
+      <FileName>Extensions\EnumExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WipeoutInstaller.Extensions.BinaryReaderExtensions" Collapsed="true">
+    <Position X="2.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAACACAAAAAAgAAAAAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>Extensions\BinaryReaderExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WipeoutInstaller.Iso9660.IsoString" Collapsed="true">
+    <Position X="8.25" Y="22" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAICAAAQAAIAAEAAAAAAAAAAAAAAAABAAgAAAAAGA=</HashCode>
+      <FileName>Iso9660\IsoString.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WipeoutInstaller.Extensions.Disposable" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAAACAABAAAAAAAABAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Extensions\Disposable.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="WipeoutInstaller.Extensions.DictionaryExtensions" Collapsed="true">
+    <Position X="4" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Extensions\DictionaryExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WipeoutInstaller.Extensions.ArrayExtensions" Collapsed="true">
+    <Position X="0.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQA=</HashCode>
+      <FileName>Extensions\ArrayExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="WipeoutInstaller.Iso9660.Iso711" BaseTypeListCollapsed="true">
     <Position X="0.5" Y="17.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAABgAAAAAAA=</HashCode>
@@ -85,7 +107,7 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Struct>
-  <Struct Name="WipeoutInstaller.ISO9660.Iso712" BaseTypeListCollapsed="true">
+  <Struct Name="WipeoutInstaller.Iso9660.Iso712" BaseTypeListCollapsed="true">
     <Position X="2.25" Y="17.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
@@ -93,7 +115,7 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Struct>
-  <Struct Name="WipeoutInstaller.ISO9660.Iso721" BaseTypeListCollapsed="true">
+  <Struct Name="WipeoutInstaller.Iso9660.Iso721" BaseTypeListCollapsed="true">
     <Position X="4" Y="17.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
@@ -101,7 +123,7 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Struct>
-  <Struct Name="WipeoutInstaller.ISO9660.Iso722" BaseTypeListCollapsed="true">
+  <Struct Name="WipeoutInstaller.Iso9660.Iso722" BaseTypeListCollapsed="true">
     <Position X="5.75" Y="17.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
@@ -109,7 +131,7 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Struct>
-  <Struct Name="WipeoutInstaller.ISO9660.Iso723" BaseTypeListCollapsed="true">
+  <Struct Name="WipeoutInstaller.Iso9660.Iso723" BaseTypeListCollapsed="true">
     <Position X="0.5" Y="20" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
@@ -117,15 +139,7 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Struct>
-  <Struct Name="WipeoutInstaller.ISO9660.Iso731" BaseTypeListCollapsed="true">
-    <Position X="7.5" Y="17.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
-      <FileName>Iso9660\Iso731.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Struct>
-  <Struct Name="WipeoutInstaller.ISO9660.Iso732" BaseTypeListCollapsed="true">
+  <Struct Name="WipeoutInstaller.Iso9660.Iso732" BaseTypeListCollapsed="true">
     <Position X="9.25" Y="17.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
@@ -133,10 +147,10 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Struct>
-  <Struct Name="WipeoutInstaller.ISO9660.Iso733" BaseTypeListCollapsed="true">
+  <Struct Name="WipeoutInstaller.Iso9660.Iso733" BaseTypeListCollapsed="true">
     <Position X="2.25" Y="20" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAABgAAAAAAA=</HashCode>
       <FileName>Iso9660\Iso733.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -160,9 +174,9 @@
     </TypeIdentifier>
   </Struct>
   <Struct Name="WipeoutInstaller.XA.SectorMode2">
-    <Position X="30.25" Y="6.25" Width="1.75" />
+    <Position X="30.25" Y="6.25" Width="2" />
     <TypeIdentifier>
-      <HashCode>BAACAAAAAAAAgACEAgAAgAAABAAAAAAAABAAAABIAAA=</HashCode>
+      <HashCode>BgACAAAAAQAAgACMAgAAgAAABAAAAAAAABCAACBIAAA=</HashCode>
       <FileName>XA\SectorMode2.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -188,28 +202,43 @@
       <FileName>XA\SectorAddress.cs</FileName>
     </TypeIdentifier>
   </Struct>
-  <Interface Name="WipeoutInstaller.ISO9660.IIsoNumber1&lt;T&gt;">
+  <Struct Name="WipeoutInstaller.Iso9660.Iso731">
+    <Position X="7.5" Y="17.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAABgIAAAAAA=</HashCode>
+      <FileName>Iso9660\Iso731.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Struct>
+  <Struct Name="WipeoutInstaller.Iso9660.RecordingDateAndTime">
+    <Position X="5.75" Y="13.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAAAAAoAAAAAAAABACAAAAAAAACAABAA=</HashCode>
+      <FileName>Iso9660\RecordingDateAndTime.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Interface Name="WipeoutInstaller.Iso9660.IIsoNumber1&lt;T&gt;">
     <Position X="4" Y="20" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
       <FileName>Iso9660\IIsoNumber1.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="WipeoutInstaller.ISO9660.IIsoNumber2&lt;T&gt;">
+  <Interface Name="WipeoutInstaller.Iso9660.IIsoNumber2&lt;T&gt;">
     <Position X="5.75" Y="20" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
       <FileName>Iso9660\IIsoNumber2.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Enum Name="WipeoutInstaller.ISO9660.FileFlags">
+  <Enum Name="WipeoutInstaller.Iso9660.FileFlags">
     <Position X="3.25" Y="9.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>hAAAABAAAAgAAAAAAAAQAAAAAAAAAAAAAIAAAAAABAA=</HashCode>
+      <HashCode>hAAAABAAAAgAAAAAAAAQAAAAAAAAAAAAAIAAAAEABAA=</HashCode>
       <FileName>Iso9660\FileFlags.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="WipeoutInstaller.ISO9660.VolumeDescriptorType">
+  <Enum Name="WipeoutInstaller.Iso9660.VolumeDescriptorType">
     <Position X="10" Y="0.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAIAACAAAAABAAAAACAAAAAAAAAIAAAAAAA=</HashCode>
@@ -221,6 +250,20 @@
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAAgAAAAAAAQAAAAAAA=</HashCode>
       <FileName>XA\SectorMode.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="WipeoutInstaller.Extensions.Endianness" Collapsed="true">
+    <Position X="0.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Extensions\Endianness.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="WipeoutInstaller.Iso9660.IsoStringFlags" Collapsed="true">
+    <Position X="8" Y="21" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAIAAAAAAAAAAAAAAAAAAABAAAAAAAAGA=</HashCode>
+      <FileName>Iso9660\IsoStringFlags.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Font Name="Segoe UI" Size="9" />

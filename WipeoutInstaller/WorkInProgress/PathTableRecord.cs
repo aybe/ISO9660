@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using WipeoutInstaller.Iso9660;
 
-namespace WipeoutInstaller;
+namespace WipeoutInstaller.WorkInProgress;
 
 [DebuggerDisplay(
     "Parent = {ParentDirectoryNumber}, Extent = {LocationOfExtent}, Name = {DirectoryIdentifier}")]

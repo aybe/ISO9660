@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 
-namespace WipeoutInstaller;
+namespace WipeoutInstaller.Extensions;
 
 [PublicAPI]
 public abstract class Disposable : IDisposable

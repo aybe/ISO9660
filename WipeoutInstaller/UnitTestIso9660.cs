@@ -2,6 +2,7 @@
 
 using JetBrains.Annotations;
 using WipeoutInstaller.Extensions;
+using WipeoutInstaller.WorkInProgress;
 
 namespace WipeoutInstaller;
 
@@ -24,7 +25,7 @@ public class UnitTestIso9660
 
         var rootDirectory = fs.GetRootDirectory();
 
-        var entries = new Stack<IsoFileSystemEntry>();
+        var entries = new Stack<WorkInProgress.IsoFileSystemEntry>();
 
         entries.Push(rootDirectory);
 

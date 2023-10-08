@@ -1,11 +1,9 @@
 using System.Text;
-using System.Text.RegularExpressions;
-using JetBrains.Annotations;
 using WipeoutInstaller.Extensions;
 using WipeoutInstaller.Iso9660;
 using WipeoutInstaller.XA;
 
-namespace WipeoutInstaller;
+namespace WipeoutInstaller.WorkInProgress;
 
 public sealed class IsoImage : Disposable
 // TODO allow other sector types
@@ -155,7 +153,7 @@ public sealed class IsoImage : Disposable
 
             foreach (var record in list)
             {
-                if (record.FileFlags.HasFlagFast(FileFlags.Directory))
+                if (record.FileFlags.HasFlags(FileFlags.Directory))
                 {
                     if ((string)record.FileIdentifier is "\u0000" or "\u0001" or  "." or "..")
                     {
@@ -179,111 +177,4 @@ public sealed class IsoImage : Disposable
 
         return firstDirectory;
     }
-}
-
-public abstract partial class IsoFileSystemEntry
-{
-    [PublicAPI]
-    public const char DirectorySeparator = '/';
-
-    private readonly DirectoryRecord Record;
-
-    protected IsoFileSystemEntry(IsoDirectory? parent, DirectoryRecord record)
-    {
-        Parent = parent;
-        Record = record;
-    }
-
-    private string Identifier => Record.FileIdentifier;
-
-    public IsoDirectory? Parent { get; }
-
-    public string Extension
-    {
-        get
-        {
-            var value = NameRegex().Match(Identifier).Value;
-
-            var extension = Path.GetExtension(value);
-
-            return extension;
-        }
-    }
-
-    public string FullName
-    {
-        get
-        {
-            var builder = new StringBuilder();
-
-            var node = this;
-
-            while (node != null)
-            {
-                builder.Insert(0, DirectorySeparator).Insert(1, node.Name);
-
-                node = node.Parent;
-            }
-
-            if (this is IsoDirectory)
-            {
-                builder.Append(DirectorySeparator);
-            }
-
-            if (builder.Length > 1)
-            {
-                builder.Remove(0, 1);
-            }
-
-            var fullName = builder.ToString();
-
-            return fullName;
-        }
-    }
-
-    public string Name
-    {
-        get
-        {
-            var value = NameRegex().Match(Identifier).Value;
-
-            var name = Path.GetFileName(value);
-
-            return name;
-        }
-    }
-
-    [GeneratedRegex("""^.+?(?=;|\r?$)""")]
-    private static partial Regex NameRegex();
-
-    public override string ToString()
-    {
-        return FullName;
-    }
-}
-
-public sealed class IsoDirectory : IsoFileSystemEntry
-{
-    public IsoDirectory(IsoDirectory? parent, DirectoryRecord record)
-        : base(parent, record)
-    {
-    }
-
-    public List<IsoDirectory> Directories { get; } = new();
-
-    public List<IsoFile> Files { get; } = new();
-}
-
-public sealed partial class IsoFile : IsoFileSystemEntry
-{
-    public IsoFile(IsoDirectory? parent, DirectoryRecord record)
-        : base(parent, record)
-    {
-        Version = Convert.ToInt32(VersionRegex().Match(record.FileIdentifier).Value);
-    }
-
-    public int Version { get; }
-
-    [GeneratedRegex("""(?<=;)\d+""")]
-    private static partial Regex VersionRegex();
 }

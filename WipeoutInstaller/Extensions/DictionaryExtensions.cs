@@ -1,4 +1,4 @@
-namespace WipeoutInstaller;
+namespace WipeoutInstaller.Extensions;
 
 public static class DictionaryExtensions
 {
