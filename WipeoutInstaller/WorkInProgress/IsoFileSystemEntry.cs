@@ -56,7 +56,7 @@ public abstract partial class IsoFileSystemEntry
 
             if (builder.Length > 1)
             {
-                builder.Remove(0, 1);
+                builder.Remove(0, 2);
             }
 
             var fullName = builder.ToString();
