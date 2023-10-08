@@ -109,7 +109,7 @@ public sealed class IsoImage : Disposable
             {
                 VolumeDescriptorType.PrimaryVolumeDescriptor       => new PrimaryVolumeDescriptor(descriptor, Reader),
                 VolumeDescriptorType.VolumeDescriptorSetTerminator => new VolumeDescriptorSetTerminator(descriptor, Reader),
-                _                                                  => throw new NotImplementedException()
+                _                                                  => throw new NotImplementedException(descriptor.VolumeDescriptorType.ToString())
             };
 
             descriptors.Add(descriptor);
