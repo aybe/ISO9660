@@ -13,7 +13,8 @@ public class UnitTestIso9660
     public required TestContext TestContext { get; set; }
 
     [TestMethod]
-    [DataRow(@"C:\Temp\Wipeout\WipEout (Europe) (v1.1)\WipEout (Europe) (v1.1) (Track 01).bin")]
+    [DataRow(@"C:\Temp\UFO - Enemy Unknown (1994)(MicroProse).bin")]
+    [DataRow(@"C:\Temp\WipEout (Europe) (v1.1).bin")]
     public void TestIsoReading(string path)
     {
         using var stream = File.OpenRead(path);
