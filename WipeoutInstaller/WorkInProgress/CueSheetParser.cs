@@ -102,7 +102,7 @@ public static partial class CueSheetParser
     [GeneratedRegex("""^\s*ISRC\s+(\w{5}\d{7})\s*\r?$""", HandlerRegexOptions)]
     private static partial Regex IsrcRegex();
 
-    [GeneratedRegex("""^\s*;.*\r?$""", HandlerRegexOptions)]
+    [GeneratedRegex("""^\s*;.*\s*\r?$""", HandlerRegexOptions)]
     private static partial Regex CommentRegex();
 
     private static T ParseNumber<T>(Capture capture, Func<string, T> func)
