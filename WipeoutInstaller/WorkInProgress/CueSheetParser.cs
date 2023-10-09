@@ -105,7 +105,7 @@ public static partial class CueSheetParser
     [GeneratedRegex("""^\s*;.*\s*\r?$""", HandlerRegexOptions)]
     private static partial Regex CommentRegex();
 
-    private static T ParseNumber<T>(Capture capture, Func<string, T> func)
+    private static T Parse<T>(Capture capture, Func<string, T> func)
     {
         return func(capture.Value);
     }
@@ -140,7 +140,7 @@ public static partial class CueSheetParser
             throw new InvalidDataException();
         }
 
-        var catalog = ParseNumber(match.Groups[1], ulong.Parse);
+        var catalog = Parse(match.Groups[1], ulong.Parse);
 
         sheet.Catalog = catalog;
 
@@ -207,10 +207,10 @@ public static partial class CueSheetParser
             throw new InvalidOperationException();
         }
 
-        var i = ParseNumber(match.Groups[1], int.Parse);
-        var m = ParseNumber(match.Groups[2], int.Parse);
-        var s = ParseNumber(match.Groups[3], int.Parse);
-        var f = ParseNumber(match.Groups[4], int.Parse);
+        var i = Parse(match.Groups[1], int.Parse);
+        var m = Parse(match.Groups[2], int.Parse);
+        var s = Parse(match.Groups[3], int.Parse);
+        var f = Parse(match.Groups[4], int.Parse);
 
         var index = new CueSheetTrackIndex(i, m, s, f);
 
@@ -269,9 +269,9 @@ public static partial class CueSheetParser
             throw new InvalidDataException();
         }
 
-        var m = ParseNumber(match.Groups[1], byte.Parse);
-        var s = ParseNumber(match.Groups[2], byte.Parse);
-        var f = ParseNumber(match.Groups[3], byte.Parse);
+        var m = Parse(match.Groups[1], byte.Parse);
+        var s = Parse(match.Groups[2], byte.Parse);
+        var f = Parse(match.Groups[3], byte.Parse);
 
         track.PreGap = new Msf(m, s, f);
 
@@ -338,7 +338,7 @@ public static partial class CueSheetParser
             throw new InvalidOperationException();
         }
 
-        var index = ParseNumber(match.Groups[1], int.Parse);
+        var index = Parse(match.Groups[1], int.Parse);
 
         var type = match.Groups[2].Value; // TODO
 
