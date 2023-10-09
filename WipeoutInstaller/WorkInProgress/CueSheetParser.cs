@@ -1,33 +1,13 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Text;
+﻿using System.Text;
 using System.Text.RegularExpressions;
+
+// ReSharper disable StringLiteralTypo
+// ReSharper disable IdentifierTypo
 
 namespace WipeoutInstaller.WorkInProgress;
 
-[SuppressMessage("ReSharper", "IdentifierTypo")]
-[SuppressMessage("ReSharper", "StringLiteralTypo")]
 public static partial class CueSheetParser
 {
-    private const RegexOptions HandlerRegexOptions = RegexOptions.Compiled | RegexOptions.Singleline;
-
-    private static readonly IReadOnlyDictionary<Regex, CueSheetHandler> Handlers =
-        new Dictionary<Regex, CueSheetHandler>
-            {
-                { WhiteSpaceRegex(), WhiteSpaceHandler },
-                { FileRegex(), FileHandler },
-                { CatalogRegex(), CatalogHandler },
-                { FlagsRegex(), FlagsHandler },
-                { IndexRegex(), IndexHandler },
-                { PerformerRegex(), PerformerHandler },
-                { PreGapRegex(), PreGapHandler },
-                { RemRegex(), RemHandler },
-                { TitleRegex(), TitleHandler },
-                { TrackRegex(), TrackHandler },
-                { IsrcRegex(), IsrcHandler },
-                { CommentRegex(), CommentHandler }
-            }
-            .AsReadOnly();
-
     public static CueSheet Parse(Stream stream)
     {
         using var reader = new StreamReader(stream, Encoding.Default, true);
@@ -68,6 +48,25 @@ public static partial class CueSheetParser
 
         return sheet;
     }
+}
+
+public static partial class CueSheetParser
+{
+    private const RegexOptions HandlerRegexOptions = RegexOptions.Compiled | RegexOptions.Singleline;
+
+    private static T Parse<T>(Capture capture, Func<string, T> func)
+    {
+        return func(capture.Value);
+    }
+
+    private static bool TryMatch(in Regex regex, in string input, out Match match)
+    {
+        match = regex.Match(input);
+
+        var success = match.Success;
+
+        return success;
+    }
 
     [GeneratedRegex("""^\s*\r?$""", HandlerRegexOptions)]
     private static partial Regex WhiteSpaceRegex();
@@ -104,20 +103,27 @@ public static partial class CueSheetParser
 
     [GeneratedRegex("""^\s*;.*\s*\r?$""", HandlerRegexOptions)]
     private static partial Regex CommentRegex();
+}
 
-    private static T Parse<T>(Capture capture, Func<string, T> func)
-    {
-        return func(capture.Value);
-    }
-
-    private static bool TryMatch(in Regex regex, in string input, out Match match)
-    {
-        match = regex.Match(input);
-
-        var success = match.Success;
-
-        return success;
-    }
+public static partial class CueSheetParser
+{
+    private static readonly IReadOnlyDictionary<Regex, CueSheetHandler> Handlers =
+        new Dictionary<Regex, CueSheetHandler>
+            {
+                { WhiteSpaceRegex(), WhiteSpaceHandler },
+                { FileRegex(), FileHandler },
+                { CatalogRegex(), CatalogHandler },
+                { FlagsRegex(), FlagsHandler },
+                { IndexRegex(), IndexHandler },
+                { PerformerRegex(), PerformerHandler },
+                { PreGapRegex(), PreGapHandler },
+                { RemRegex(), RemHandler },
+                { TitleRegex(), TitleHandler },
+                { TrackRegex(), TrackHandler },
+                { IsrcRegex(), IsrcHandler },
+                { CommentRegex(), CommentHandler }
+            }
+            .AsReadOnly();
 
     private static bool WhiteSpaceHandler(
         Regex regex, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
