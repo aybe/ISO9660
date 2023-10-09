@@ -104,6 +104,11 @@ public static partial class CueSheetParser
     [GeneratedRegex("""^\s*;.*\r?$""")]
     private static partial Regex CommentRegex();
 
+    private static T ParseNumber<T>(Capture capture, Func<string, T> func)
+    {
+        return func(capture.Value);
+    }
+
     private static bool TryMatch(in Regex regex, in string input, out Match match)
     {
         match = regex.Match(input);
@@ -126,7 +131,7 @@ public static partial class CueSheetParser
             throw new InvalidDataException();
         }
 
-        var catalog = ulong.Parse(match.Groups[1].Value);
+        var catalog = ParseNumber(match.Groups[1], ulong.Parse);
 
         sheet.Catalog = catalog;
 
@@ -193,10 +198,10 @@ public static partial class CueSheetParser
             throw new InvalidOperationException();
         }
 
-        var i = int.Parse(match.Groups[1].Value);
-        var m = int.Parse(match.Groups[2].Value);
-        var s = int.Parse(match.Groups[3].Value);
-        var f = int.Parse(match.Groups[4].Value);
+        var i = ParseNumber(match.Groups[1], int.Parse);
+        var m = ParseNumber(match.Groups[2], int.Parse);
+        var s = ParseNumber(match.Groups[3], int.Parse);
+        var f = ParseNumber(match.Groups[4], int.Parse);
 
         var index = new CueSheetTrackIndex(i, m, s, f);
 
@@ -255,9 +260,9 @@ public static partial class CueSheetParser
             throw new InvalidDataException();
         }
 
-        var m = byte.Parse(match.Groups[1].Value);
-        var s = byte.Parse(match.Groups[2].Value);
-        var f = byte.Parse(match.Groups[3].Value);
+        var m = ParseNumber(match.Groups[1], byte.Parse);
+        var s = ParseNumber(match.Groups[2], byte.Parse);
+        var f = ParseNumber(match.Groups[3], byte.Parse);
 
         track.PreGap = new Msf(m, s, f);
 
@@ -324,7 +329,8 @@ public static partial class CueSheetParser
             throw new InvalidOperationException();
         }
 
-        var index = int.Parse(match.Groups[1].Value);
+        var index = ParseNumber(match.Groups[1], int.Parse);
+
         var type = match.Groups[2].Value; // TODO
 
         track = new CueSheetTrack(index, type);
