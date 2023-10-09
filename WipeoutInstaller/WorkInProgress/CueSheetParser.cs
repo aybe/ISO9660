@@ -11,6 +11,7 @@ public static partial class CueSheetParser
     private static readonly IReadOnlyDictionary<Regex, CueSheetHandler> Handlers =
         new Dictionary<Regex, CueSheetHandler>
             {
+                { WhiteSpaceRegex(), WhiteSpaceHandler },
                 { FileRegex(), FileHandler },
                 { CatalogRegex(), CatalogHandler },
                 { FlagsRegex(), FlagsHandler },
@@ -42,11 +43,6 @@ public static partial class CueSheetParser
                 break;
             }
 
-            if (string.IsNullOrWhiteSpace(line))
-            {
-                continue;
-            }
-
             var handled = false;
 
             foreach (var (regex, handler) in Handlers)
@@ -70,6 +66,9 @@ public static partial class CueSheetParser
 
         return sheet;
     }
+
+    [GeneratedRegex("""^\s*\r?$""")]
+    private static partial Regex WhiteSpaceRegex();
 
     [GeneratedRegex("""^\s*CATALOG\s+(\d{13})\s*\r?$""")]
     private static partial Regex CatalogRegex();
@@ -114,6 +113,14 @@ public static partial class CueSheetParser
         match = regex.Match(input);
 
         var success = match.Success;
+
+        return success;
+    }
+
+    private static bool WhiteSpaceHandler(
+        Regex regex, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
+    {
+        var success = TryMatch(regex, input, out _);
 
         return success;
     }
