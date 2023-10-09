@@ -105,12 +105,19 @@ public static partial class CueSheetParser
     [GeneratedRegex("""^\s*ISRC\s+(\w{5}\d{7})\s*\r?$""")]
     private static partial Regex IsrcRegex();
 
+    private static bool TryMatch(in Regex regex, in string input, out Match match)
+    {
+        match = regex.Match(input);
+
+        var success = match.Success;
+
+        return success;
+    }
+
     private static bool CatalogHandler(
         Regex regex, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
-        var match = regex.Match(input);
-
-        if (match.Success == false)
+        if (!TryMatch(regex, input, out var match))
         {
             return false;
         }
@@ -130,9 +137,7 @@ public static partial class CueSheetParser
     private static bool FileHandler(
         Regex regex, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
-        var match = regex.Match(input);
-
-        if (match.Success == false)
+        if (!TryMatch(regex, input, out var match))
         {
             return false;
         }
@@ -153,9 +158,7 @@ public static partial class CueSheetParser
     private static bool FlagsHandler(
         Regex regex, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
-        var match = regex.Match(input);
-
-        if (match.Success == false)
+        if (!TryMatch(regex, input, out var match))
         {
             return false;
         }
@@ -181,9 +184,7 @@ public static partial class CueSheetParser
     private static bool IndexHandler(
         Regex regex, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
-        var match = regex.Match(input);
-
-        if (match.Success == false)
+        if (!TryMatch(regex, input, out var match))
         {
             return false;
         }
@@ -208,9 +209,7 @@ public static partial class CueSheetParser
     private static bool PerformerHandler(
         Regex regex, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
-        var match = regex.Match(input);
-
-        if (match.Success == false)
+        if (!TryMatch(regex, input, out var match))
         {
             return false;
         }
@@ -242,9 +241,7 @@ public static partial class CueSheetParser
     private static bool PreGapHandler(
         Regex regex, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
-        var match = regex.Match(input);
-
-        if (match.Success == false)
+        if (!TryMatch(regex, input, out var match))
         {
             return false;
         }
@@ -271,9 +268,7 @@ public static partial class CueSheetParser
     private static bool RemHandler(
         Regex regex, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
-        var match = regex.Match(input);
-
-        if (match.Success == false)
+        if (!TryMatch(regex, input, out var match))
         {
             return false;
         }
@@ -288,9 +283,7 @@ public static partial class CueSheetParser
     private static bool TitleHandler(
         Regex regex, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
-        var match = regex.Match(input);
-
-        if (match.Success == false)
+        if (!TryMatch(regex, input, out var match))
         {
             return false;
         }
@@ -322,9 +315,7 @@ public static partial class CueSheetParser
     private static bool TrackHandler(
         Regex regex, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
-        var match = regex.Match(input);
-
-        if (match.Success == false)
+        if (!TryMatch(regex, input, out var match))
         {
             return false;
         }
@@ -347,9 +338,7 @@ public static partial class CueSheetParser
     private static bool IsrcHandler(
         Regex regex, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
-        var match = regex.Match(input);
-
-        if (match.Success == false)
+        if (!TryMatch(regex, input, out var match))
         {
             return false;
         }
