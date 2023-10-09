@@ -247,14 +247,37 @@ public static partial class CueSheetParser
 
         ThrowIfNull(track, input);
 
-        var i = Parse(match.Groups[1], int.Parse);
-        var m = Parse(match.Groups[2], int.Parse);
-        var s = Parse(match.Groups[3], int.Parse);
-        var f = Parse(match.Groups[4], int.Parse);
+        var i = Parse(match.Groups[1], byte.Parse);
+        var m = Parse(match.Groups[2], byte.Parse);
+        var s = Parse(match.Groups[3], byte.Parse);
+        var f = Parse(match.Groups[4], byte.Parse);
 
-        var index = new CueSheetTrackIndex(i, m, s, f);
+        var index = new CueSheetTrackIndex(i, new Msf(m, s, f));
 
-        track.Indices.Add(index); // TODO check that these are contiguous?
+        if (track.Indices.Count == 0)
+        {
+            var zero = Msf.Zero;
+
+            if (index is not { Number: 0 or 1 } && index.Position != zero && track.Index is 1)
+            {
+                var message = $"""Track 1 index isn't 0 or 1 and doesn't start at {zero} for "{input}".""";
+
+                throw new InvalidDataException(message);
+            }
+        }
+        else
+        {
+            var last = track.Indices.Last();
+
+            if (index.Number != last.Number + 1)
+            {
+                var message = $"""Track index isn't consecutive to previous' for "{input}".""";
+
+                throw new InvalidDataException(message);
+            }
+        }
+
+        track.Indices.Add(index);
 
         return true;
     }

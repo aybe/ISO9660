@@ -1,20 +1,19 @@
 ﻿namespace WipeoutInstaller.WorkInProgress;
 
-public class CueSheetTrackIndex
+public sealed class CueSheetTrackIndex
 {
-    public CueSheetTrackIndex(int number, int minutes, int seconds, int frames)
+    public CueSheetTrackIndex(int number, Msf position)
     {
-        Number  = number;
-        Minutes = minutes;
-        Seconds = seconds;
-        Frames  = frames;
+        Number   = number;
+        Position = position;
     }
 
     public int Number { get; }
 
-    public int Minutes { get; }
+    public Msf Position { get; }
 
-    public int Seconds { get; }
-
-    public int Frames { get; }
+    public override string ToString()
+    {
+        return $"{nameof(Number)}: {Number}, {nameof(Position)}: {Position}";
+    }
 }
