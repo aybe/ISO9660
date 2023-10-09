@@ -186,14 +186,25 @@ public static partial class CueSheetParser
             throw new InvalidOperationException();
         }
 
-        if (track.Flags.Count > 0)
+        if (track.Flags != CueSheetTrackFlags.None)
         {
             throw new InvalidDataException();
         }
 
-        foreach (var capture in match.Groups[1].Captures.Cast<Capture>()) // TODO
+        foreach (var capture in match.Groups[1].Captures.Cast<Capture>())
         {
-            track.Flags.Add(capture.Value);
+            var value = capture.Value;
+
+            var flags = value switch
+            {
+                "4CH"  => CueSheetTrackFlags.FourChannelAudio,
+                "PRE"  => CueSheetTrackFlags.PreEmphasis,
+                "SCMS" => CueSheetTrackFlags.SerialCopyManagementSystem,
+                "DCP"  => CueSheetTrackFlags.DigitalCopyPermitted,
+                _      => throw new InvalidOperationException()
+            };
+
+            track.Flags |= flags;
         }
 
         return true;

@@ -14,7 +14,7 @@ public class CueSheetTrack
 
     public List<CueSheetTrackIndex> Indices { get; } = new();
 
-    public List<string> Flags { get; } = new();
+    public CueSheetTrackFlags Flags { get; set; }
 
     public string? Title { get; set; }
 
