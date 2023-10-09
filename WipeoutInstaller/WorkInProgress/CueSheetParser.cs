@@ -8,6 +8,8 @@ namespace WipeoutInstaller.WorkInProgress;
 [SuppressMessage("ReSharper", "StringLiteralTypo")]
 public static partial class CueSheetParser
 {
+    private const RegexOptions HandlerRegexOptions = RegexOptions.Compiled | RegexOptions.Singleline;
+
     private static readonly IReadOnlyDictionary<Regex, CueSheetHandler> Handlers =
         new Dictionary<Regex, CueSheetHandler>
             {
@@ -67,40 +69,40 @@ public static partial class CueSheetParser
         return sheet;
     }
 
-    [GeneratedRegex("""^\s*\r?$""")]
+    [GeneratedRegex("""^\s*\r?$""", HandlerRegexOptions)]
     private static partial Regex WhiteSpaceRegex();
 
-    [GeneratedRegex("""^\s*CATALOG\s+(\d{13})\s*\r?$""")]
+    [GeneratedRegex("""^\s*CATALOG\s+(\d{13})\s*\r?$""", HandlerRegexOptions)]
     private static partial Regex CatalogRegex();
 
-    [GeneratedRegex("""^\s*FILE\s+"?(.*)"?\s+(BINARY|MOTORLA|AUDIO|AIFF|FLAC|MP3|WAVE)\s*\r?$""")]
+    [GeneratedRegex("""^\s*FILE\s+"?(.*)"?\s+(BINARY|MOTORLA|AUDIO|AIFF|FLAC|MP3|WAVE)\s*\r?$""", HandlerRegexOptions)]
     private static partial Regex FileRegex();
 
-    [GeneratedRegex("""^\s*FLAGS(?:\s+(4CH|PRE|SCMS|DCP))+\s*\r?$""")]
+    [GeneratedRegex("""^\s*FLAGS(?:\s+(4CH|PRE|SCMS|DCP))+\s*\r?$""", HandlerRegexOptions)]
     private static partial Regex FlagsRegex();
 
-    [GeneratedRegex("""^\s*INDEX\s+(0?[0-9]|[1-9][0-9])\s+(0?[0-9]|[1-9][0-9]):([0-5][0-9]):([0-6][0-9]|7[0-4])\s*\r?$""")]
+    [GeneratedRegex("""^\s*INDEX\s+(0?[0-9]|[1-9][0-9])\s+(0?[0-9]|[1-9][0-9]):([0-5][0-9]):([0-6][0-9]|7[0-4])\s*\r?$""", HandlerRegexOptions)]
     private static partial Regex IndexRegex();
 
-    [GeneratedRegex("""^\s*PERFORMER\s+"?(.*)"?\s*\r?$""")]
+    [GeneratedRegex("""^\s*PERFORMER\s+"?(.*)"?\s*\r?$""", HandlerRegexOptions)]
     private static partial Regex PerformerRegex();
 
-    [GeneratedRegex("""^\s*PREGAP\s+(0?[0-9]|[1-9][0-9]):([0-5][0-9]):([0-6][0-9]|7[0-4])\s*\r?$""")]
+    [GeneratedRegex("""^\s*PREGAP\s+(0?[0-9]|[1-9][0-9]):([0-5][0-9]):([0-6][0-9]|7[0-4])\s*\r?$""", HandlerRegexOptions)]
     private static partial Regex PreGapRegex();
 
-    [GeneratedRegex("""^\s*REM\s+(.*)\s*\r?$""")]
+    [GeneratedRegex("""^\s*REM\s+(.*)\s*\r?$""", HandlerRegexOptions)]
     private static partial Regex RemRegex();
 
-    [GeneratedRegex("""^\s*TITLE\s+"?(.*)"?\s*\r?$""")]
+    [GeneratedRegex("""^\s*TITLE\s+"?(.*)"?\s*\r?$""", HandlerRegexOptions)]
     private static partial Regex TitleRegex();
 
-    [GeneratedRegex("""^\s*TRACK\s+(0?[0-9]|[1-9][0-9])\s+(AUDIO|CDG|MODE1/2048|MODE1/2352|MODE2/2048|MODE2/2324|MODE2/2336|MODE2/2352|CDI/2336|CDI/2352)\s*\r?$""")]
+    [GeneratedRegex("""^\s*TRACK\s+(0?[0-9]|[1-9][0-9])\s+(AUDIO|CDG|MODE1/2048|MODE1/2352|MODE2/2048|MODE2/2324|MODE2/2336|MODE2/2352|CDI/2336|CDI/2352)\s*\r?$""", HandlerRegexOptions)]
     private static partial Regex TrackRegex();
 
-    [GeneratedRegex("""^\s*ISRC\s+(\w{5}\d{7})\s*\r?$""")]
+    [GeneratedRegex("""^\s*ISRC\s+(\w{5}\d{7})\s*\r?$""", HandlerRegexOptions)]
     private static partial Regex IsrcRegex();
 
-    [GeneratedRegex("""^\s*;.*\r?$""")]
+    [GeneratedRegex("""^\s*;.*\r?$""", HandlerRegexOptions)]
     private static partial Regex CommentRegex();
 
     private static T ParseNumber<T>(Capture capture, Func<string, T> func)
