@@ -372,9 +372,24 @@ public static partial class CueSheetParser
             }
         }
 
-        var type = match.Groups[2].Value; // TODO
+        var type = match.Groups[2].Value;
 
-        track = new CueSheetTrack(index, type);
+        var mode = type switch
+        {
+            "AUDIO"      => CueSheetTrackType.Audio,
+            "CDG"        => CueSheetTrackType.Karaoke,
+            "MODE1/2048" => CueSheetTrackType.Mode1Cooked,
+            "MODE1/2352" => CueSheetTrackType.Mode1Raw,
+            "MODE2/2048" => CueSheetTrackType.Mode2Form1Cooked,
+            "MODE2/2324" => CueSheetTrackType.Mode2Form2Cooked,
+            "MODE2/2336" => CueSheetTrackType.Mode2Mixed,
+            "MODE2/2352" => CueSheetTrackType.Mode2Raw,
+            "CDI/2336"   => CueSheetTrackType.InteractiveCooked,
+            "CDI/2352"   => CueSheetTrackType.InteractiveRaw,
+            _            => throw new InvalidDataException($"Unknown track mode: {type}.")
+        };
+
+        track = new CueSheetTrack(index, mode);
 
         file.Tracks.Add(track);
 

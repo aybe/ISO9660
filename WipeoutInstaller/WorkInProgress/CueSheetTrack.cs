@@ -2,7 +2,7 @@
 
 public class CueSheetTrack
 {
-    public CueSheetTrack(int index, string type)
+    public CueSheetTrack(int index, CueSheetTrackType type)
     {
         Index = index;
         Type  = type;
@@ -10,7 +10,7 @@ public class CueSheetTrack
 
     public int Index { get; }
 
-    public string Type { get; }
+    public CueSheetTrackType Type { get; }
 
     public List<CueSheetTrackIndex> Indices { get; } = new();
 
