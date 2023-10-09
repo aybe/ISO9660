@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using System.Text.RegularExpressions;
 
 // ReSharper disable StringLiteralTypo
@@ -35,6 +36,19 @@ public static partial class CueSheetParser
         }
 
         return sheet;
+    }
+
+    private static void ThrowIfNull<T>([NotNull] T? value, string input)
+    // TODO tell line at which it occurred
+    {
+        if (value != null)
+        {
+            return;
+        }
+
+        var message = $"""There is no parent of type {typeof(T).Name} for "{input.Trim()}".""";
+
+        throw new InvalidDataException(message);
     }
 }
 
@@ -181,10 +195,7 @@ public static partial class CueSheetParser
             return false;
         }
 
-        if (track is null)
-        {
-            throw new InvalidOperationException();
-        }
+        ThrowIfNull(track, input);
 
         if (track.Flags != CueSheetTrackFlags.None)
         {
@@ -218,10 +229,7 @@ public static partial class CueSheetParser
             return false;
         }
 
-        if (track is null)
-        {
-            throw new InvalidOperationException();
-        }
+        ThrowIfNull(track, input);
 
         var i = Parse(match.Groups[1], int.Parse);
         var m = Parse(match.Groups[2], int.Parse);
@@ -275,10 +283,7 @@ public static partial class CueSheetParser
             return false;
         }
 
-        if (track == null)
-        {
-            throw new InvalidOperationException();
-        }
+        ThrowIfNull(track, input);
 
         if (track.PreGap != null)
         {
@@ -351,12 +356,7 @@ public static partial class CueSheetParser
             return false;
         }
 
-        if (file is null)
-        {
-            var message = $"Track has no parent file: {input.Trim()}."; // TODO tell line at which it occurred
-
-            throw new InvalidOperationException(message);
-        }
+        ThrowIfNull(file, input);
 
         var index = Parse(match.Groups[1], int.Parse);
 
@@ -404,10 +404,7 @@ public static partial class CueSheetParser
             return false;
         }
 
-        if (track == null)
-        {
-            throw new InvalidOperationException();
-        }
+        ThrowIfNull(track, input);
 
         if (track.Isrc != null)
         {
