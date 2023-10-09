@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -47,6 +48,24 @@ public static partial class CueSheetParser
         }
 
         var message = $"""There is no parent of type {typeof(T).Name} for "{input.Trim()}".""";
+
+        throw new InvalidDataException(message);
+    }
+
+    private static void ThrowIfNotNull<TSource, TValue>(TSource source, Expression<Func<TSource, TValue>> valueExpression, string input)
+    {
+        var value = valueExpression.Compile()(source);
+
+        if (value == null)
+        {
+            return;
+        }
+
+        var expression = (MemberExpression)valueExpression.Body;
+        var memberType = expression.Member.DeclaringType!.Name;
+        var memberName = expression.Member.Name;
+
+        var message = $"""The value of '{memberName}' in '{memberType}' should be null for "{input.Trim()}".""";
 
         throw new InvalidDataException(message);
     }
@@ -142,10 +161,7 @@ public static partial class CueSheetParser
             return false;
         }
 
-        if (sheet.Catalog != null)
-        {
-            throw new InvalidDataException();
-        }
+        ThrowIfNotNull(sheet, s => s.Catalog, input);
 
         var catalog = Parse(match.Groups[1], ulong.Parse);
 
@@ -255,20 +271,14 @@ public static partial class CueSheetParser
 
         if (track != null)
         {
-            if (track.Performer != null)
-            {
-                throw new InvalidDataException();
-            }
+            ThrowIfNotNull(track, s => s.Performer, input);
 
             track.Performer = performer;
 
             return true;
         }
 
-        if (sheet.Performer != null)
-        {
-            throw new InvalidDataException();
-        }
+        ThrowIfNotNull(sheet, s => s.Performer, input);
 
         sheet.Performer = performer;
 
@@ -285,10 +295,7 @@ public static partial class CueSheetParser
 
         ThrowIfNull(track, input);
 
-        if (track.PreGap != null)
-        {
-            throw new InvalidDataException();
-        }
+        ThrowIfNotNull(track, s => s.PreGap, input);
 
         var m = Parse(match.Groups[1], byte.Parse);
         var s = Parse(match.Groups[2], byte.Parse);
@@ -326,20 +333,14 @@ public static partial class CueSheetParser
 
         if (track != null)
         {
-            if (track.Title != null)
-            {
-                throw new InvalidDataException();
-            }
+            ThrowIfNotNull(track, s => s.Title, input);
 
             track.Title = title;
 
             return true;
         }
 
-        if (sheet.Title != null)
-        {
-            throw new InvalidDataException();
-        }
+        ThrowIfNotNull(sheet, s => s.Title, input);
 
         sheet.Title = title;
 
@@ -406,10 +407,7 @@ public static partial class CueSheetParser
 
         ThrowIfNull(track, input);
 
-        if (track.Isrc != null)
-        {
-            throw new InvalidDataException();
-        }
+        ThrowIfNotNull(track, s => s.Isrc, input);
 
         var isrc = match.Groups[1].Value;
 
