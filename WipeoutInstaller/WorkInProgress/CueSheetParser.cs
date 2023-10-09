@@ -156,7 +156,19 @@ public static partial class CueSheetParser
         var name = match.Groups[1].Value;
         var type = match.Groups[2].Value;
 
-        file = new CueSheetFile(name, type);
+        var fileType = type switch
+        {
+            "BINARY"   => CueSheetFileType.Binary,
+            "MOTOROLA" => CueSheetFileType.Motorola,
+            "AUDIO"    => CueSheetFileType.Audio,
+            "AIFF"     => CueSheetFileType.Aiff,
+            "FLAC"     => CueSheetFileType.Flac,
+            "MP3"      => CueSheetFileType.Mp3,
+            "WAVE"     => CueSheetFileType.Wave,
+            _          => throw new InvalidOperationException()
+        };
+
+        file = new CueSheetFile(name, fileType);
 
         return true;
     }

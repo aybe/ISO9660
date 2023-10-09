@@ -2,7 +2,7 @@
 
 public class CueSheetFile
 {
-    public CueSheetFile(string name, string type)
+    public CueSheetFile(string name, CueSheetFileType type)
     {
         Name = name;
         Type = type;
@@ -10,7 +10,7 @@ public class CueSheetFile
 
     public string Name { get; }
 
-    public string Type { get; }
+    public CueSheetFileType Type { get; }
 
     public List<CueSheetTrack> Tracks { get; } = new();
 
