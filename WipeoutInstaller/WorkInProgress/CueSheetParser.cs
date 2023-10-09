@@ -344,6 +344,8 @@ public static partial class CueSheetParser
     private static bool TrackHandler(
         string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
+        // TODO at the end of parsing, there must be at least one track
+
         if (!TryMatch(TrackRegex(), input, out var match))
         {
             return false;
@@ -351,10 +353,24 @@ public static partial class CueSheetParser
 
         if (file is null)
         {
-            throw new InvalidOperationException();
+            var message = $"Track has no parent file: {input.Trim()}."; // TODO tell line at which it occurred
+
+            throw new InvalidOperationException(message);
         }
 
         var index = Parse(match.Groups[1], int.Parse);
+
+        if (file.Tracks.Count is not 0) // first can be any index
+        {
+            var last = file.Tracks.Last();
+
+            if (index != last.Index + 1)
+            {
+                var message = $"Track indices are not consecutive, current is {index}, previous was {last.Index}.";
+
+                throw new InvalidDataException(message);
+            }
+        }
 
         var type = match.Groups[2].Value; // TODO
 
