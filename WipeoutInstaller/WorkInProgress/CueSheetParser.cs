@@ -20,7 +20,8 @@ public static partial class CueSheetParser
                 { RemRegex(), RemHandler },
                 { TitleRegex(), TitleHandler },
                 { TrackRegex(), TrackHandler },
-                { IsrcRegex(), IsrcHandler }
+                { IsrcRegex(), IsrcHandler },
+                { CommentRegex(), CommentHandler }
             }
             .AsReadOnly();
 
@@ -44,11 +45,6 @@ public static partial class CueSheetParser
             if (string.IsNullOrWhiteSpace(line))
             {
                 continue;
-            }
-
-            if (line.StartsWith(';'))
-            {
-                continue; // non-compliant comment
             }
 
             var handled = false;
@@ -104,6 +100,9 @@ public static partial class CueSheetParser
 
     [GeneratedRegex("""^\s*ISRC\s+(\w{5}\d{7})\s*\r?$""")]
     private static partial Regex IsrcRegex();
+
+    [GeneratedRegex("""^\s*;.*\r?$""")]
+    private static partial Regex CommentRegex();
 
     private static bool TryMatch(in Regex regex, in string input, out Match match)
     {
@@ -358,6 +357,14 @@ public static partial class CueSheetParser
         track.Isrc = isrc;
 
         return true;
+    }
+
+    private static bool CommentHandler(
+        Regex regex, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
+    {
+        var success = TryMatch(regex, input, out _);
+
+        return success;
     }
 
     private delegate bool CueSheetHandler(
