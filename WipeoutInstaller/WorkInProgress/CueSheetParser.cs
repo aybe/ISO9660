@@ -7,6 +7,9 @@ using System.Text.RegularExpressions;
 namespace WipeoutInstaller.WorkInProgress;
 
 public static partial class CueSheetParser
+// https://www.gnu.org/software/ccd2cue/manual/html_node/CUE-sheet-format.html#CUE-sheet-format
+// https://web.archive.org/web/20070614044112/http://www.goldenhawk.com/download/cdrwin.pdf
+// https://github.com/libyal/libodraw/blob/main/documentation/CUE%20sheet%20format.asciidoc
 {
     public static CueSheet Parse(Stream stream)
     {
