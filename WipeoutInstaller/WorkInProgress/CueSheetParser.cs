@@ -25,25 +25,10 @@ public static partial class CueSheetParser
                 break;
             }
 
-            var handled = false;
-
-            foreach (var (regex, handler) in Handlers)
+            if (!Handlers.Any(handler => handler(line, sheet, ref file, ref track)))
             {
-                if (!handler(regex, line, sheet, ref file, ref track))
-                {
-                    continue;
-                }
-
-                handled = true;
-                break;
+                throw new NotSupportedException(line);
             }
-
-            if (handled)
-            {
-                continue;
-            }
-
-            throw new NotSupportedException(line);
         }
 
         return sheet;
@@ -107,36 +92,35 @@ public static partial class CueSheetParser
 
 public static partial class CueSheetParser
 {
-    private static readonly IReadOnlyDictionary<Regex, CueSheetHandler> Handlers =
-        new Dictionary<Regex, CueSheetHandler>
-            {
-                { WhiteSpaceRegex(), WhiteSpaceHandler },
-                { FileRegex(), FileHandler },
-                { CatalogRegex(), CatalogHandler },
-                { FlagsRegex(), FlagsHandler },
-                { IndexRegex(), IndexHandler },
-                { PerformerRegex(), PerformerHandler },
-                { PreGapRegex(), PreGapHandler },
-                { RemRegex(), RemHandler },
-                { TitleRegex(), TitleHandler },
-                { TrackRegex(), TrackHandler },
-                { IsrcRegex(), IsrcHandler },
-                { CommentRegex(), CommentHandler }
-            }
-            .AsReadOnly();
+    private static readonly HashSet<CueSheetHandler> Handlers =
+        new()
+        {
+            WhiteSpaceHandler,
+            FileHandler,
+            CatalogHandler,
+            FlagsHandler,
+            IndexHandler,
+            PerformerHandler,
+            PreGapHandler,
+            RemHandler,
+            TitleHandler,
+            TrackHandler,
+            IsrcHandler,
+            CommentHandler
+        };
 
     private static bool WhiteSpaceHandler(
-        Regex regex, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
+        string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
-        var success = TryMatch(regex, input, out _);
+        var success = TryMatch(WhiteSpaceRegex(), input, out _);
 
         return success;
     }
 
     private static bool CatalogHandler(
-        Regex regex, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
+        string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
-        if (!TryMatch(regex, input, out var match))
+        if (!TryMatch(CatalogRegex(), input, out var match))
         {
             return false;
         }
@@ -154,9 +138,9 @@ public static partial class CueSheetParser
     }
 
     private static bool FileHandler(
-        Regex regex, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
+        string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
-        if (!TryMatch(regex, input, out var match))
+        if (!TryMatch(FileRegex(), input, out var match))
         {
             return false;
         }
@@ -175,9 +159,9 @@ public static partial class CueSheetParser
     }
 
     private static bool FlagsHandler(
-        Regex regex, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
+        string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
-        if (!TryMatch(regex, input, out var match))
+        if (!TryMatch(FlagsRegex(), input, out var match))
         {
             return false;
         }
@@ -201,9 +185,9 @@ public static partial class CueSheetParser
     }
 
     private static bool IndexHandler(
-        Regex regex, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
+        string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
-        if (!TryMatch(regex, input, out var match))
+        if (!TryMatch(IndexRegex(), input, out var match))
         {
             return false;
         }
@@ -226,9 +210,9 @@ public static partial class CueSheetParser
     }
 
     private static bool PerformerHandler(
-        Regex regex, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
+        string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
-        if (!TryMatch(regex, input, out var match))
+        if (!TryMatch(PerformerRegex(), input, out var match))
         {
             return false;
         }
@@ -258,9 +242,9 @@ public static partial class CueSheetParser
     }
 
     private static bool PreGapHandler(
-        Regex regex, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
+        string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
-        if (!TryMatch(regex, input, out var match))
+        if (!TryMatch(PreGapRegex(), input, out var match))
         {
             return false;
         }
@@ -285,9 +269,9 @@ public static partial class CueSheetParser
     }
 
     private static bool RemHandler(
-        Regex regex, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
+        string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
-        if (!TryMatch(regex, input, out var match))
+        if (!TryMatch(RemRegex(), input, out var match))
         {
             return false;
         }
@@ -300,9 +284,9 @@ public static partial class CueSheetParser
     }
 
     private static bool TitleHandler(
-        Regex regex, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
+        string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
-        if (!TryMatch(regex, input, out var match))
+        if (!TryMatch(TitleRegex(), input, out var match))
         {
             return false;
         }
@@ -332,9 +316,9 @@ public static partial class CueSheetParser
     }
 
     private static bool TrackHandler(
-        Regex regex, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
+        string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
-        if (!TryMatch(regex, input, out var match))
+        if (!TryMatch(TrackRegex(), input, out var match))
         {
             return false;
         }
@@ -356,9 +340,9 @@ public static partial class CueSheetParser
     }
 
     private static bool IsrcHandler(
-        Regex regex, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
+        string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
-        if (!TryMatch(regex, input, out var match))
+        if (!TryMatch(IsrcRegex(), input, out var match))
         {
             return false;
         }
@@ -381,13 +365,13 @@ public static partial class CueSheetParser
     }
 
     private static bool CommentHandler(
-        Regex regex, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
+        string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
-        var success = TryMatch(regex, input, out _);
+        var success = TryMatch(CommentRegex(), input, out _);
 
         return success;
     }
 
     private delegate bool CueSheetHandler(
-        Regex regex, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track);
+        string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track);
 }
