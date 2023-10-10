@@ -195,11 +195,6 @@ public static partial class CueSheetParser
             return false;
         }
 
-        if (file != null)
-        {
-            sheet.Files.Add(file);
-        }
-
         var name = match.Groups[1].Value;
         var type = match.Groups[2].Value;
 
@@ -216,6 +211,8 @@ public static partial class CueSheetParser
         };
 
         file = new CueSheetFile(name, mode);
+
+        sheet.Files.Add(file);
 
         return true;
     }
@@ -394,11 +391,6 @@ public static partial class CueSheetParser
 
         ThrowIfNull(file, input);
 
-        if (track != null)
-        {
-            file.Tracks.Add(track);
-        }
-
         var index = Parse(match.Groups[1], int.Parse);
 
         if (file.Tracks.Count is not 0) // first can be any index
@@ -431,6 +423,8 @@ public static partial class CueSheetParser
         };
 
         track = new CueSheetTrack(index, mode);
+
+        file.Tracks.Add(track);
 
         return true;
     }
