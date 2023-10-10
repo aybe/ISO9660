@@ -5,21 +5,48 @@ namespace WipeoutInstaller.WorkInProgress;
 [SuppressMessage("ReSharper", "UnassignedField.Global")]
 public unsafe struct SectorMode2Form1
 {
-    private const int SyncSize = 12;
+    public const int SyncPosition = 0;
+
+    public const int SyncSize = 12;
 
     public fixed byte Sync[SyncSize];
 
-    public fixed byte Header[4];
+    public const int HeaderPosition = SyncPosition + SyncSize;
 
-    public fixed byte SubHeader[8];
+    public const int HeaderSize = 4;
+
+    public fixed byte Header[HeaderSize];
+
+    public const int SubHeaderPosition = HeaderPosition + HeaderSize;
+
+    public const int SubHeaderSize = 8;
+
+    public fixed byte SubHeader[SubHeaderSize];
+
+    public const int UserDataPosition = SubHeaderPosition + SubHeaderSize;
+
+    public const int UserDataSize = 2048;
 
     public fixed byte UserData[UserDataSize];
 
-    private const int UserDataSize = 2048;
+    public const int EdcPosition = UserDataPosition + UserDataSize;
 
-    public fixed byte Edc[4];
+    public const int EdcSize = 4;
 
-    public fixed byte ParityP[172];
+    public fixed byte Edc[EdcSize];
 
-    public fixed byte ParityQ[104];
+    public const int PParityPosition = EdcPosition + EdcSize;
+
+    public const int PParitySize = 172;
+
+    public fixed byte PParity[PParitySize];
+
+    public const int QParityPosition = PParityPosition + PParitySize;
+
+    public const int QParitySize = 104;
+
+    public fixed byte QParity[QParitySize];
+
+
+
 }
