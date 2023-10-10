@@ -13,6 +13,16 @@ public readonly struct Msf : IEquatable<Msf>
         Frames  = frames;
     }
 
+    public int ToBytePosition()
+    {
+        return ToLba() * 2352;
+    }
+
+    public int ToLba()
+    {
+        return (Minutes * 60 + Seconds) * 75 + Frames;
+    }
+
     public override string ToString()
     {
         return $"{Minutes:D2}:{Seconds:D2}.{Frames:D2}";
