@@ -78,14 +78,14 @@ public static partial class CueSheetParser
         return context.Sheet;
     }
 
-    private static void ThrowIfNull<T>([NotNull] T? value, string input, int line)
+    private static void ThrowIfNull<T>([NotNull] T? value, Context context)
     {
         if (value != null)
         {
             return;
         }
 
-        var message = $"""The value of type {typeof(T).Name} is expected to not be 'null' for "{input.Trim()}" at line {line}.""";
+        var message = $"""The value of type {typeof(T).Name} is expected to not be 'null' for "{context.Text.Trim()}" at line {context.Line}.""";
 
         throw new InvalidDataException(message);
     }
@@ -226,7 +226,7 @@ public static partial class CueSheetParser
 
     private static void FlagsHandler(Context context)
     {
-        ThrowIfNull(context.Track, context.Text, context.Line);
+        ThrowIfNull(context.Track, context);
 
         ThrowIfNot(context.Track, s => s.Flags, CueSheetTrackFlags.None, context.Text, context.Line);
 
@@ -249,7 +249,7 @@ public static partial class CueSheetParser
 
     private static void IndexHandler(Context context)
     {
-        ThrowIfNull(context.Track, context.Text, context.Line);
+        ThrowIfNull(context.Track, context);
 
         var i = Parse(context.Match.Groups[1], byte.Parse);
         var m = Parse(context.Match.Groups[2], byte.Parse);
@@ -304,7 +304,7 @@ public static partial class CueSheetParser
 
     private static void PreGapHandler(Context context)
     {
-        ThrowIfNull(context.Track, context.Text, context.Line);
+        ThrowIfNull(context.Track, context);
 
         ThrowIfNot(context.Track, s => s.PreGap, null, context.Text, context.Line);
 
@@ -342,7 +342,7 @@ public static partial class CueSheetParser
 
     private static void TrackHandler(Context context)
     {
-        ThrowIfNull(context.File, context.Text, context.Line);
+        ThrowIfNull(context.File, context);
 
         var index = Parse(context.Match.Groups[1], int.Parse);
 
@@ -382,7 +382,7 @@ public static partial class CueSheetParser
 
     private static void IsrcHandler(Context context)
     {
-        ThrowIfNull(context.Track, context.Text, context.Line);
+        ThrowIfNull(context.Track, context);
 
         ThrowIfNot(context.Track, s => s.Isrc, null, context.Text, context.Line);
 
