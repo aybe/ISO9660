@@ -296,18 +296,18 @@ public static partial class CueSheetParser
 
         var performer = match.Groups[1].Value;
 
-        if (track != null)
+        if (track == null)
+        {
+            ThrowIfNotNull(sheet, s => s.Performer, input);
+
+            sheet.Performer = performer;
+        }
+        else
         {
             ThrowIfNotNull(track, s => s.Performer, input);
 
             track.Performer = performer;
-
-            return true;
         }
-
-        ThrowIfNotNull(sheet, s => s.Performer, input);
-
-        sheet.Performer = performer;
 
         return true;
     }
@@ -358,18 +358,18 @@ public static partial class CueSheetParser
 
         var title = match.Groups[1].Value;
 
-        if (track != null)
+        if (track == null)
+        {
+            ThrowIfNotNull(sheet, s => s.Title, input);
+
+            sheet.Title = title;
+        }
+        else
         {
             ThrowIfNotNull(track, s => s.Title, input);
 
             track.Title = title;
-
-            return true;
         }
-
-        ThrowIfNotNull(sheet, s => s.Title, input);
-
-        sheet.Title = title;
 
         return true;
     }
