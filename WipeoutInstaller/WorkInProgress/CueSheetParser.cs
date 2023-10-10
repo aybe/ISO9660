@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -78,14 +79,15 @@ public static partial class CueSheetParser
         return context.Sheet;
     }
 
-    private static void ThrowIfNull<T>([NotNull] T? value, Context context)
+    private static void ThrowIfNull<T>(
+        Context context, [NotNull] T? value, [CallerArgumentExpression(nameof(value))] string valueName = null!)
     {
-        if (value != null)
+        if (!EqualityComparer<T>.Default.Equals(value, default))
         {
             return;
         }
 
-        var message = $"""The value of type {typeof(T).Name} is expected to not be 'null' for "{context.Text.Trim()}" at line {context.Line}.""";
+        var message = $"""The value "{context.Text.Trim()}" at line {context.Line} expects '{valueName}' to be 'not null'.""";
 
         throw new InvalidDataException(message);
     }
@@ -227,7 +229,7 @@ public static partial class CueSheetParser
 
     private static void FlagsHandler(Context context)
     {
-        ThrowIfNull(context.Track, context);
+        ThrowIfNull(context, context.Track);
 
         ThrowIfNull(context, context.Track, s => s.Flags);
 
@@ -250,7 +252,7 @@ public static partial class CueSheetParser
 
     private static void IndexHandler(Context context)
     {
-        ThrowIfNull(context.Track, context);
+        ThrowIfNull(context, context.Track);
 
         var i = Parse(context.Match.Groups[1], byte.Parse);
         var m = Parse(context.Match.Groups[2], byte.Parse);
@@ -305,7 +307,7 @@ public static partial class CueSheetParser
 
     private static void PreGapHandler(Context context)
     {
-        ThrowIfNull(context.Track, context);
+        ThrowIfNull(context, context.Track);
 
         ThrowIfNull(context, context.Track, s => s.PreGap);
 
@@ -343,7 +345,7 @@ public static partial class CueSheetParser
 
     private static void TrackHandler(Context context)
     {
-        ThrowIfNull(context.File, context);
+        ThrowIfNull(context, context.File);
 
         var index = Parse(context.Match.Groups[1], int.Parse);
 
@@ -383,7 +385,7 @@ public static partial class CueSheetParser
 
     private static void IsrcHandler(Context context)
     {
-        ThrowIfNull(context.Track, context);
+        ThrowIfNull(context, context.Track);
 
         ThrowIfNull(context, context.Track, s => s.Isrc);
 
