@@ -70,7 +70,7 @@ public static partial class CueSheetParser
         var memberType = expression.Member.DeclaringType!.Name;
         var memberName = expression.Member.Name;
 
-        var message = $"""The value of '{memberName}' in '{memberType}' should be '{expected}' for "{input.Trim()}".""";
+        var message = $"""The value of '{memberName}' in '{memberType}' is expected to be '{expected}' for "{input.Trim()}".""";
 
         throw new InvalidDataException(message);
     }
@@ -191,7 +191,7 @@ public static partial class CueSheetParser
         var name = match.Groups[1].Value;
         var type = match.Groups[2].Value;
 
-        var fileType = type switch
+        var mode = type switch
         {
             "BINARY"   => CueSheetFileType.Binary,
             "MOTOROLA" => CueSheetFileType.Motorola,
@@ -200,10 +200,10 @@ public static partial class CueSheetParser
             "FLAC"     => CueSheetFileType.Flac,
             "MP3"      => CueSheetFileType.Mp3,
             "WAVE"     => CueSheetFileType.Wave,
-            _          => throw new InvalidOperationException()
+            _          => throw new InvalidDataException($"Unknown file type: {type}.")
         };
 
-        file = new CueSheetFile(name, fileType);
+        file = new CueSheetFile(name, mode);
 
         return true;
     }
@@ -230,7 +230,7 @@ public static partial class CueSheetParser
                 "PRE"  => CueSheetTrackFlags.PreEmphasis,
                 "SCMS" => CueSheetTrackFlags.SerialCopyManagementSystem,
                 "DCP"  => CueSheetTrackFlags.DigitalCopyPermitted,
-                _      => throw new InvalidOperationException()
+                _      => throw new InvalidDataException($"Unknown track flag: {value}.")
             };
 
             track.Flags |= flags;
