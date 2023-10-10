@@ -39,7 +39,27 @@ public static partial class CueSheetParser
 
             context.Line++;
 
-            if (!Handlers.Any(handler => handler(context)))
+            var handled = false;
+
+            foreach (var pair in Handlers2)
+            {
+                var regex = pair.Value();
+
+                context.Match = regex.Match(context.Text);
+
+                handled = context.Match.Success;
+
+                if (handled is false)
+                {
+                    continue;
+                }
+
+                pair.Key(context);
+
+                break;
+            }
+
+            if (handled is false)
             {
                 throw new InvalidDataException($"Unexpected value at line {context.Line}: {context.Text.Trim()}");
             }
@@ -99,6 +119,8 @@ public static partial class CueSheetParser
         public CueSheetFile? File { get; set; }
 
         public CueSheetTrack? Track { get; set; }
+
+        public Match Match { get; set; } = null!;
     }
 }
 
@@ -109,15 +131,6 @@ public static partial class CueSheetParser
     private static T Parse<T>(Capture capture, Func<string, T> func)
     {
         return func(capture.Value);
-    }
-
-    private static bool TryMatch(in Regex regex, in string input, out Match match)
-    {
-        match = regex.Match(input);
-
-        var success = match.Success;
-
-        return success;
     }
 
     [GeneratedRegex("""^\s*\r?$""", HandlerRegexOptions)]
@@ -159,55 +172,40 @@ public static partial class CueSheetParser
 
 public static partial class CueSheetParser
 {
-    private static readonly HashSet<Func<Context, bool>> Handlers =
-        new()
+    private static readonly IReadOnlyDictionary<Action<Context>, Func<Regex>> Handlers2 =
+        new Dictionary<Action<Context>, Func<Regex>>
         {
-            WhiteSpaceHandler,
-            FileHandler,
-            CatalogHandler,
-            FlagsHandler,
-            IndexHandler,
-            PerformerHandler,
-            PreGapHandler,
-            RemHandler,
-            TitleHandler,
-            TrackHandler,
-            IsrcHandler,
-            CommentHandler
-        };
+            { WhiteSpaceHandler, WhiteSpaceRegex },
+            { FileHandler, FileRegex },
+            { CatalogHandler, CatalogRegex },
+            { FlagsHandler, FlagsRegex },
+            { IndexHandler, IndexRegex },
+            { PerformerHandler, PerformerRegex },
+            { PreGapHandler, PreGapRegex },
+            { RemHandler, RemRegex },
+            { TitleHandler, TitleRegex },
+            { TrackHandler, TrackRegex },
+            { IsrcHandler, IsrcRegex },
+            { CommentHandler, CommentRegex }
+        }.AsReadOnly();
 
-    private static bool WhiteSpaceHandler(Context context)
+    private static void WhiteSpaceHandler(Context context)
     {
-        var success = TryMatch(WhiteSpaceRegex(), context.Text, out _);
-
-        return success;
     }
 
-    private static bool CatalogHandler(Context context)
+    private static void CatalogHandler(Context context)
     {
-        if (!TryMatch(CatalogRegex(), context.Text, out var match))
-        {
-            return false;
-        }
-
         ThrowIfNot(context.Sheet, s => s.Catalog, null, context.Text, context.Line);
 
-        var catalog = Parse(match.Groups[1], ulong.Parse);
+        var catalog = Parse(context.Match.Groups[1], ulong.Parse);
 
         context.Sheet.Catalog = catalog;
-
-        return true;
     }
 
-    private static bool FileHandler(Context context)
+    private static void FileHandler(Context context)
     {
-        if (!TryMatch(FileRegex(), context.Text, out var match))
-        {
-            return false;
-        }
-
-        var name = match.Groups[1].Value;
-        var type = match.Groups[2].Value;
+        var name = context.Match.Groups[1].Value;
+        var type = context.Match.Groups[2].Value;
 
         var mode = type switch
         {
@@ -224,22 +222,15 @@ public static partial class CueSheetParser
         context.File = new CueSheetFile(name, mode);
 
         context.Sheet.Files.Add(context.File);
-
-        return true;
     }
 
-    private static bool FlagsHandler(Context context)
+    private static void FlagsHandler(Context context)
     {
-        if (!TryMatch(FlagsRegex(), context.Text, out var match))
-        {
-            return false;
-        }
-
         ThrowIfNull(context.Track, context.Text, context.Line);
 
         ThrowIfNot(context.Track, s => s.Flags, CueSheetTrackFlags.None, context.Text, context.Line);
 
-        foreach (var capture in match.Groups[1].Captures.Cast<Capture>())
+        foreach (var capture in context.Match.Groups[1].Captures.Cast<Capture>())
         {
             var value = capture.Value;
 
@@ -254,23 +245,16 @@ public static partial class CueSheetParser
 
             context.Track.Flags |= flags;
         }
-
-        return true;
     }
 
-    private static bool IndexHandler(Context context)
+    private static void IndexHandler(Context context)
     {
-        if (!TryMatch(IndexRegex(), context.Text, out var match))
-        {
-            return false;
-        }
-
         ThrowIfNull(context.Track, context.Text, context.Line);
 
-        var i = Parse(match.Groups[1], byte.Parse);
-        var m = Parse(match.Groups[2], byte.Parse);
-        var s = Parse(match.Groups[3], byte.Parse);
-        var f = Parse(match.Groups[4], byte.Parse);
+        var i = Parse(context.Match.Groups[1], byte.Parse);
+        var m = Parse(context.Match.Groups[2], byte.Parse);
+        var s = Parse(context.Match.Groups[3], byte.Parse);
+        var f = Parse(context.Match.Groups[4], byte.Parse);
 
         var index = new CueSheetTrackIndex(i, new Msf(m, s, f));
 
@@ -298,18 +282,11 @@ public static partial class CueSheetParser
         }
 
         context.Track.Indices.Add(index);
-
-        return true;
     }
 
-    private static bool PerformerHandler(Context context)
+    private static void PerformerHandler(Context context)
     {
-        if (!TryMatch(PerformerRegex(), context.Text, out var match))
-        {
-            return false;
-        }
-
-        var performer = match.Groups[1].Value;
+        var performer = context.Match.Groups[1].Value;
 
         if (context.Track == null)
         {
@@ -323,53 +300,31 @@ public static partial class CueSheetParser
 
             context.Track.Performer = performer;
         }
-
-        return true;
     }
 
-    private static bool PreGapHandler(Context context)
+    private static void PreGapHandler(Context context)
     {
-
-        if (!TryMatch(PreGapRegex(), input, out var match))
-        {
-            return false;
-        }
-
-
         ThrowIfNull(context.Track, context.Text, context.Line);
 
-        var m = Parse(match.Groups[1], byte.Parse);
-        var s = Parse(match.Groups[2], byte.Parse);
-        var f = Parse(match.Groups[3], byte.Parse);
         ThrowIfNot(context.Track, s => s.PreGap, null, context.Text, context.Line);
 
-        track.PreGap = new Msf(m, s, f);
+        var m = Parse(context.Match.Groups[1], byte.Parse);
+        var s = Parse(context.Match.Groups[2], byte.Parse);
+        var f = Parse(context.Match.Groups[3], byte.Parse);
 
-        return true;
+        context.Track.PreGap = new Msf(m, s, f);
     }
 
-    private static bool RemHandler(Context context)
+    private static void RemHandler(Context context)
     {
-        if (!TryMatch(RemRegex(), context.Text, out var match))
-        {
-            return false;
-        }
-
-        var comment = match.Groups[1].Value;
+        var comment = context.Match.Groups[1].Value;
 
         context.Sheet.Comments.Add(comment);
-
-        return true;
     }
 
-    private static bool TitleHandler(Context context)
+    private static void TitleHandler(Context context)
     {
-        if (!TryMatch(TitleRegex(), context.Text, out var match))
-        {
-            return false;
-        }
-
-        var title = match.Groups[1].Value;
+        var title = context.Match.Groups[1].Value;
 
         if (context.Track == null)
         {
@@ -383,20 +338,13 @@ public static partial class CueSheetParser
 
             context.Track.Title = title;
         }
-
-        return true;
     }
 
-    private static bool TrackHandler(Context context)
+    private static void TrackHandler(Context context)
     {
-        if (!TryMatch(TrackRegex(), context.Text, out var match))
-        {
-            return false;
-        }
-
         ThrowIfNull(context.File, context.Text, context.Line);
 
-        var index = Parse(match.Groups[1], int.Parse);
+        var index = Parse(context.Match.Groups[1], int.Parse);
 
         if (context.File.Tracks.Count is not 0) // first can be any index
         {
@@ -410,7 +358,7 @@ public static partial class CueSheetParser
             }
         }
 
-        var type = match.Groups[2].Value;
+        var type = context.Match.Groups[2].Value;
 
         var mode = type switch
         {
@@ -430,32 +378,20 @@ public static partial class CueSheetParser
         context.Track = new CueSheetTrack(index, mode);
 
         context.File.Tracks.Add(context.Track);
-
-        return true;
     }
 
-    private static bool IsrcHandler(Context context)
+    private static void IsrcHandler(Context context)
     {
-        if (!TryMatch(IsrcRegex(), context.Text, out var match))
-        {
-            return false;
-        }
-
         ThrowIfNull(context.Track, context.Text, context.Line);
 
         ThrowIfNot(context.Track, s => s.Isrc, null, context.Text, context.Line);
 
-        var isrc = match.Groups[1].Value;
+        var isrc = context.Match.Groups[1].Value;
 
         context.Track.Isrc = isrc;
-
-        return true;
     }
 
-    private static bool CommentHandler(Context context)
+    private static void CommentHandler(Context context)
     {
-        var success = TryMatch(CommentRegex(), context.Text, out _);
-
-        return success;
     }
 }
