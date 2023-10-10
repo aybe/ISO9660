@@ -1,7 +1,6 @@
 using Newtonsoft.Json;
-using WipeoutInstaller.JSON;
 
-namespace WipeoutInstaller;
+namespace WipeoutInstaller.JSON;
 
 public static class JsonUtility
 {

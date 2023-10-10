@@ -1,6 +1,7 @@
 using System.Text;
 using WipeoutInstaller.Extensions;
 using WipeoutInstaller.Iso9660;
+using WipeoutInstaller.JSON;
 
 namespace WipeoutInstaller.WorkInProgress;
 
