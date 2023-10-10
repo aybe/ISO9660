@@ -139,7 +139,7 @@ public static partial class CueSheetParser
     [GeneratedRegex("""^\s*CATALOG\s+(\d{13})\s*\r?$""", HandlerRegexOptions)]
     private static partial Regex CatalogRegex();
 
-    [GeneratedRegex("""^\s*FILE\s+"?(.*)"?\s+(BINARY|MOTORLA|AUDIO|AIFF|FLAC|MP3|WAVE)\s*\r?$""", HandlerRegexOptions)]
+    [GeneratedRegex("""^\s*FILE\s+"?(.*?)"?\s+(BINARY|MOTORLA|AUDIO|AIFF|FLAC|MP3|WAVE)\s*\r?$""", HandlerRegexOptions)]
     private static partial Regex FileRegex();
 
     [GeneratedRegex("""^\s*FLAGS(?:\s+(4CH|PRE|SCMS|DCP))+\s*\r?$""", HandlerRegexOptions)]
@@ -148,7 +148,7 @@ public static partial class CueSheetParser
     [GeneratedRegex("""^\s*INDEX\s+(0?[0-9]|[1-9][0-9])\s+(0?[0-9]|[1-9][0-9]):([0-5][0-9]):([0-6][0-9]|7[0-4])\s*\r?$""", HandlerRegexOptions)]
     private static partial Regex IndexRegex();
 
-    [GeneratedRegex("""^\s*PERFORMER\s+"?(.*)"?\s*\r?$""", HandlerRegexOptions)]
+    [GeneratedRegex("""^\s*PERFORMER\s+"?(.*?)"?\s*\r?$""", HandlerRegexOptions)]
     private static partial Regex PerformerRegex();
 
     [GeneratedRegex("""^\s*PREGAP\s+(0?[0-9]|[1-9][0-9]):([0-5][0-9]):([0-6][0-9]|7[0-4])\s*\r?$""", HandlerRegexOptions)]
@@ -157,7 +157,7 @@ public static partial class CueSheetParser
     [GeneratedRegex("""^\s*REM\s+(.*)\s*\r?$""", HandlerRegexOptions)]
     private static partial Regex RemRegex();
 
-    [GeneratedRegex("""^\s*TITLE\s+"?(.*)"?\s*\r?$""", HandlerRegexOptions)]
+    [GeneratedRegex("""^\s*TITLE\s+"?(.*?)"?\s*\r?$""", HandlerRegexOptions)]
     private static partial Regex TitleRegex();
 
     [GeneratedRegex("""^\s*TRACK\s+(0?[0-9]|[1-9][0-9])\s+(AUDIO|CDG|MODE1/2048|MODE1/2352|MODE2/2048|MODE2/2324|MODE2/2336|MODE2/2352|CDI/2336|CDI/2352)\s*\r?$""", HandlerRegexOptions)]
