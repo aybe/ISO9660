@@ -2,8 +2,8 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace WipeoutInstaller.WorkInProgress;
 
-public unsafe struct SectorMode0
 [SuppressMessage("ReSharper", "UnusedMember.Global")]
+public unsafe struct SectorMode0 : ISector
 {
     public const int SyncPosition = 0;
 
@@ -22,4 +22,19 @@ public unsafe struct SectorMode0
     public const int UserDataSize = 2336;
 
     public fixed byte UserData[UserDataPosition];
+
+    public readonly uint GetEdc()
+    {
+        return 0;
+    }
+
+    public readonly uint GetEdcSum()
+    {
+        return 0;
+    }
+
+    public Span<byte> GetUserData()
+    {
+        return ISector.GetSlice(ref this, UserDataPosition, UserDataSize);
+    }
 }

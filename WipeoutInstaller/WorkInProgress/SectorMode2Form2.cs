@@ -1,6 +1,6 @@
 namespace WipeoutInstaller.WorkInProgress;
 
-public unsafe struct SectorMode2Form2
+public unsafe struct SectorMode2Form2 : ISector
 {
     public const int SyncPosition = 0;
 
@@ -31,4 +31,19 @@ public unsafe struct SectorMode2Form2
     public const int ReservedOrEdcSize = 4;
 
     public fixed byte ReservedOrEdc[ReservedOrEdcSize];
+
+    public uint GetEdc()
+    {
+        return ISector.ReadUInt32LE(ref this, ReservedOrEdcPosition);
+    }
+
+    public uint GetEdcSum()
+    {
+        return ISector.GetEdcSum(ref this, SubHeaderPosition, SubHeaderSize + UserDataSize);
+    }
+
+    public Span<byte> GetUserData()
+    {
+        return ISector.GetSlice(ref this, UserDataPosition, UserDataSize);
+    }
 }

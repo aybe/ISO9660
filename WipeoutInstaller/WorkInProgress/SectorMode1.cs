@@ -2,8 +2,8 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace WipeoutInstaller.WorkInProgress;
 
-public unsafe struct SectorMode1
 [SuppressMessage("ReSharper", "UnassignedField.Global")]
+public unsafe struct SectorMode1 : ISector
 {
     public const int SyncPosition = 0;
 
@@ -46,4 +46,19 @@ public unsafe struct SectorMode1
     public const int QParitySize = 104;
 
     public fixed byte QParity[QParitySize];
+
+    public uint GetEdc()
+    {
+        return ISector.ReadUInt32LE(ref this, EdcPosition);
+    }
+
+    public uint GetEdcSum()
+    {
+        return ISector.GetEdcSum(ref this, SyncPosition, SyncSize + HeaderSize + UserDataSize);
+    }
+
+    public Span<byte> GetUserData()
+    {
+        return ISector.GetSlice(ref this, UserDataPosition, UserDataSize);
+    }
 }
