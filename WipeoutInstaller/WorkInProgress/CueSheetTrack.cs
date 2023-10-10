@@ -26,6 +26,8 @@ public class CueSheetTrack
 
     public override string ToString()
     {
-        return $"{nameof(Index)}: {Index}, {nameof(Type)}: {Type}";
+        return $"""
+                {nameof(Index)}: {Index}, {nameof(Type)}: {Type}, {nameof(Flags)}: {Flags}, {nameof(Title)}: "{Title}"
+                """;
     }
 }
