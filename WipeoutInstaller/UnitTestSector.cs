@@ -18,6 +18,42 @@ public class UnitTestSector
     public required TestContext TestContext { get; set; }
 
     [TestMethod]
+    public void TestSectorSizeAudio()
+    {
+        Assert.AreEqual(ISector.Size, Unsafe.SizeOf<SectorAudio>());
+    }
+
+    [TestMethod]
+    public void TestSectorSizeMode0()
+    {
+        Assert.AreEqual(ISector.Size, Unsafe.SizeOf<SectorMode0>());
+    }
+
+    [TestMethod]
+    public void TestSectorSizeMode1()
+    {
+        Assert.AreEqual(ISector.Size, Unsafe.SizeOf<SectorMode1>());
+    }
+
+    [TestMethod]
+    public void TestSectorSizeMode2Form1()
+    {
+        Assert.AreEqual(ISector.Size, Unsafe.SizeOf<SectorMode2Form1>());
+    }
+
+    [TestMethod]
+    public void TestSectorSizeMode2Form2()
+    {
+        Assert.AreEqual(ISector.Size, Unsafe.SizeOf<SectorMode2Form2>());
+    }
+
+    [TestMethod]
+    public void TestSectorSizeMode2FormLess()
+    {
+        Assert.AreEqual(ISector.Size, Unsafe.SizeOf<SectorMode2Formless>());
+    }
+
+    [TestMethod]
     public void TestSizeOf()
     {
         Assert.AreEqual(4, Unsafe.SizeOf<SectorSubHeader>());
