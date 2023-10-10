@@ -90,7 +90,8 @@ public static partial class CueSheetParser
         throw new InvalidDataException(message);
     }
 
-    private static void ThrowIfNot<TSource, TValue>(TSource source, Expression<Func<TSource, TValue>> valueExpression, TValue expected, string input, int line)
+    private static void ThrowIfNull<TSource, TValue>(
+        Context context, TSource source, Expression<Func<TSource, TValue?>> valueExpression, TValue? expected = default)
     {
         var value = valueExpression.Compile()(source);
 
@@ -103,7 +104,7 @@ public static partial class CueSheetParser
         var memberType = expression.Member.DeclaringType!.Name;
         var memberName = expression.Member.Name;
 
-        var message = $"""The value of '{memberName}' in '{memberType}' is expected to be '{expected}' for "{input.Trim()}" at line {line}.""";
+        var message = $"""The value of '{memberName}' in '{memberType}' is expected to be '{expected}' for "{context.Text.Trim()}" at line {context.Line}.""";
 
         throw new InvalidDataException(message);
     }
@@ -195,7 +196,7 @@ public static partial class CueSheetParser
 
     private static void CatalogHandler(Context context)
     {
-        ThrowIfNot(context.Sheet, s => s.Catalog, null, context.Text, context.Line);
+        ThrowIfNull(context, context.Sheet, s => s.Catalog);
 
         var catalog = Parse(context.Match.Groups[1], ulong.Parse);
 
@@ -228,7 +229,7 @@ public static partial class CueSheetParser
     {
         ThrowIfNull(context.Track, context);
 
-        ThrowIfNot(context.Track, s => s.Flags, CueSheetTrackFlags.None, context.Text, context.Line);
+        ThrowIfNull(context, context.Track, s => s.Flags);
 
         foreach (var capture in context.Match.Groups[1].Captures.Cast<Capture>())
         {
@@ -290,13 +291,13 @@ public static partial class CueSheetParser
 
         if (context.Track == null)
         {
-            ThrowIfNot(context.Sheet, s => s.Performer, null, context.Text, context.Line);
+            ThrowIfNull(context, context.Sheet, s => s.Performer);
 
             context.Sheet.Performer = performer;
         }
         else
         {
-            ThrowIfNot(context.Track, s => s.Performer, null, context.Text, context.Line);
+            ThrowIfNull(context, context.Track, s => s.Performer);
 
             context.Track.Performer = performer;
         }
@@ -306,7 +307,7 @@ public static partial class CueSheetParser
     {
         ThrowIfNull(context.Track, context);
 
-        ThrowIfNot(context.Track, s => s.PreGap, null, context.Text, context.Line);
+        ThrowIfNull(context, context.Track, s => s.PreGap);
 
         var m = Parse(context.Match.Groups[1], byte.Parse);
         var s = Parse(context.Match.Groups[2], byte.Parse);
@@ -328,13 +329,13 @@ public static partial class CueSheetParser
 
         if (context.Track == null)
         {
-            ThrowIfNot(context.Sheet, s => s.Title, null, context.Text, context.Line);
+            ThrowIfNull(context, context.Sheet, s => s.Title);
 
             context.Sheet.Title = title;
         }
         else
         {
-            ThrowIfNot(context.Track, s => s.Title, null, context.Text, context.Line);
+            ThrowIfNull(context, context.Track, s => s.Title);
 
             context.Track.Title = title;
         }
@@ -384,7 +385,7 @@ public static partial class CueSheetParser
     {
         ThrowIfNull(context.Track, context);
 
-        ThrowIfNot(context.Track, s => s.Isrc, null, context.Text, context.Line);
+        ThrowIfNull(context, context.Track, s => s.Isrc);
 
         var isrc = context.Match.Groups[1].Value;
 
