@@ -83,7 +83,9 @@ public static partial class CueSheetParser
     {
         if (!EqualityComparer<T>.Default.Equals(value, default))
         {
+#pragma warning disable CS8777 // Parameter must have a non-null value when exiting.
             return;
+#pragma warning restore CS8777 // Parameter must have a non-null value when exiting.
         }
 
         var message = $"""The value "{context.Text.Trim()}" at line {context.Line} expects '{valueName}' to be 'not null'.""";
@@ -96,7 +98,9 @@ public static partial class CueSheetParser
     {
         if (EqualityComparer<T>.Default.Equals(value, default))
         {
+#pragma warning disable CS8777 // Parameter must have a non-null value when exiting.
             return;
+#pragma warning restore CS8777 // Parameter must have a non-null value when exiting.
         }
 
         var message = $"""The value "{context.Text.Trim()}" at line {context.Line} expects '{valueName}' to be 'null'.""";
