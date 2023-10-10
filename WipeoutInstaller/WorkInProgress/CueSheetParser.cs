@@ -386,6 +386,11 @@ public static partial class CueSheetParser
 
         ThrowIfNull(file, input);
 
+        if (track != null)
+        {
+            file.Tracks.Add(track);
+        }
+
         var index = Parse(match.Groups[1], int.Parse);
 
         if (file.Tracks.Count is not 0) // first can be any index
@@ -418,8 +423,6 @@ public static partial class CueSheetParser
         };
 
         track = new CueSheetTrack(index, mode);
-
-        file.Tracks.Add(track);
 
         return true;
     }
