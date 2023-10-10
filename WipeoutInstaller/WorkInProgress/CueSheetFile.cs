@@ -18,6 +18,8 @@ public class CueSheetFile
 
     public override string ToString()
     {
-        return $"{nameof(Name)}: {Name}, {nameof(Type)}: {Type}";
+        return $"""
+                {nameof(Name)}: "{Name}", {nameof(Type)}: {Type}, {nameof(Tracks)}: {Tracks.Count}, {nameof(Title)}: "{Title}"
+                """;
     }
 }
