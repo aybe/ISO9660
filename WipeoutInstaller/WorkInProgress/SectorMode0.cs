@@ -21,7 +21,7 @@ public unsafe struct SectorMode0 : ISector
 
     public const int UserDataSize = 2336;
 
-    public fixed byte UserData[UserDataPosition];
+    public fixed byte UserData[UserDataSize];
 
     public readonly uint GetEdc()
     {
