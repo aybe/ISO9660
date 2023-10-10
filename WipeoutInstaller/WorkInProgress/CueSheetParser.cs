@@ -22,7 +22,9 @@ public static partial class CueSheetParser
         using var reader = new StreamReader(stream, Encoding.Default, true);
 
         var sheet = new CueSheet();
+
         var file = default(CueSheetFile?);
+
         var track = default(CueSheetTrack?);
 
         while (true)
@@ -38,6 +40,16 @@ public static partial class CueSheetParser
             {
                 throw new NotSupportedException(line);
             }
+        }
+
+        if (file is null)
+        {
+            throw new InvalidDataException("There must be at least one file defined.");
+        }
+
+        if (track is null)
+        {
+            throw new InvalidDataException("There must at least one track defined.");
         }
 
         return sheet;
@@ -375,8 +387,6 @@ public static partial class CueSheetParser
     private static bool TrackHandler(
         string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
-        // TODO at the end of parsing, there must be at least one track
-
         if (!TryMatch(TrackRegex(), input, out var match))
         {
             return false;
