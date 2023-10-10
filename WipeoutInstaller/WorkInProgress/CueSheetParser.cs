@@ -27,18 +27,22 @@ public static partial class CueSheetParser
 
         var track = default(CueSheetTrack?);
 
+        var line = 0;
+
         while (true)
         {
-            var line = reader.ReadLine();
+            var text = reader.ReadLine();
 
-            if (line is null)
+            if (text is null)
             {
                 break;
             }
 
-            if (!Handlers.Any(handler => handler(line, sheet, ref file, ref track)))
+            ++line;
+
+            if (!Handlers.Any(handler => handler(line, text, sheet, ref file, ref track)))
             {
-                throw new NotSupportedException(line);
+                throw new InvalidDataException($"Unexpected value at line {line}: {text.Trim()}");
             }
         }
 
@@ -55,21 +59,19 @@ public static partial class CueSheetParser
         return sheet;
     }
 
-    private static void ThrowIfNull<T>([NotNull] T? value, string input)
-    // TODO tell line at which it occurred
+    private static void ThrowIfNull<T>([NotNull] T? value, string input, int line)
     {
         if (value != null)
         {
             return;
         }
 
-        var message = $"""The value of type {typeof(T).Name} is expected to not be 'null' for "{input.Trim()}".""";
+        var message = $"""The value of type {typeof(T).Name} is expected to not be 'null' for "{input.Trim()}" at line {line}.""";
 
         throw new InvalidDataException(message);
     }
 
-    private static void ThrowIfNot<TSource, TValue>(
-        TSource source, Expression<Func<TSource, TValue>> valueExpression, TValue expected, string input)
+    private static void ThrowIfNot<TSource, TValue>(TSource source, Expression<Func<TSource, TValue>> valueExpression, TValue expected, string input, int line)
     {
         var value = valueExpression.Compile()(source);
 
@@ -82,7 +84,7 @@ public static partial class CueSheetParser
         var memberType = expression.Member.DeclaringType!.Name;
         var memberName = expression.Member.Name;
 
-        var message = $"""The value of '{memberName}' in '{memberType}' is expected to be '{expected}' for "{input.Trim()}".""";
+        var message = $"""The value of '{memberName}' in '{memberType}' is expected to be '{expected}' for "{input.Trim()}" at line {line}.""";
 
         throw new InvalidDataException(message);
     }
@@ -163,7 +165,7 @@ public static partial class CueSheetParser
         };
 
     private static bool WhiteSpaceHandler(
-        string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
+        int line, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
         var success = TryMatch(WhiteSpaceRegex(), input, out _);
 
@@ -171,14 +173,14 @@ public static partial class CueSheetParser
     }
 
     private static bool CatalogHandler(
-        string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
+        int line, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
         if (!TryMatch(CatalogRegex(), input, out var match))
         {
             return false;
         }
 
-        ThrowIfNot(sheet, s => s.Catalog, null, input);
+        ThrowIfNot(sheet, s => s.Catalog, null, input, line);
 
         var catalog = Parse(match.Groups[1], ulong.Parse);
 
@@ -188,7 +190,7 @@ public static partial class CueSheetParser
     }
 
     private static bool FileHandler(
-        string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
+        int line, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
         if (!TryMatch(FileRegex(), input, out var match))
         {
@@ -218,16 +220,16 @@ public static partial class CueSheetParser
     }
 
     private static bool FlagsHandler(
-        string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
+        int line, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
         if (!TryMatch(FlagsRegex(), input, out var match))
         {
             return false;
         }
 
-        ThrowIfNull(track, input);
+        ThrowIfNull(track, input, line);
 
-        ThrowIfNot(track, s => s.Flags, CueSheetTrackFlags.None, input);
+        ThrowIfNot(track, s => s.Flags, CueSheetTrackFlags.None, input, line);
 
         foreach (var capture in match.Groups[1].Captures.Cast<Capture>())
         {
@@ -249,14 +251,14 @@ public static partial class CueSheetParser
     }
 
     private static bool IndexHandler(
-        string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
+        int line, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
         if (!TryMatch(IndexRegex(), input, out var match))
         {
             return false;
         }
 
-        ThrowIfNull(track, input);
+        ThrowIfNull(track, input, line);
 
         var i = Parse(match.Groups[1], byte.Parse);
         var m = Parse(match.Groups[2], byte.Parse);
@@ -294,7 +296,7 @@ public static partial class CueSheetParser
     }
 
     private static bool PerformerHandler(
-        string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
+        int line, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
         if (!TryMatch(PerformerRegex(), input, out var match))
         {
@@ -305,13 +307,13 @@ public static partial class CueSheetParser
 
         if (track == null)
         {
-            ThrowIfNot(sheet, s => s.Performer, null, input);
+            ThrowIfNot(sheet, s => s.Performer, null, input, line);
 
             sheet.Performer = performer;
         }
         else
         {
-            ThrowIfNot(track, s => s.Performer, null, input);
+            ThrowIfNot(track, s => s.Performer, null, input, line);
 
             track.Performer = performer;
         }
@@ -320,16 +322,16 @@ public static partial class CueSheetParser
     }
 
     private static bool PreGapHandler(
-        string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
+        int line, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
         if (!TryMatch(PreGapRegex(), input, out var match))
         {
             return false;
         }
 
-        ThrowIfNull(track, input);
+        ThrowIfNull(track, input, line);
 
-        ThrowIfNot(track, s => s.PreGap, null, input);
+        ThrowIfNot(track, s => s.PreGap, null, input, line);
 
         var m = Parse(match.Groups[1], byte.Parse);
         var s = Parse(match.Groups[2], byte.Parse);
@@ -341,7 +343,7 @@ public static partial class CueSheetParser
     }
 
     private static bool RemHandler(
-        string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
+        int line, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
         if (!TryMatch(RemRegex(), input, out var match))
         {
@@ -356,7 +358,7 @@ public static partial class CueSheetParser
     }
 
     private static bool TitleHandler(
-        string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
+        int line, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
         if (!TryMatch(TitleRegex(), input, out var match))
         {
@@ -367,13 +369,13 @@ public static partial class CueSheetParser
 
         if (track == null)
         {
-            ThrowIfNot(sheet, s => s.Title, null, input);
+            ThrowIfNot(sheet, s => s.Title, null, input, line);
 
             sheet.Title = title;
         }
         else
         {
-            ThrowIfNot(track, s => s.Title, null, input);
+            ThrowIfNot(track, s => s.Title, null, input, line);
 
             track.Title = title;
         }
@@ -382,14 +384,14 @@ public static partial class CueSheetParser
     }
 
     private static bool TrackHandler(
-        string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
+        int line, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
         if (!TryMatch(TrackRegex(), input, out var match))
         {
             return false;
         }
 
-        ThrowIfNull(file, input);
+        ThrowIfNull(file, input, line);
 
         var index = Parse(match.Groups[1], int.Parse);
 
@@ -430,16 +432,16 @@ public static partial class CueSheetParser
     }
 
     private static bool IsrcHandler(
-        string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
+        int line, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
         if (!TryMatch(IsrcRegex(), input, out var match))
         {
             return false;
         }
 
-        ThrowIfNull(track, input);
+        ThrowIfNull(track, input, line);
 
-        ThrowIfNot(track, s => s.Isrc, null, input);
+        ThrowIfNot(track, s => s.Isrc, null, input, line);
 
         var isrc = match.Groups[1].Value;
 
@@ -449,7 +451,7 @@ public static partial class CueSheetParser
     }
 
     private static bool CommentHandler(
-        string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
+        int line, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track)
     {
         var success = TryMatch(CommentRegex(), input, out _);
 
@@ -457,5 +459,5 @@ public static partial class CueSheetParser
     }
 
     private delegate bool CueSheetHandler(
-        string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track);
+        int line, string input, CueSheet sheet, ref CueSheetFile? file, ref CueSheetTrack? track);
 }
