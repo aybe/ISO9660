@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
 
+// ReSharper disable CommentTypo
 // ReSharper disable StringLiteralTypo
 // ReSharper disable IdentifierTypo
 
@@ -12,6 +13,9 @@ public static partial class CueSheetParser
 // https://www.gnu.org/software/ccd2cue/manual/html_node/CUE-sheet-format.html#CUE-sheet-format
 // https://web.archive.org/web/20070614044112/http://www.goldenhawk.com/download/cdrwin.pdf
 // https://github.com/libyal/libodraw/blob/main/documentation/CUE%20sheet%20format.asciidoc
+// TODO CDTEXTFILE
+// TODO SONGWRITER
+// TODO POSTGAP
 {
     public static CueSheet Parse(Stream stream)
     {
@@ -213,9 +217,9 @@ public static partial class CueSheetParser
 
         ThrowIfNull(track, input);
 
-        if (track.Flags != CueSheetTrackFlags.None)
+        if (track.Flags != CueSheetTrackFlags.None) // TODO add ThrowIfNot?
         {
-            throw new InvalidDataException();
+            throw new InvalidDataException(); // TODO
         }
 
         foreach (var capture in match.Groups[1].Captures.Cast<Capture>())
