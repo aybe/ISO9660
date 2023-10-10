@@ -63,7 +63,7 @@ public static partial class CueSheetParser
             return;
         }
 
-        var message = $"""There is no parent of type {typeof(T).Name} for "{input.Trim()}".""";
+        var message = $"""The value of type {typeof(T).Name} is expected to not be 'null' for "{input.Trim()}".""";
 
         throw new InvalidDataException(message);
     }
