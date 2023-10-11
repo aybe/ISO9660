@@ -1,4 +1,3 @@
-using System.Text;
 using WipeoutInstaller.Extensions;
 using WipeoutInstaller.Iso9660;
 using WipeoutInstaller.JSON;
@@ -6,12 +5,11 @@ using WipeoutInstaller.JSON;
 namespace WipeoutInstaller.WorkInProgress;
 
 public sealed class IsoImage : Disposable
-// TODO allow other sector types
 {
-    private readonly BinaryReader Reader;
-
-    public IsoImage(Stream stream)
+    public IsoImage(Stream stream, Disc disc)
     {
+        Disc = disc;
+
         var length = stream.Length;
 
         var type = true switch
@@ -26,12 +24,12 @@ public sealed class IsoImage : Disposable
             throw new NotImplementedException(type.ToString());
         }
 
-        Reader = new BinaryReader(stream, Encoding.ASCII, true);
-
         Descriptors = GetVolumeDescriptors();
 
         PrimaryVolumeDescriptor = Descriptors.OfType<PrimaryVolumeDescriptor>().Single();
     }
+
+    private Disc Disc { get; }
 
     public Action<object?>? Logger { get; set; }
 
@@ -39,22 +37,34 @@ public sealed class IsoImage : Disposable
 
     private PrimaryVolumeDescriptor PrimaryVolumeDescriptor { get; }
 
-    protected override void DisposeManaged()
-    {
-        Reader.Dispose();
-    }
-
     private IList<PathTableRecord> GetPathTableRecords()
     {
-        SetSectorUserData(PrimaryVolumeDescriptor.LocationOfOccurrenceOfTypeLPathTable);
-
-        var position = Reader.BaseStream.Position;
-
         var records = new List<PathTableRecord>();
 
-        while (Reader.BaseStream.Position < position + PrimaryVolumeDescriptor.PathTableSize)
+        var sector = Disc.ReadSector(PrimaryVolumeDescriptor.LocationOfOccurrenceOfTypeLPathTable);
+
+        using var reader = sector.GetUserData().ToBinaryReader();
+
+        var pathTableRead = 0L;
+
+        var pathTableSize = PrimaryVolumeDescriptor.PathTableSize;
+
+        if (pathTableSize > 2048) // TODO is temporary guard, check specifications and adjust
         {
-            records.Add(new PathTableRecord(Reader));
+            throw new NotImplementedException("The path table spans over multiple sectors.");
+        }
+
+        while (pathTableRead < pathTableSize)
+        {
+            var recordPosition = reader.BaseStream.Position;
+
+            var record = new PathTableRecord(reader);
+
+            var recordLength = reader.BaseStream.Position - recordPosition;
+
+            pathTableRead += recordLength;
+
+            records.Add(record);
         }
 
         return records;
@@ -66,14 +76,11 @@ public sealed class IsoImage : Disposable
 
         foreach (var pathTableRecord in pathTableRecords)
         {
-            var ptrExtent = pathTableRecord.LocationOfExtent;
-
-            SetSectorUserData(ptrExtent);
-
+            using var reader = Disc.ReadSector(pathTableRecord.LocationOfExtent).GetUserData().ToBinaryReader();
 
             while (true)
             {
-                var directoryRecord = new DirectoryRecord(Reader);
+                var directoryRecord = new DirectoryRecord(reader);
 
                 if (directoryRecord.LengthOfDirectoryRecord == 0)
                 {
@@ -91,25 +98,27 @@ public sealed class IsoImage : Disposable
 
     private List<VolumeDescriptor> GetVolumeDescriptors()
     {
-        var sector = 16;
+        var sectorIndex = 16;
 
         var descriptors = new List<VolumeDescriptor>();
 
         while (true)
         {
-            SetSectorUserData(sector);
+            var sector = Disc.ReadSector(sectorIndex);
+
+            using var reader = sector.GetUserData().ToBinaryReader();
 
             var descriptor = new VolumeDescriptor
             {
-                VolumeDescriptorType    = Reader.Read<VolumeDescriptorType>(), // 711
-                StandardIdentifier      = Reader.ReadStringAscii(5),
-                VolumeDescriptorVersion = new Iso711(Reader)
+                VolumeDescriptorType    = reader.Read<VolumeDescriptorType>(), // 711
+                StandardIdentifier      = reader.ReadStringAscii(5),
+                VolumeDescriptorVersion = new Iso711(reader)
             };
 
             descriptor = descriptor.VolumeDescriptorType switch
             {
-                VolumeDescriptorType.PrimaryVolumeDescriptor       => new PrimaryVolumeDescriptor(descriptor, Reader),
-                VolumeDescriptorType.VolumeDescriptorSetTerminator => new VolumeDescriptorSetTerminator(descriptor, Reader),
+                VolumeDescriptorType.PrimaryVolumeDescriptor       => new PrimaryVolumeDescriptor(descriptor, reader),
+                VolumeDescriptorType.VolumeDescriptorSetTerminator => new VolumeDescriptorSetTerminator(descriptor, reader),
                 _                                                  => throw new NotImplementedException(descriptor.VolumeDescriptorType.ToString())
             };
 
@@ -120,15 +129,10 @@ public sealed class IsoImage : Disposable
                 break; // TODO add a mechanism to read N max descriptors
             }
 
-            sector++;
+            sectorIndex++;
         }
 
         return descriptors;
-    }
-
-    private void SetSectorUserData(int sector)
-    {
-        Reader.BaseStream.Position = sector * SectorConstants.Size + SectorConstants.UserDataPosition; // TODO support other sector types
     }
 
     private void Log(object? value = null)

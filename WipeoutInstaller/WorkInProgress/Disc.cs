@@ -16,6 +16,7 @@ public sealed class Disc : Disposable
     }
 
     public bool TryGetIso9660FileSystem([MaybeNullWhen(false)] out IsoImage result)
+        // TODO this sucks, there should be extra methods Has... and TryRead...
     {
         result = default;
 
@@ -26,15 +27,27 @@ public sealed class Disc : Disposable
             return false;
         }
 
-        try
+        result = new IsoImage(track.Stream, this);
+
+        return true;
+    }
+
+    public ISector ReadSector(in int index)
+    {
+        foreach (var track in Tracks)
         {
-            result = new IsoImage(track.Stream);
-        }
-        catch (Exception)
-        {
-            // ignored
+            var lba = track.Position.ToLBA();
+
+            if (index < lba.Position)
+            {
+                continue;
+            }
+
+            var sector = track.ReadSector(index);
+
+            return sector;
         }
 
-        return result != null;
+        throw new ArgumentOutOfRangeException(nameof(index), index, null);
     }
 }

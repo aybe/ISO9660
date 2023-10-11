@@ -20,7 +20,7 @@ public class UnitTestIso9660
         using var stream = File.OpenRead(path);
         using var reader = new BinaryReader(stream);
 
-        using var fs = new IsoImage(stream);
+        using var fs = new IsoImage(stream, null!); // TODO use .cue file
 
         fs.Logger = TestContext.WriteLine;
 
