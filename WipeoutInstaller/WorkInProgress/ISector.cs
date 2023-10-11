@@ -50,4 +50,15 @@ public interface ISector
 
         return value;
     }
+
+    public static ISector Read<T>(Stream stream) where T : struct, ISector
+    {
+        Span<byte> span = stackalloc byte[Size];
+
+        stream.ReadExactly(span);
+
+        var read = MemoryMarshal.Read<T>(span);
+
+        return read;
+    }
 }
