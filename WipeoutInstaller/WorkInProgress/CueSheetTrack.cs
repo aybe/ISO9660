@@ -20,7 +20,7 @@ public class CueSheetTrack
 
     public string? Performer { get; set; }
 
-    public Msf? PreGap { get; set; }
+    public MSF? PreGap { get; set; }
 
     public string? Isrc { get; set; }
 

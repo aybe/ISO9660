@@ -2,7 +2,7 @@
 
 public sealed class CueSheetTrackIndex
 {
-    public CueSheetTrackIndex(int number, Msf position)
+    public CueSheetTrackIndex(int number, MSF position)
     {
         Number   = number;
         Position = position;
@@ -10,7 +10,7 @@ public sealed class CueSheetTrackIndex
 
     public int Number { get; }
 
-    public Msf Position { get; }
+    public MSF Position { get; }
 
     public override string ToString()
     {

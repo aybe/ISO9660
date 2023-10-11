@@ -256,11 +256,11 @@ public static partial class CueSheetParser
         var s = Parse(context.Match.Groups[3], byte.Parse);
         var f = Parse(context.Match.Groups[4], byte.Parse);
 
-        var index = new CueSheetTrackIndex(i, new Msf(m, s, f));
+        var index = new CueSheetTrackIndex(i, new MSF(m, s, f));
 
         if (context.Track.Indices.Count == 0)
         {
-            var zero = Msf.Zero;
+            var zero = MSF.Min;
 
             if (index is not { Number: 0 or 1 } && index.Position != zero && context.Track.Index is 1)
             {
@@ -312,7 +312,7 @@ public static partial class CueSheetParser
         var s = Parse(context.Match.Groups[2], byte.Parse);
         var f = Parse(context.Match.Groups[3], byte.Parse);
 
-        context.Track.PreGap = new Msf(m, s, f);
+        context.Track.PreGap = new MSF(m, s, f);
     }
 
     private static void RemHandler(Context context)

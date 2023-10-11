@@ -39,7 +39,7 @@ public class UnitTestCueSheet
 
                 foreach (var index in track.Indices)
                 {
-                    context.WriteLine($"\t\tIndex: {index}, LBA = {index.Position.ToLba():N0}, Byte = {index.Position.ToBytePosition():N0}");
+                    context.WriteLine($"\t\tIndex: {index}, LBA = {index.Position.ToLBA().Position:N0}, Byte = {index.Position.ToLBA().Position * 2352:N0}");
                 }
             }
         }
