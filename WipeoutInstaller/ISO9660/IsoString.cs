@@ -65,7 +65,17 @@ public class IsoString // TODO rename to Iso76, pass flags for allowed chars
 
     public override string ToString()
     {
-        return Value;
+        return Value switch // really nasty while debugging
+        {
+            Byte00 => ToCodePoint(Value, 0),
+            Byte01 => ToCodePoint(Value, 0),
+            _      => Value
+        };
+    }
+
+    private static string ToCodePoint(string value, int index)
+    {
+        return $"\\u{char.ConvertToUtf32(value, index):X4}";
     }
 
     public static implicit operator string(IsoString isoString)
