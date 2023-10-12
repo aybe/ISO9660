@@ -23,4 +23,9 @@ public readonly struct Iso733 : IIsoNumber2<uint>
     {
         return Convert.ToInt32(iso733.Value1);
     }
+
+    public int ToInt32()
+    {
+        return Convert.ToInt32(Value1);
+    }
 }

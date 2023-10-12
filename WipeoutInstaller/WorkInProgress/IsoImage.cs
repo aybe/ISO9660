@@ -76,24 +76,40 @@ public sealed class IsoImage : Disposable
 
         foreach (var pathTableRecord in pathTableRecords)
         {
-            using var reader = Disc.ReadSector(pathTableRecord.LocationOfExtent).GetUserData().ToBinaryReader();
+            var records = dictionary.GetOrAdd(pathTableRecord, () => new List<DirectoryRecord>());
 
-            while (true)
+            var extent = pathTableRecord.LocationOfExtent.ToInt32();
+
+            GetDirectoryRecords(records, extent++);
+
+            var length = records[0].DataLength.ToInt32();
+
+            var blocks = length / 2048 - 1; // TODO constant
+
+            for (var i = 0; i < blocks; i++)
             {
-                var directoryRecord = new DirectoryRecord(reader);
-
-                if (directoryRecord.LengthOfDirectoryRecord == 0)
-                {
-                    break;
-                }
-
-                var directoryRecords = dictionary.GetOrAdd(pathTableRecord, () => new List<DirectoryRecord>());
-
-                directoryRecords.Add(directoryRecord);
+                GetDirectoryRecords(records, extent++);
             }
         }
 
         return dictionary;
+    }
+
+    private void GetDirectoryRecords(ICollection<DirectoryRecord> records, int extent)
+    {
+        using var reader = Disc.ReadSector(extent).GetUserData().ToBinaryReader();
+
+        while (true)
+        {
+            var record = new DirectoryRecord(reader);
+
+            if (record.LengthOfDirectoryRecord == 0)
+            {
+                break;
+            }
+
+            records.Add(record);
+        }
     }
 
     private List<VolumeDescriptor> GetVolumeDescriptors()
