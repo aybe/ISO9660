@@ -76,7 +76,9 @@ public sealed class DirectoryRecord
 
     public override string ToString()
     {
-        return
-            $"{nameof(FileFlags)}: {FileFlags}, {nameof(FileIdentifier)}: {FileIdentifier}, {nameof(DataLength)}: {DataLength}, {nameof(LocationOfExtent)}: {LocationOfExtent}";
+        return $"{nameof(FileFlags)}: {FileFlags}, " +
+               $"{nameof(FileIdentifier)}: {FileIdentifier}, " +
+               $"{nameof(DataLength)}: {DataLength}, " +
+               $"{nameof(LocationOfExtent)}: {LocationOfExtent}";
     }
 }

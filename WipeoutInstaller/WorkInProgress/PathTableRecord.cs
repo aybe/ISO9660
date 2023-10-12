@@ -36,6 +36,8 @@ public sealed class PathTableRecord
 
     public override string ToString()
     {
-        return DirectoryIdentifier.Value;
+        return $"{nameof(LocationOfExtent)}: {LocationOfExtent}, " +
+               $"{nameof(ParentDirectoryNumber)}: {ParentDirectoryNumber}, " +
+               $"{nameof(DirectoryIdentifier)}: {DirectoryIdentifier}";
     }
 }
