@@ -1,6 +1,7 @@
 ﻿// ReSharper disable StringLiteralTypo
 
 using JetBrains.Annotations;
+using WipeoutInstaller.Extensions;
 using WipeoutInstaller.WorkInProgress;
 
 // ReSharper disable IdentifierTypo
@@ -24,6 +25,38 @@ public class UnitTestCueSheet
         using var stream = File.OpenRead(path);
 
         ParseCueSheet(stream, TestContext);
+    }
+
+    [TestMethod]
+    [DataRow(@"C:\Temp\CueFileList.txt")]
+    public void TestParsingList(string path)
+    {
+        if (File.Exists(path))
+        {
+            var lines = File.ReadAllLines(path);
+
+            foreach (var line in lines)
+            {
+                if (File.Exists(line))
+                {
+                    TestContext.WriteLine();
+                    TestContext.WriteLine($"Trying to parse file: {line}");
+                    TestContext.WriteLine();
+
+                    using var stream = File.OpenRead(line);
+
+                    ParseCueSheet(stream, TestContext);
+                }
+                else
+                {
+                    TestContext.WriteLine($"File not found: {line}");
+                }
+            }
+        }
+        else
+        {
+            TestContext.WriteLine($"File list not found: {path}");
+        }
     }
 
     public static void ParseCueSheet(Stream stream, TestContext context)
