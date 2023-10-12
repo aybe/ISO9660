@@ -1,10 +1,7 @@
-using System.Diagnostics;
 using WipeoutInstaller.Iso9660;
 
 namespace WipeoutInstaller.WorkInProgress;
 
-[DebuggerDisplay(
-    "Parent = {ParentDirectoryNumber}, Extent = {LocationOfExtent}, Name = {DirectoryIdentifier}")]
 public sealed class PathTableRecord
 {
     public PathTableRecord(BinaryReader reader)

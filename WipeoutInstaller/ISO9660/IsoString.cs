@@ -1,10 +1,8 @@
-using System.Diagnostics;
 using System.Text;
 using WipeoutInstaller.Extensions;
 
 namespace WipeoutInstaller.Iso9660;
 
-[DebuggerDisplay("{Value}")]
 public class IsoString // TODO rename to Iso76, pass flags for allowed chars
 {
     private const string ACharacters = """!"%&'()*+,-./0123456789:;<=>?ABCDEFGHIJKLMNOPQRSTUVWXYZ_""" + Space;
