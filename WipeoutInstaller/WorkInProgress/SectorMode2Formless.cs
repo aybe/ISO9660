@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace WipeoutInstaller.WorkInProgress;
 
 [SuppressMessage("ReSharper", "UnusedMember.Global")]
-public unsafe struct SectorMode2Formless : ISector
+public unsafe struct SectorMode2FormLess : ISector
 {
     public const int SyncPosition = 0;
 

@@ -48,7 +48,7 @@ public class UnitTestSector
     [TestMethod]
     public void TestSectorSizeMode2FormLess()
     {
-        TestSectorSize<SectorMode2Formless>();
+        TestSectorSize<SectorMode2FormLess>();
     }
 
     private static void TestSectorSize<T>() where T : struct, ISector
