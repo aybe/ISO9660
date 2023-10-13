@@ -1,6 +1,6 @@
 namespace WipeoutInstaller.WorkInProgress;
 
-public enum SectorMode
+public enum SectorModeExtended
 {
     Audio,
     Mode0,

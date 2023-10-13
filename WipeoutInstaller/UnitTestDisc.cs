@@ -127,12 +127,12 @@ public class UnitTestDisc : UnitTestBase
         }
     }
 
-    private static SectorMode GetSectorMode(CueSheetTrackType trackType)
+    private static SectorModeExtended GetSectorMode(CueSheetTrackType trackType)
     {
         return trackType switch
         {
-            CueSheetTrackType.Mode1Raw => SectorMode.Mode1,
-            CueSheetTrackType.Mode2Raw => SectorMode.Mode2Form1,
+            CueSheetTrackType.Mode1Raw => SectorModeExtended.Mode1,
+            CueSheetTrackType.Mode2Raw => SectorModeExtended.Mode2Form1,
             _                          => throw new ArgumentOutOfRangeException(nameof(trackType), trackType, null)
         };
     }
