@@ -107,7 +107,7 @@ public class UnitTestDisc : UnitTestBase
 
             using var fileStream = File.OpenRead(filePath);
 
-            var fileSectorMode = GetSectorMode(track.Type);
+            var fileSectorMode = GetSectorType(track.Type);
 
             WriteLine(fileSectorMode);
         }
@@ -127,12 +127,12 @@ public class UnitTestDisc : UnitTestBase
         }
     }
 
-    private static SectorModeExtended GetSectorMode(CueSheetTrackType trackType)
+    private static SectorType GetSectorType(CueSheetTrackType trackType)
     {
         return trackType switch
         {
-            CueSheetTrackType.Mode1Raw => SectorModeExtended.Mode1,
-            CueSheetTrackType.Mode2Raw => SectorModeExtended.Mode2Form1,
+            CueSheetTrackType.Mode1Raw => SectorType.Mode1,
+            CueSheetTrackType.Mode2Raw => SectorType.Mode2Form1,
             _                          => throw new ArgumentOutOfRangeException(nameof(trackType), trackType, null)
         };
     }

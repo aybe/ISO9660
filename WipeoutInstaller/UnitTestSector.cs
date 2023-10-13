@@ -65,10 +65,10 @@ public class UnitTestSector
     }
 
     [TestMethod]
-    [DataRow(@"C:\Temp\UFO - Enemy Unknown (1994)(MicroProse).bin", 16, SectorModeExtended.Mode1)]
-    [DataRow(@"C:\Temp\WipEout (Europe) (v1.1).bin", 16, SectorModeExtended.Mode2Form1)]
-    [DataRow(@"C:\Temp\CD-I Demo Disc - Fall 1996 - Spring 1997.bin", 1605, SectorModeExtended.Mode2Form2)]
-    public void TestSectorModeUsingEdc(string path, int sectorIndex, SectorModeExtended sectorMode)
+    [DataRow(@"C:\Temp\UFO - Enemy Unknown (1994)(MicroProse).bin", 16, SectorType.Mode1)]
+    [DataRow(@"C:\Temp\WipEout (Europe) (v1.1).bin", 16, SectorType.Mode2Form1)]
+    [DataRow(@"C:\Temp\CD-I Demo Disc - Fall 1996 - Spring 1997.bin", 1605, SectorType.Mode2Form2)]
+    public void TestSectorModeUsingEdc(string path, int sectorIndex, SectorType sectorMode)
     {
         using var stream = File.OpenRead(path);
         using var reader = new BinaryReader(stream);
@@ -81,12 +81,12 @@ public class UnitTestSector
 
         var edc = sectorMode switch
         {
-            SectorModeExtended.Audio         => throw new NotImplementedException(),
-            SectorModeExtended.Mode0         => throw new NotImplementedException(),
-            SectorModeExtended.Mode1         => CheckEdc<SectorMode1>(bytes),
-            SectorModeExtended.Mode2Form1    => CheckEdc<SectorMode2Form1>(bytes),
-            SectorModeExtended.Mode2Form2    => CheckEdc<SectorMode2Form2>(bytes),
-            SectorModeExtended.Mode2FormLess => throw new NotImplementedException(),
+            SectorType.Audio         => throw new NotImplementedException(),
+            SectorType.Mode0         => throw new NotImplementedException(),
+            SectorType.Mode1         => CheckEdc<SectorMode1>(bytes),
+            SectorType.Mode2Form1    => CheckEdc<SectorMode2Form1>(bytes),
+            SectorType.Mode2Form2    => CheckEdc<SectorMode2Form2>(bytes),
+            SectorType.Mode2FormLess => throw new NotImplementedException(),
             _                        => throw new ArgumentOutOfRangeException(nameof(sectorMode), sectorMode, null)
         };
 
@@ -94,11 +94,11 @@ public class UnitTestSector
     }
 
     [TestMethod]
-    [DataRow(@"C:\Temp\UFO - Enemy Unknown (1994)(MicroProse).bin", 16, SectorModeExtended.Mode1)]
-    [DataRow(@"C:\Temp\WipEout (Europe) (v1.1).bin", 16, SectorModeExtended.Mode2Form1)]
-    [DataRow(@"C:\Temp\WipEout (Europe) (v1.1).bin", 27170, SectorModeExtended.Audio)]
-    [DataRow(@"C:\Temp\CD-I Demo Disc - Fall 1996 - Spring 1997.bin", 1605, SectorModeExtended.Mode2Form2)]
-    public void TestSectorModeUsingInspection(string path, int sectorIndex, SectorModeExtended sectorModeExpected)
+    [DataRow(@"C:\Temp\UFO - Enemy Unknown (1994)(MicroProse).bin", 16, SectorType.Mode1)]
+    [DataRow(@"C:\Temp\WipEout (Europe) (v1.1).bin", 16, SectorType.Mode2Form1)]
+    [DataRow(@"C:\Temp\WipEout (Europe) (v1.1).bin", 27170, SectorType.Audio)]
+    [DataRow(@"C:\Temp\CD-I Demo Disc - Fall 1996 - Spring 1997.bin", 1605, SectorType.Mode2Form2)]
+    public void TestSectorModeUsingInspection(string path, int sectorIndex, SectorType sectorModeExpected)
     {
         using var stream = File.OpenRead(path);
         using var reader = new BinaryReader(stream);
@@ -117,13 +117,13 @@ public class UnitTestSector
     }
 
     [SuppressMessage("ReSharper", "ConvertIfStatementToReturnStatement")]
-    private static SectorModeExtended GetSectorMode(in Span<byte> bytes)
+    private static SectorType GetSectorMode(in Span<byte> bytes)
     {
         ReadOnlySpan<byte> sync = stackalloc byte[] { 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00 };
 
         if (!bytes[..12].SequenceEqual(sync))
         {
-            return SectorModeExtended.Audio; // TODO add an extra check against address
+            return SectorType.Audio; // TODO add an extra check against address
         }
 
         var mode = bytes[15];
@@ -131,9 +131,9 @@ public class UnitTestSector
         switch (mode)
         {
             case 0:
-                return SectorModeExtended.Mode0;
+                return SectorType.Mode0;
             case 1:
-                return SectorModeExtended.Mode1;
+                return SectorType.Mode1;
             case 2:
 
                 var form1EdcSlice = bytes.Slice(SectorMode2Form1.EdcPosition, sizeof(uint));
@@ -150,7 +150,7 @@ public class UnitTestSector
 
                 if (form1EdcResult == form1Edc)
                 {
-                    return SectorModeExtended.Mode2Form1;
+                    return SectorType.Mode2Form1;
                 }
 
                 var form2EdcSlice = bytes.Slice(SectorMode2Form2.ReservedOrEdcPosition, sizeof(uint));
@@ -167,10 +167,10 @@ public class UnitTestSector
 
                 if (form2EdcResult == form2Edc)
                 {
-                    return SectorModeExtended.Mode2Form2;
+                    return SectorType.Mode2Form2;
                 }
 
-                const SectorModeExtended formLess = SectorModeExtended.Mode2FormLess;
+                const SectorType formLess = SectorType.Mode2FormLess;
 
                 return formLess;
             default:
