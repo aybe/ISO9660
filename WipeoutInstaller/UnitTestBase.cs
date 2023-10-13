@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System.Linq.Expressions;
+using JetBrains.Annotations;
 using WipeoutInstaller.Extensions;
 
 namespace WipeoutInstaller;
@@ -32,6 +33,22 @@ public abstract class UnitTestBase
         }
 
         TestContext.WriteLine(value);
+    }
+
+    protected void WriteLine<T>(Expression<Func<T>> expression) // T avoids Convert(...) expression
+    {
+        if (expression.Body is not MemberExpression me)
+        {
+            throw new ArgumentOutOfRangeException(nameof(expression), expression, null);
+        }
+
+        var compile = expression.Compile();
+
+        var value = compile();
+
+        var message = $"{me.Member.Name}: {value}";
+
+        WriteLine(message);
     }
 
     protected IDisposable Indent(uint value)
