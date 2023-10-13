@@ -1,6 +1,5 @@
 ﻿// ReSharper disable StringLiteralTypo
 
-using JetBrains.Annotations;
 using WipeoutInstaller.Extensions;
 using WipeoutInstaller.WorkInProgress;
 
@@ -10,11 +9,8 @@ using WipeoutInstaller.WorkInProgress;
 namespace WipeoutInstaller;
 
 [TestClass]
-public class UnitTestCueSheet
+public class UnitTestCueSheet : UnitTestBase
 {
-    [PublicAPI]
-    public required TestContext TestContext { get; set; }
-
     [TestMethod]
     [DataRow(@"C:\Temp\CD-I Demo Disc - Fall 1996 - Spring 1997.cue")]
     [DataRow(@"C:\Temp\UFO - Enemy Unknown (1994)(MicroProse).cue")]
@@ -24,7 +20,7 @@ public class UnitTestCueSheet
     {
         using var stream = File.OpenRead(path);
 
-        ParseCueSheet(stream, TestContext);
+        ParseCueSheet(stream);
     }
 
     [TestMethod]
@@ -45,7 +41,7 @@ public class UnitTestCueSheet
 
                     using var stream = File.OpenRead(line);
 
-                    ParseCueSheet(stream, TestContext);
+                    ParseCueSheet(stream);
                 }
                 else
                 {
@@ -59,21 +55,27 @@ public class UnitTestCueSheet
         }
     }
 
-    public static void ParseCueSheet(Stream stream, TestContext context)
+    private void ParseCueSheet(Stream stream)
     {
         var sheet = CueSheetParser.Parse(stream);
 
         foreach (var file in sheet.Files)
         {
-            context.WriteLine($"File: {file}");
+            using var indent1 = Indent(1);
+
+            WriteLine($"File: {file}");
 
             foreach (var track in file.Tracks)
             {
-                context.WriteLine($"\tTrack: {track}, PreGap: {track.PreGap}");
+                using var indent2 = Indent(2);
+
+                WriteLine($"Track: {track}");
 
                 foreach (var index in track.Indices)
                 {
-                    context.WriteLine($"\t\tIndex: {index}, LBA = {index.Position.ToLBA().Position:N0}, Byte = {index.Position.ToLBA().Position * 2352:N0}");
+                    using var indent3 = Indent(3);
+
+                    WriteLine($"Index: {index}");
                 }
             }
         }
