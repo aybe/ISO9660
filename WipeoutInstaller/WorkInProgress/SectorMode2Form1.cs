@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace WipeoutInstaller.WorkInProgress;
 
 [SuppressMessage("ReSharper", "UnassignedField.Global")]
-public unsafe struct SectorMode2Form1 : ISector
+public unsafe struct SectorMode2Form1 : ISector, ISectorHeader
 {
     public const int SyncPosition = 0;
 
@@ -61,4 +61,6 @@ public unsafe struct SectorMode2Form1 : ISector
     {
         return ISector.GetSlice(ref this, UserDataPosition, UserDataSize);
     }
+
+    SectorHeader ISectorHeader.Header => ISector.GetHeader(ref this, HeaderPosition, HeaderSize);
 }

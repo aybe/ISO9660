@@ -1,6 +1,6 @@
 namespace WipeoutInstaller.WorkInProgress;
 
-public unsafe struct SectorMode2Form2 : ISector
+public unsafe struct SectorMode2Form2 : ISector, ISectorHeader
 {
     public const int SyncPosition = 0;
 
@@ -46,4 +46,6 @@ public unsafe struct SectorMode2Form2 : ISector
     {
         return ISector.GetSlice(ref this, UserDataPosition, UserDataSize);
     }
+
+    SectorHeader ISectorHeader.Header => ISector.GetHeader(ref this, HeaderPosition, HeaderSize);
 }

@@ -29,6 +29,16 @@ public interface ISector
         return edc;
     }
 
+    public static SectorHeader GetHeader<T>(ref T sector, in int start, in int length)
+        where T : struct, ISector
+    {
+        var slice = GetSlice(ref sector, start, length);
+
+        var header = MemoryMarshal.Read<SectorHeader>(slice);
+
+        return header;
+    }
+
     public static Span<byte> GetSlice<T>(scoped ref T sector, int start, int length)
         where T : struct, ISector
     {

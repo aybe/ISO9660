@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace WipeoutInstaller.WorkInProgress;
 
 [SuppressMessage("ReSharper", "UnusedMember.Global")]
-public unsafe struct SectorMode0 : ISector
+public unsafe struct SectorMode0 : ISector, ISectorHeader
 {
     public const int SyncPosition = 0;
 
@@ -37,4 +37,6 @@ public unsafe struct SectorMode0 : ISector
     {
         return ISector.GetSlice(ref this, UserDataPosition, UserDataSize);
     }
+
+    SectorHeader ISectorHeader.Header => ISector.GetHeader(ref this, HeaderPosition, HeaderSize);
 }
