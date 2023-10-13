@@ -28,6 +28,8 @@ public class UnitTestDisc : UnitTestBase
 
         foreach (var track in disc.Tracks)
         {
+            using var indent1 = Indent(1);
+
             WriteLine(track);
         }
 
@@ -144,10 +146,14 @@ public class UnitTestDisc : UnitTestBase
 
         foreach (var file in sheet.Files)
         {
+            using var indent1 = Indent(1);
+
             WriteLine(file);
 
             foreach (var track in file.Tracks)
             {
+                using var indent2 = Indent(2);
+
                 WriteLine(track);
             }
         }
