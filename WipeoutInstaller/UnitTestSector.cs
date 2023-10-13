@@ -1,16 +1,14 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using JetBrains.Annotations;
+using System.Runtime.InteropServices;
 using WipeoutInstaller.WorkInProgress;
 
 namespace WipeoutInstaller;
 
 [TestClass]
 [SuppressMessage("ReSharper", "StringLiteralTypo")]
-public class UnitTestSector
+public class UnitTestSector : UnitTestBase
 {
-    [PublicAPI]
-    public required TestContext TestContext { get; set; }
 
     [TestMethod]
     public void TestSectorSizeAudio()
