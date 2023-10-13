@@ -20,7 +20,8 @@ public readonly struct LBA : IComparable<LBA>, IEquatable<LBA>
 
     public MSF ToMSF()
     {
-        return new MSF(Position / (60 * 75), Position / 75 % 60, Position % 75);
+        var position = Position - 150;
+        return new MSF(position / (60 * 75), position / 75 % 60, position % 75);
     }
 
     public int CompareTo(LBA other)

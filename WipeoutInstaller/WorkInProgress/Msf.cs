@@ -33,7 +33,7 @@ public readonly struct MSF : IComparable<MSF>, IEquatable<MSF>
 
     public LBA ToLBA()
     {
-        return new LBA(M * 60 * 75 + S * 75 + F);
+        return new LBA(M * 60 * 75 + S * 75 + F - 150);
     }
 
     public int CompareTo(MSF other)
