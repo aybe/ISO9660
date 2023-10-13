@@ -10,11 +10,6 @@ public readonly struct LBA : IComparable<LBA>, IEquatable<LBA>
 
     public LBA(int position)
     {
-        if (position < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(position), position, null);
-        }
-
         Position = position;
     }
 
