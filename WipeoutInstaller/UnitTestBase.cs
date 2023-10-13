@@ -67,12 +67,12 @@ public abstract class UnitTestBase
             Sender = sender;
             Indent = indent;
 
-            Sender.IndentLevelLocal.Value += Indent;
+            Sender.IndentLevelLocal.Value = Indent;
         }
 
         public void Dispose()
         {
-            Sender.IndentLevelLocal.Value -= Indent;
+            Sender.IndentLevelLocal.Value = Indent;
         }
     }
 }
