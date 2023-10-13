@@ -59,9 +59,9 @@ public class UnitTestSector
     [TestMethod]
     public void TestSizeOf()
     {
+        Assert.AreEqual(3, Unsafe.SizeOf<SectorAddress>());
         Assert.AreEqual(4, Unsafe.SizeOf<SectorSubHeader>());
         Assert.AreEqual(8, Unsafe.SizeOf<SectorSubHeaderBlock>());
-        Assert.AreEqual(3, Unsafe.SizeOf<SectorAddress>());
         Assert.AreEqual(SectorConstants.Size, Unsafe.SizeOf<SectorMode2>());
     }
 
