@@ -28,7 +28,7 @@ public abstract class UnitTestBase
     {
         for (var i = 0; i < IndentLevelLocal.Value; i++)
         {
-            TestContext.WriteLine(IndentValueLocal.Value);
+            TestContext.Write(IndentValueLocal.Value);
         }
 
         TestContext.WriteLine(value);
