@@ -1,8 +1,5 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace WipeoutInstaller.WorkInProgress;
 
-[SuppressMessage("ReSharper", "UnusedMember.Global")]
 public unsafe struct SectorAudio : ISector
 {
     public const int DataPosition = 0;

@@ -1,8 +1,5 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace WipeoutInstaller.WorkInProgress;
 
-[SuppressMessage("ReSharper", "UnusedMember.Global")]
 public unsafe struct SectorMode0 : ISector, ISectorHeader
 {
     public const int SyncPosition = 0;
