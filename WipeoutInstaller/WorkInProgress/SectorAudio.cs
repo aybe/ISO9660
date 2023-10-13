@@ -2,11 +2,7 @@ namespace WipeoutInstaller.WorkInProgress;
 
 public unsafe struct SectorAudio : ISector
 {
-    public const int DataPosition = 0;
-
-    public const int DataSize = 2352;
-
-    public fixed byte Data[DataSize];
+    public fixed byte Data[ISector.UserDataSizeAudio];
 
     public uint GetEdc()
     {
@@ -20,6 +16,6 @@ public unsafe struct SectorAudio : ISector
 
     public Span<byte> GetUserData()
     {
-        return ISector.GetSlice(ref this, DataPosition, DataSize);
+        return ISector.GetSlice(ref this, ISector.UserDataPositionAudio, ISector.UserDataSizeAudio);
     }
 }

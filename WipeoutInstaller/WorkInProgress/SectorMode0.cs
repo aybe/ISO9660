@@ -2,23 +2,11 @@ namespace WipeoutInstaller.WorkInProgress;
 
 public unsafe struct SectorMode0 : ISector, ISectorHeader
 {
-    public const int SyncPosition = 0;
+    public fixed byte Sync[ISector.SyncSize];
 
-    public const int SyncSize = 12;
+    public fixed byte Header[ISector.HeaderSize];
 
-    public fixed byte Sync[SyncSize];
-
-    public const int HeaderPosition = SyncPosition + SyncSize;
-
-    public const int HeaderSize = 4;
-
-    public fixed byte Header[HeaderSize];
-
-    public const int UserDataPosition = HeaderPosition + HeaderSize;
-
-    public const int UserDataSize = 2336;
-
-    public fixed byte UserData[UserDataSize];
+    public fixed byte UserData[ISector.UserDataSizeMode0];
 
     public readonly uint GetEdc()
     {
@@ -32,8 +20,8 @@ public unsafe struct SectorMode0 : ISector, ISectorHeader
 
     public Span<byte> GetUserData()
     {
-        return ISector.GetSlice(ref this, UserDataPosition, UserDataSize);
+        return ISector.GetSlice(ref this, ISector.UserDataPositionMode0, ISector.UserDataSizeMode0);
     }
 
-    SectorHeader ISectorHeader.Header => ISector.GetHeader(ref this, HeaderPosition, HeaderSize);
+    SectorHeader ISectorHeader.Header => ISector.GetHeader(ref this, ISector.HeaderPosition, ISector.HeaderSize);
 }

@@ -25,11 +25,11 @@ public class UnitTestSector : UnitTestBase
         using var stream = File.OpenRead(path);
         using var reader = new BinaryReader(stream);
 
-        Assert.AreEqual(0, stream.Length % SectorConstants.Size);
+        Assert.AreEqual(0, stream.Length % ISector.Size);
 
-        stream.Position = sectorIndex * SectorConstants.Size;
+        stream.Position = sectorIndex * ISector.Size;
 
-        var span = reader.ReadBytes(SectorConstants.Size).AsSpan();
+        var span = reader.ReadBytes(ISector.Size).AsSpan();
 
         var header = MemoryMarshal.Read<SectorHeader>(span.Slice(headerPosition, headerSize));
 
@@ -75,13 +75,13 @@ public class UnitTestSector : UnitTestBase
 
                 if (isMode2FormLess)
                 {
-                    var form1EdcSlice = span.Slice(SectorMode2Form1.EdcPosition, sizeof(uint));
+                    var form1EdcSlice = span.Slice(ISector.EdcPositionMode2Form1, sizeof(uint));
 
                     var form1Edc = BinaryPrimitives.ReadUInt32LittleEndian(form1EdcSlice);
 
-                    const int form1DataPosition = SectorMode2Form1.SubHeaderPosition;
+                    const int form1DataPosition = ISector.SubHeaderPositionMode2Form1;
 
-                    const int form1DataLength = SectorMode2Form1.SubHeaderSize + SectorMode2Form1.UserDataSize;
+                    const int form1DataLength = ISector.SubHeaderSizeMode2Form1 + ISector.UserDataSizeMode2Form1;
 
                     var form1Data = span.Slice(form1DataPosition, form1DataLength);
 
@@ -93,13 +93,13 @@ public class UnitTestSector : UnitTestBase
                     }
                     else
                     {
-                        var form2EdcSlice = span.Slice(SectorMode2Form2.ReservedOrEdcPosition, sizeof(uint));
+                        var form2EdcSlice = span.Slice(ISector.EdcPositionMode2Form2, sizeof(uint));
 
                         var form2Edc = BinaryPrimitives.ReadUInt32LittleEndian(form2EdcSlice);
 
-                        const int form2DataPosition = SectorMode2Form2.SubHeaderPosition;
+                        const int form2DataPosition = ISector.SubHeaderPositionMode2Form2;
 
-                        const int form2DataLength = SectorMode2Form2.SubHeaderSize + SectorMode2Form2.UserDataSize;
+                        const int form2DataLength = ISector.SubHeaderSizeMode2Form2 + ISector.UserDataSizeMode2Form2;
 
                         var form2Data = span.Slice(form2DataPosition, form2DataLength);
 

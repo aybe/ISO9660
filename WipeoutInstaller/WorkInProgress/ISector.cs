@@ -5,8 +5,60 @@ using System.Runtime.InteropServices;
 namespace WipeoutInstaller.WorkInProgress;
 
 public interface ISector
+    // CD-ROM
+    // https://en.wikipedia.org/wiki/CD-ROM
+    // ECMA 130
+    // https://www.ecma-international.org/wp-content/uploads/ECMA-130_2nd_edition_june_1996.pdf 
+    // SYSTEM DESCRIPTION CD-ROM XA, PHILIPS/SONY, May 1991
+    // https://archive.org/details/xa-10-may-1991
+    // CD Cracking Uncovered Protection Against Unsanctioned CD Copying
+    // https://archive.org/details/CDCrackingUncoveredProtectionAgainstUnsanctionedCDCopyingKrisKaspersky
 {
+
     public const int Size = 2352;
+    
+    public const int SyncPosition = 0;
+    public const int SyncSize = 12;
+    
+    public const int HeaderPosition = 12;
+    public const int HeaderSize = 4;
+
+    public const int EdcPositionMode1 = 2064;
+    public const int EdcPositionMode2Form1 = 2072;
+    public const int EdcPositionMode2Form2 = 2348;
+    public const int EdcSize = 4;
+
+    public const int IntermediatePositionMode1 = 2068;
+    public const int IntermediateSizeMode1 = 8;
+
+    public const int PParityPositionMode1 = 2076;
+    public const int PParityPositionMode2Form1 = 2076;
+    public const int PParitySizeMode1 = 172;
+    public const int PParitySizeMode2Form1 = 172;
+    
+    public const int QParityPositionMode1 = 2076;
+    public const int QParityPositionMode2Form1 = 2248;
+    public const int QParitySizeMode1 = 104;
+    public const int QParitySizeMode2Form1 = 104;
+    
+    public const int SubHeaderPositionMode2Form1 = 16;
+    public const int SubHeaderPositionMode2Form2 = 16;
+    public const int SubHeaderSizeMode2Form1 = 8;
+    public const int SubHeaderSizeMode2Form2 = 8;
+
+    public const int UserDataPositionAudio = 0;
+    public const int UserDataPositionMode0 = 16;
+    public const int UserDataPositionMode1 = 16;
+    public const int UserDataPositionMode2Form1 = 24;
+    public const int UserDataPositionMode2Form2 = 24;
+    public const int UserDataPositionMode2FormLess = 16;
+    
+    public const int UserDataSizeAudio = 2352;
+    public const int UserDataSizeMode0 = 2336;
+    public const int UserDataSizeMode1 = 2048;
+    public const int UserDataSizeMode2Form1 = 2048;
+    public const int UserDataSizeMode2Form2 = 2324;
+    public const int UserDataSizeMode2FormLess = 2336;
 
     uint GetEdc();
 

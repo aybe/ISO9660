@@ -2,50 +2,30 @@ namespace WipeoutInstaller.WorkInProgress;
 
 public unsafe struct SectorMode2Form2 : ISector, ISectorHeader
 {
-    public const int SyncPosition = 0;
+    public fixed byte Sync[ISector.SyncSize];
 
-    public const int SyncSize = 12;
+    public fixed byte Header[ISector.HeaderSize];
 
-    public fixed byte Sync[SyncSize];
+    public fixed byte SubHeader[ISector.SubHeaderSizeMode2Form2];
 
-    public const int HeaderPosition = SyncPosition + SyncSize;
+    public fixed byte UserData[ISector.UserDataSizeMode2Form2];
 
-    public const int HeaderSize = 4;
-
-    public fixed byte Header[HeaderSize];
-
-    public const int SubHeaderPosition = HeaderPosition + HeaderSize;
-
-    public const int SubHeaderSize = 8;
-
-    public fixed byte SubHeader[SubHeaderSize];
-
-    public const int UserDataPosition = SubHeaderPosition + SubHeaderSize;
-
-    public const int UserDataSize = 2324;
-
-    public fixed byte UserData[UserDataSize];
-
-    public const int ReservedOrEdcPosition = UserDataPosition + UserDataSize;
-
-    public const int ReservedOrEdcSize = 4;
-
-    public fixed byte ReservedOrEdc[ReservedOrEdcSize];
+    public fixed byte ReservedOrEdc[ISector.EdcSize];
 
     public uint GetEdc()
     {
-        return ISector.ReadUInt32LE(ref this, ReservedOrEdcPosition);
+        return ISector.ReadUInt32LE(ref this, ISector.EdcPositionMode2Form2);
     }
 
     public uint GetEdcSum()
     {
-        return ISector.GetEdcSum(ref this, SubHeaderPosition, SubHeaderSize + UserDataSize);
+        return ISector.GetEdcSum(ref this, ISector.SubHeaderPositionMode2Form2, ISector.SubHeaderSizeMode2Form2 + ISector.UserDataSizeMode2Form2);
     }
 
     public Span<byte> GetUserData()
     {
-        return ISector.GetSlice(ref this, UserDataPosition, UserDataSize);
+        return ISector.GetSlice(ref this, ISector.UserDataPositionMode2Form2, ISector.UserDataSizeMode2Form2);
     }
 
-    SectorHeader ISectorHeader.Header => ISector.GetHeader(ref this, HeaderPosition, HeaderSize);
+    SectorHeader ISectorHeader.Header => ISector.GetHeader(ref this, ISector.HeaderPosition, ISector.HeaderSize);
 }

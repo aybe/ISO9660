@@ -2,62 +2,34 @@ namespace WipeoutInstaller.WorkInProgress;
 
 public unsafe struct SectorMode1 : ISector, ISectorHeader
 {
-    public const int SyncPosition = 0;
+    public fixed byte Sync[ISector.SyncSize];
 
-    public const int SyncSize = 12;
+    public fixed byte Header[ISector.HeaderSize];
 
-    public fixed byte Sync[SyncSize];
+    public fixed byte UserData[ISector.UserDataSizeMode1];
 
-    public const int HeaderPosition = SyncPosition + SyncSize;
+    public fixed byte Edc[ISector.EdcSize];
 
-    public const int HeaderSize = 4;
+    public fixed byte Intermediate[ISector.IntermediateSizeMode1];
 
-    public fixed byte Header[HeaderSize];
+    public fixed byte PParity[ISector.PParitySizeMode1];
 
-    public const int UserDataPosition = HeaderPosition + HeaderSize;
-
-    public const int UserDataSize = 2048;
-
-    public fixed byte UserData[UserDataSize];
-
-    public const int EdcPosition = UserDataPosition + UserDataSize;
-
-    public const int EdcSize = 4;
-
-    public fixed byte Edc[EdcSize];
-
-    public const int IntermediatePosition = EdcPosition + EdcSize;
-
-    public const int IntermediateSize = 8;
-
-    public fixed byte Intermediate[IntermediateSize];
-
-    public const int PParityPosition = IntermediatePosition + IntermediateSize;
-
-    public const int PParitySize = 172;
-
-    public fixed byte PParity[PParitySize];
-
-    public const int QParityPosition = IntermediatePosition + IntermediateSize;
-
-    public const int QParitySize = 104;
-
-    public fixed byte QParity[QParitySize];
+    public fixed byte QParity[ISector.QParitySizeMode1];
 
     public uint GetEdc()
     {
-        return ISector.ReadUInt32LE(ref this, EdcPosition);
+        return ISector.ReadUInt32LE(ref this, ISector.EdcPositionMode1);
     }
 
     public uint GetEdcSum()
     {
-        return ISector.GetEdcSum(ref this, SyncPosition, SyncSize + HeaderSize + UserDataSize);
+        return ISector.GetEdcSum(ref this, ISector.SyncPosition, ISector.SyncSize + ISector.HeaderSize + ISector.UserDataSizeMode1);
     }
 
     public Span<byte> GetUserData()
     {
-        return ISector.GetSlice(ref this, UserDataPosition, UserDataSize);
+        return ISector.GetSlice(ref this, ISector.UserDataPositionMode1, ISector.UserDataSizeMode1);
     }
 
-    SectorHeader ISectorHeader.Header => ISector.GetHeader(ref this, HeaderPosition, HeaderSize);
+    SectorHeader ISectorHeader.Header => ISector.GetHeader(ref this, ISector.HeaderPosition, ISector.HeaderSize);
 }
