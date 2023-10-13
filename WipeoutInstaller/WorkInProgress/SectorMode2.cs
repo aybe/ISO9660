@@ -1,9 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
-using WipeoutInstaller.WorkInProgress;
 
-namespace WipeoutInstaller.XA;
+namespace WipeoutInstaller.WorkInProgress;
 
 [UsedImplicitly]
 [StructLayout(LayoutKind.Sequential, Size = SectorConstants.Size)]

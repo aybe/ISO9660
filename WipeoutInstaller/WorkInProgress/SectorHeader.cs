@@ -1,4 +1,4 @@
-namespace WipeoutInstaller.XA;
+namespace WipeoutInstaller.WorkInProgress;
 
 public readonly struct SectorHeader
 {

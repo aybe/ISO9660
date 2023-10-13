@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace WipeoutInstaller.XA;
+namespace WipeoutInstaller.WorkInProgress;
 
 [StructLayout(LayoutKind.Sequential, Size = 3)]
 public readonly struct SectorAddress

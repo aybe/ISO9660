@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 using JetBrains.Annotations;
 using WipeoutInstaller.Extensions;
 using WipeoutInstaller.WorkInProgress;
-using WipeoutInstaller.XA;
 
 namespace WipeoutInstaller;
 
