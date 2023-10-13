@@ -9,6 +9,7 @@ namespace WipeoutInstaller;
 public class UnitTestDisc : UnitTestBase
 {
     [TestMethod]
+    [DataRow(@"C:\Temp\CD-I Demo Disc - Fall 1996 - Spring 1997.cue")]
     [DataRow(@"C:\Temp\UFO - Enemy Unknown (1994)(MicroProse).cue")]
     [DataRow(@"C:\Temp\WipEout (Europe) (v1.1) - Multi.cue")]
     [DataRow(@"C:\Temp\WipEout (Europe) (v1.1) - Single.cue")]
