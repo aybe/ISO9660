@@ -41,7 +41,7 @@ public static partial class CueSheetParser
 
             var handled = false;
 
-            foreach (var pair in Handlers2)
+            foreach (var pair in Dictionary)
             {
                 var regex = pair.Value();
 
@@ -172,7 +172,7 @@ public static partial class CueSheetParser
 
 public static partial class CueSheetParser
 {
-    private static readonly IReadOnlyDictionary<Action<Context>, Func<Regex>> Handlers2 =
+    private static readonly IReadOnlyDictionary<Action<Context>, Func<Regex>> Dictionary =
         new Dictionary<Action<Context>, Func<Regex>>
         {
             { WhiteSpaceHandler, WhiteSpaceRegex },
