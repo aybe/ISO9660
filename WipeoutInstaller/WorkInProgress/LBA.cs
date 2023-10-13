@@ -107,4 +107,9 @@ public readonly struct LBA : IComparable<LBA>, IEquatable<LBA>
     {
         return new LBA(x.Position - y);
     }
+
+    public static implicit operator int(LBA lba)
+    {
+        return lba.Position;
+    }
 }
