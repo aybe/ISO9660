@@ -200,7 +200,7 @@ public class UnitTestDisc : UnitTestBase
             {
                 foreach (var track in file.Tracks)
                 {
-                    disc.Tracks.Add(new DiscTrackCueBin(disc, fileDirectory, file, track));
+                    disc.Tracks.Add(new DiscTrackCueBin(fileDirectory, file, track));
                 }
             }
 

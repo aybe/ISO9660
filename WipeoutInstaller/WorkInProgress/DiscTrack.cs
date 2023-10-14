@@ -4,27 +4,20 @@ namespace WipeoutInstaller.WorkInProgress;
 
 public abstract class DiscTrack : Disposable
 {
-    protected DiscTrack(Disc disc)
-    {
-        Disc = disc;
-    }
+    public virtual int Index { get; init; }
 
-    protected Disc Disc { get; }
+    public virtual MSF Position { get; init; }
 
-    public int Index { get; init; }
-
-    public MSF Position { get; init; } // TODO make position absolute (for multi-file cue/bin)
-
-    public DiscTrackType Type { get; init; }
+    public virtual DiscTrackType Type { get; init; }
 
     internal Stream Stream { get; init; } = null!;
+
+    public abstract int GetPosition();
+
+    public abstract ISector ReadSector(in int index);
 
     public override string ToString()
     {
         return $"{nameof(Index)}: {Index}, {nameof(Position)}: {Position}, {nameof(Type)}: {Type}";
     }
-
-    public abstract ISector ReadSector(int index);
-
-    public abstract int GetPosition();
 }

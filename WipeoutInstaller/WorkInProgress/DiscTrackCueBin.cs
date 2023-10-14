@@ -2,15 +2,10 @@
 
 internal sealed class DiscTrackCueBin : DiscTrack
 {
-    public DiscTrackCueBin(Disc disc, string cueSheetDirectory, CueSheetFile cueSheetFile, CueSheetTrack cueSheetTrack)
-        : base(disc)
+    public DiscTrackCueBin(string cueSheetDirectory, CueSheetFile cueSheetFile, CueSheetTrack cueSheetTrack)
     {
         CueSheetDirectory = cueSheetDirectory;
         CueSheetTrack     = cueSheetTrack;
-        TypeInternal      = cueSheetTrack.Type;  // TODO inline
-        Index             = cueSheetTrack.Index; // TODO inline
-        Position          = cueSheetTrack.Indices.Single(s => s.Number is 1).Position;
-        Type              = GetTrackType(cueSheetTrack.Type);
         Stream            = File.OpenRead(Path.Combine(cueSheetDirectory, cueSheetFile.Name));
     }
 
@@ -18,40 +13,52 @@ internal sealed class DiscTrackCueBin : DiscTrack
 
     private CueSheetTrack CueSheetTrack { get; }
 
-    private CueSheetTrackType TypeInternal { get; }
+    public override int Index => CueSheetTrack.Index;
+
+    public override MSF Position => CueSheetTrack.Indices.Single(s => s.Number is 1).Position;
+
+    public override DiscTrackType Type
+    {
+        get
+        {
+            var source = CueSheetTrack.Type;
+
+            var target = source switch // TODO implement other track types
+            {
+                CueSheetTrackType.Audio    => DiscTrackType.Audio,
+                CueSheetTrackType.Mode1Raw => DiscTrackType.Data,
+                CueSheetTrackType.Mode2Raw => DiscTrackType.Data,
+                _                          => throw new NotSupportedException(source.ToString())
+            };
+
+            return target;
+        }
+    }
 
     protected override void DisposeManaged()
     {
         Stream.Dispose();
     }
 
-    private static DiscTrackType GetTrackType(CueSheetTrackType trackType)
-    {
-        return trackType switch // TODO implement other track types
-        {
-            CueSheetTrackType.Audio    => DiscTrackType.Audio,
-            CueSheetTrackType.Mode1Raw => DiscTrackType.Data,
-            CueSheetTrackType.Mode2Raw => DiscTrackType.Data,
-            _                          => throw new NotSupportedException(trackType.ToString())
-        };
-    }
-
-    public override ISector ReadSector(int index)
+    public override ISector ReadSector(in int index)
     {
         if (index < 0 || index >= Stream.Length / ISector.Size)
         {
             throw new ArgumentOutOfRangeException(nameof(index), index, null);
         }
 
-
         Stream.Position = index * ISector.Size;
 
-        return TypeInternal switch
+        var type = CueSheetTrack.Type;
+
+        var sector = type switch // TODO implement other track types
         {
             CueSheetTrackType.Mode1Raw => ISector.Read<SectorMode1>(Stream),
             CueSheetTrackType.Mode2Raw => ISector.Read<SectorMode2Form1>(Stream),
-            _                          => throw new NotSupportedException($"Track mode not supported: {TypeInternal}.")
+            _                          => throw new NotSupportedException($"Track mode not supported: {type}.")
         };
+
+        return sector;
     }
 
     public override int GetPosition() // pretty complex non-sense
