@@ -17,11 +17,6 @@ public class UnitTestSector : UnitTestBase
     [DataRow(@"C:\Temp\CD-I Demo Disc - Fall 1996 - Spring 1997.bin", 1605, SectorType.Mode2Form2)]
     public void TestSectorMode(string path, int sectorIndex, SectorType sectorTypeExpected)
     {
-        const int headerPosition = 12; // TODO extract
-        const int headerSize = 4;      // TODO extract
-        const int syncPosition = 0;    // TODO extract
-        const int syncSize = 12;       // TODO extract
-
         using var stream = File.OpenRead(path);
         using var reader = new BinaryReader(stream);
 
@@ -31,7 +26,7 @@ public class UnitTestSector : UnitTestBase
 
         var span = reader.ReadBytes(ISector.Size).AsSpan();
 
-        var header = MemoryMarshal.Read<SectorHeader>(span.Slice(headerPosition, headerSize));
+        var header = MemoryMarshal.Read<SectorHeader>(span.Slice(ISector.HeaderPosition, ISector.HeaderSize));
 
         var address = header.Address;
 
@@ -51,7 +46,7 @@ public class UnitTestSector : UnitTestBase
 
         if (match)
         {
-            var sync = span.Slice(syncPosition, syncSize);
+            var sync = span.Slice(ISector.SyncPosition, ISector.SyncSize);
 
             ReadOnlySpan<byte> syncPattern = stackalloc byte[12] { 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00 };
 
