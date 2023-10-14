@@ -2,11 +2,14 @@
 
 public class CueSheetFile
 {
-    public CueSheetFile(string name, CueSheetFileType type)
+    public CueSheetFile(CueSheet sheet, string name, CueSheetFileType type)
     {
-        Name = name;
-        Type = type;
+        Sheet = sheet;
+        Name  = name;
+        Type  = type;
     }
+
+    public CueSheet Sheet { get; }
 
     public string Name { get; }
 

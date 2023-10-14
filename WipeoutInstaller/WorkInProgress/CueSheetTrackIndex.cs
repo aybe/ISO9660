@@ -2,11 +2,14 @@
 
 public sealed class CueSheetTrackIndex
 {
-    public CueSheetTrackIndex(int number, MSF position)
+    public CueSheetTrackIndex(CueSheetTrack track, int number, MSF position)
     {
+        Track    = track;
         Number   = number;
         Position = position;
     }
+
+    public CueSheetTrack Track { get; }
 
     public int Number { get; }
 

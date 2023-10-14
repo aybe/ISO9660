@@ -2,11 +2,14 @@
 
 public class CueSheetTrack
 {
-    public CueSheetTrack(int index, CueSheetTrackType type)
+    public CueSheetTrack(CueSheetFile file, int index, CueSheetTrackType type)
     {
+        File  = file;
         Index = index;
         Type  = type;
     }
+
+    public CueSheetFile File { get; }
 
     public int Index { get; }
 

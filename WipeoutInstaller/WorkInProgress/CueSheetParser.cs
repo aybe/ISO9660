@@ -219,7 +219,7 @@ public static partial class CueSheetParser
             _          => throw new InvalidDataException($"Unknown file type: {type}.")
         };
 
-        context.File = new CueSheetFile(name, mode);
+        context.File = new CueSheetFile(context.Sheet, name, mode);
 
         context.Sheet.Files.Add(context.File);
     }
@@ -256,7 +256,7 @@ public static partial class CueSheetParser
         var s = Parse(context.Match.Groups[3], byte.Parse);
         var f = Parse(context.Match.Groups[4], byte.Parse);
 
-        var index = new CueSheetTrackIndex(i, new MSF(m, s, f));
+        var index = new CueSheetTrackIndex(context.Track, i, new MSF(m, s, f));
 
         if (context.Track.Indices.Count == 0)
         {
@@ -375,7 +375,7 @@ public static partial class CueSheetParser
             _            => throw new InvalidDataException($"Unknown track mode: {type}.")
         };
 
-        context.Track = new CueSheetTrack(index, mode);
+        context.Track = new CueSheetTrack(context.File, index, mode);
 
         context.File.Tracks.Add(context.Track);
     }
