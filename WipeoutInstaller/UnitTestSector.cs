@@ -12,8 +12,8 @@ public class UnitTestSector : UnitTestBase
 {
     [TestMethod]
     [DataRow(@"C:\Temp\UFO - Enemy Unknown (1994)(MicroProse).bin", 16, SectorType.Mode1)]
-    [DataRow(@"C:\Temp\WipEout (Europe) (v1.1).bin", 16, SectorType.Mode2Form1)]
-    [DataRow(@"C:\Temp\WipEout (Europe) (v1.1).bin", 27170, SectorType.Audio)]
+    [DataRow(@"C:\Temp\WipEout (Europe) (v1.1) - Single.bin", 16, SectorType.Mode2Form1)]
+    [DataRow(@"C:\Temp\WipEout (Europe) (v1.1) - Single.bin", 27170, SectorType.Audio)]
     [DataRow(@"C:\Temp\CD-I Demo Disc - Fall 1996 - Spring 1997.bin", 1605, SectorType.Mode2Form2)]
     public void TestSectorMode(string path, int sectorIndex, SectorType sectorTypeExpected)
     {
