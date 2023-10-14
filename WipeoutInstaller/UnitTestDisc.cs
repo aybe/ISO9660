@@ -8,6 +8,74 @@ namespace WipeoutInstaller;
 [SuppressMessage("ReSharper", "StringLiteralTypo")]
 public class UnitTestDisc : UnitTestBase
 {
+    private static readonly Dictionary<string, Dictionary<int, int>> TestIsoReadingPositions = new()
+    {
+        {
+            @"C:\Temp\CD-I Demo Disc - Fall 1996 - Spring 1997.cue", new Dictionary<int, int>
+            {
+                { 1, 0 },
+                { 2, 1575 },
+                { 3, 29016 },
+                { 4, 49775 },
+                { 5, 54655 },
+                { 6, 66263 },
+                { 7, 68124 },
+                { 8, 72881 },
+                { 9, 77661 },
+                { 10, 80425 },
+                { 11, 86869 },
+                { 12, 94858 },
+                { 13, 97393 },
+                { 14, 105778 },
+                { 15, 114931 },
+                { 16, 120177 },
+                { 17, 122361 },
+                { 18, 127102 },
+                { 19, 131890 }
+            }
+        },
+        {
+            @"C:\Temp\UFO - Enemy Unknown (1994)(MicroProse).cue", new Dictionary<int, int>
+            {
+                { 1, 0 }
+            }
+        },
+        {
+            @"C:\Temp\WipEout (Europe) (v1.1) - Multi.cue", new Dictionary<int, int>
+            {
+                { 1, 0 },
+                { 2, 27170 },
+                { 3, 50826 },
+                { 4, 74985 },
+                { 5, 97925 },
+                { 6, 121601 },
+                { 7, 145373 },
+                { 8, 169295 },
+                { 9, 193780 },
+                { 10, 216849 },
+                { 11, 245801 },
+                { 12, 267764 }
+            }
+        },
+        {
+            @"C:\Temp\WipEout (Europe) (v1.1) - Single.cue", new Dictionary<int, int>
+            {
+                { 1, 0 },
+                { 2, 27170 },
+                { 3, 50826 },
+                { 4, 74985 },
+                { 5, 97925 },
+                { 6, 121601 },
+                { 7, 145373 },
+                { 8, 169295 },
+                { 9, 193780 },
+                { 10, 216849 },
+                { 11, 245801 },
+                { 12, 267764 }
+            }
+        }
+    };
+
     [TestMethod]
     [DataRow(@"C:\Temp\CD-I Demo Disc - Fall 1996 - Spring 1997.cue")]
     [DataRow(@"C:\Temp\UFO - Enemy Unknown (1994)(MicroProse).cue")]
@@ -27,74 +95,6 @@ public class UnitTestDisc : UnitTestBase
 
         using var disc = LoadFileSystem(sheet, path);
 
-        var dictionary = new Dictionary<string, Dictionary<int, int>>
-        {
-            {
-                @"C:\Temp\CD-I Demo Disc - Fall 1996 - Spring 1997.cue", new Dictionary<int, int>
-                {
-                    { 1, 0 },
-                    { 2, 1575 },
-                    { 3, 29016 },
-                    { 4, 49775 },
-                    { 5, 54655 },
-                    { 6, 66263 },
-                    { 7, 68124 },
-                    { 8, 72881 },
-                    { 9, 77661 },
-                    { 10, 80425 },
-                    { 11, 86869 },
-                    { 12, 94858 },
-                    { 13, 97393 },
-                    { 14, 105778 },
-                    { 15, 114931 },
-                    { 16, 120177 },
-                    { 17, 122361 },
-                    { 18, 127102 },
-                    { 19, 131890 }
-                }
-            },
-            {
-                @"C:\Temp\UFO - Enemy Unknown (1994)(MicroProse).cue", new Dictionary<int, int>
-                {
-                    { 1, 0 }
-                }
-            },
-            {
-                @"C:\Temp\WipEout (Europe) (v1.1) - Multi.cue", new Dictionary<int, int>
-                {
-                    { 1, 0 },
-                    { 2, 27170 },
-                    { 3, 50826 },
-                    { 4, 74985 },
-                    { 5, 97925 },
-                    { 6, 121601 },
-                    { 7, 145373 },
-                    { 8, 169295 },
-                    { 9, 193780 },
-                    { 10, 216849 },
-                    { 11, 245801 },
-                    { 12, 267764 }
-                }
-            },
-            {
-                @"C:\Temp\WipEout (Europe) (v1.1) - Single.cue", new Dictionary<int, int>
-                {
-                    { 1, 0 },
-                    { 2, 27170 },
-                    { 3, 50826 },
-                    { 4, 74985 },
-                    { 5, 97925 },
-                    { 6, 121601 },
-                    { 7, 145373 },
-                    { 8, 169295 },
-                    { 9, 193780 },
-                    { 10, 216849 },
-                    { 11, 245801 },
-                    { 12, 267764 }
-                }
-            }
-        };
-
         foreach (var track in disc.Tracks)
         {
             using var indent1 = Indent(1);
@@ -103,13 +103,13 @@ public class UnitTestDisc : UnitTestBase
 
             using var indent2 = Indent(2);
 
-            var actual = track.GetPosition();
+            var actualPosition = track.GetPosition();
 
-            WriteLine(actual);
+            WriteLine(actualPosition);
 
-            var expected = dictionary[path][track.Index];
+            var expectedPosition = TestIsoReadingPositions[path][track.Index];
 
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expectedPosition, actualPosition);
         }
 
         if (!disc.TryGetIso9660FileSystem(out var result))
