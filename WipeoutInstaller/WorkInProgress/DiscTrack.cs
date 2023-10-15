@@ -12,8 +12,6 @@ public abstract class DiscTrack : Disposable
 
     public abstract DiscTrackType Type { get; }
 
-    internal Stream Stream { get; init; } = null!;
-
     public abstract ISector ReadSector(in int index);
 
     public override string ToString()

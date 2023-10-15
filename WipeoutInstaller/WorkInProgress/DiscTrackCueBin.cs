@@ -6,9 +6,10 @@ internal sealed class DiscTrackCueBin : DiscTrack
 
     public DiscTrackCueBin(CueSheetTrack track)
     {
-        Track  = track;
-        Stream = File.OpenRead(track.File.Name);
+        Stream = File.OpenRead((Track = track).File.Name);
     }
+
+    private Stream Stream { get; }
 
     private CueSheetTrack Track { get; }
 
