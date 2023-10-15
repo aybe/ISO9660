@@ -43,7 +43,7 @@ internal sealed class DiscTrackCueBin : DiscTrack
 
     public override ISector ReadSector(in int index)
     {
-        if (index < 0 || index >= Stream.Length / ISector.Size)
+        if (index < 0 || index >= Length)
         {
             throw new ArgumentOutOfRangeException(nameof(index), index, null);
         }
