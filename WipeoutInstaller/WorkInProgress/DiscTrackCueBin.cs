@@ -2,10 +2,10 @@
 
 internal sealed class DiscTrackCueBin : DiscTrack
 {
-    public DiscTrackCueBin(CueSheetFile cueSheetFile, CueSheetTrack cueSheetTrack)
+    public DiscTrackCueBin(CueSheetTrack cueSheetTrack)
     {
         CueSheetTrack = cueSheetTrack;
-        Stream        = File.OpenRead(cueSheetFile.Name);
+        Stream        = File.OpenRead(cueSheetTrack.File.Name);
     }
 
     private CueSheetTrack CueSheetTrack { get; }
