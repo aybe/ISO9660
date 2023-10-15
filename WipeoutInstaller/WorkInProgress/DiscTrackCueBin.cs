@@ -4,25 +4,25 @@ internal sealed class DiscTrackCueBin : DiscTrack
 {
     private const int PreGapSize = 150;
 
-    public DiscTrackCueBin(CueSheetTrack cueSheetTrack)
+    public DiscTrackCueBin(CueSheetTrack track)
     {
-        CueSheetTrack = cueSheetTrack;
-        Stream        = File.OpenRead(cueSheetTrack.File.Name);
+        Track  = track;
+        Stream = File.OpenRead(track.File.Name);
     }
 
-    private CueSheetTrack CueSheetTrack { get; }
+    private CueSheetTrack Track { get; }
 
-    public override int Index => CueSheetTrack.Index;
+    public override int Index => Track.Index;
 
-    public override int Length => GetLength(CueSheetTrack);
+    public override int Length => GetLength(Track);
 
-    public override int Position => GetPosition(CueSheetTrack);
+    public override int Position => GetPosition(Track);
 
     public override DiscTrackType Type
     {
         get
         {
-            var source = CueSheetTrack.Type;
+            var source = Track.Type;
 
             var target = source switch // TODO implement other track types
             {
@@ -50,7 +50,7 @@ internal sealed class DiscTrackCueBin : DiscTrack
 
         Stream.Position = index * ISector.Size;
 
-        var type = CueSheetTrack.Type;
+        var type = Track.Type;
 
         var sector = type switch // TODO implement other track types
         {
