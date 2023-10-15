@@ -4,13 +4,13 @@ namespace WipeoutInstaller.WorkInProgress;
 
 public abstract class DiscTrack : Disposable
 {
-    public virtual int Index { get; init; }
+    public abstract int Index { get; }
 
-    public virtual int Length { get; init; }
+    public abstract int Length { get; }
 
-    public virtual int Position { get; init; }
+    public abstract int Position { get; }
 
-    public virtual DiscTrackType Type { get; init; }
+    public abstract DiscTrackType Type { get; }
 
     internal Stream Stream { get; init; } = null!;
 
