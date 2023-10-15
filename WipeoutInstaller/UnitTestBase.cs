@@ -65,9 +65,9 @@ public abstract class UnitTestBase
         public IndentScope(UnitTestBase sender, uint indent)
         {
             Sender = sender;
-            Indent = indent;
+            Indent = sender.IndentLevelLocal.Value;
 
-            Sender.IndentLevelLocal.Value = Indent;
+            Sender.IndentLevelLocal.Value = indent;
         }
 
         public void Dispose()
