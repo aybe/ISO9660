@@ -13,29 +13,13 @@ internal sealed class DiscTrackCueBin : DiscTrack
 
     private CueSheetTrack Track { get; }
 
+    public override bool Audio => Track.Type == CueSheetTrackType.Audio;
+
     public override int Index => Track.Index;
 
     public override int Length => GetLength(Track);
 
     public override int Position => GetPosition(Track);
-
-    public override DiscTrackType Type
-    {
-        get
-        {
-            var source = Track.Type;
-
-            var target = source switch // TODO implement other track types
-            {
-                CueSheetTrackType.Audio    => DiscTrackType.Audio,
-                CueSheetTrackType.Mode1Raw => DiscTrackType.Data,
-                CueSheetTrackType.Mode2Raw => DiscTrackType.Data,
-                _                          => throw new NotSupportedException(source.ToString())
-            };
-
-            return target;
-        }
-    }
 
     protected override void DisposeManaged()
     {

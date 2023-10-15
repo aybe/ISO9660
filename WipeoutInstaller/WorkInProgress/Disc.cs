@@ -22,7 +22,7 @@ public sealed class Disc : Disposable
 
         var track = Tracks.FirstOrDefault();
 
-        if (track?.Type is not DiscTrackType.Data)
+        if (track?.Audio ?? false)
         {
             return false;
         }
