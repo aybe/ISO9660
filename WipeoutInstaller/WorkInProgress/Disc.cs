@@ -36,9 +36,7 @@ public sealed class Disc : Disposable
     {
         foreach (var track in Tracks)
         {
-            var lba = track.Position.ToLBA();
-
-            if (index < lba.Position)
+            if (index < track.Position)
             {
                 continue;
             }

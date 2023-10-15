@@ -176,7 +176,7 @@ public class UnitTestDisc : UnitTestBase
         {
             using var indent1 = Indent(1);
 
-            var actual = track.GetPosition();
+            var actual = track.Position;
 
             WriteLine(actual);
 

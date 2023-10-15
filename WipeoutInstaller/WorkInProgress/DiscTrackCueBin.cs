@@ -18,7 +18,7 @@ internal sealed class DiscTrackCueBin : DiscTrack
 
     public override int Index => CueSheetTrack.Index;
 
-    public override MSF Position => CueSheetTrack.Index1.Position;
+    public override int Position => GetPosition(CueSheetTrack);
 
     public override DiscTrackType Type
     {
@@ -136,11 +136,6 @@ internal sealed class DiscTrackCueBin : DiscTrack
         var sectors = bytes / ISector.Size;
 
         return Convert.ToInt32(sectors);
-    }
-
-    public override int GetPosition() // pretty complex non-sense
-    {
-        return GetPosition(CueSheetTrack);
     }
 
     private static int GetPosition(CueSheetTrack track)
