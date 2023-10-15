@@ -6,23 +6,9 @@ namespace WipeoutInstaller.WorkInProgress;
 
 public sealed class IsoImage : Disposable
 {
-    public IsoImage(Stream stream, Disc disc)
+    public IsoImage(Disc disc)
     {
         Disc = disc;
-
-        var length = stream.Length;
-
-        var type = true switch
-        {
-            true when length % 2048 == 0 => IsoImageSectorType.Cooked,
-            true when length % 2352 == 0 => IsoImageSectorType.Raw,
-            _                            => IsoImageSectorType.Unknown
-        };
-
-        if (type is not IsoImageSectorType.Raw)
-        {
-            throw new NotImplementedException(type.ToString());
-        }
 
         Descriptors = GetVolumeDescriptors();
 

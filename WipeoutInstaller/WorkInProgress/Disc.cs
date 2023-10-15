@@ -27,7 +27,7 @@ public sealed class Disc : Disposable
             return false;
         }
 
-        result = new IsoImage(track.Stream, this);
+        result = new IsoImage(this);
 
         return true;
     }
