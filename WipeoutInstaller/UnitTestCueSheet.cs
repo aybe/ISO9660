@@ -37,9 +37,7 @@ public class UnitTestCueSheet : UnitTestBase
                     TestContext.WriteLine($"Trying to parse file: {line}");
                     TestContext.WriteLine();
 
-                    using var stream = File.OpenRead(line);
-
-                    ParseCueSheet(path);
+                    ParseCueSheet(line);
                 }
                 else
                 {
