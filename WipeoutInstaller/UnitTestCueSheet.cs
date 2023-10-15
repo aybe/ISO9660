@@ -18,9 +18,7 @@ public class UnitTestCueSheet : UnitTestBase
     [DataRow(@"C:\Temp\WipEout (Europe) (v1.1) - Single.cue")]
     public void TestParsing(string path)
     {
-        using var stream = File.OpenRead(path);
-
-        ParseCueSheet(stream);
+        ParseCueSheet(path);
     }
 
     [TestMethod]
@@ -41,7 +39,7 @@ public class UnitTestCueSheet : UnitTestBase
 
                     using var stream = File.OpenRead(line);
 
-                    ParseCueSheet(stream);
+                    ParseCueSheet(path);
                 }
                 else
                 {
@@ -55,9 +53,9 @@ public class UnitTestCueSheet : UnitTestBase
         }
     }
 
-    private void ParseCueSheet(Stream stream)
+    private void ParseCueSheet(string path)
     {
-        var sheet = CueSheetParser.Parse(stream);
+        var sheet = CueSheetParser.Parse(path);
 
         foreach (var file in sheet.Files)
         {

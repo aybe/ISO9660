@@ -17,13 +17,14 @@ public static partial class CueSheetParser
 // TODO SONGWRITER
 // TODO POSTGAP
 {
-    public static CueSheet Parse(Stream stream)
+    public static CueSheet Parse(string path)
     {
+        using var stream = File.OpenRead(path);
         using var reader = new StreamReader(stream, Encoding.Default, true);
 
         var context = new Context
         {
-            Sheet = new CueSheet()
+            Sheet = new CueSheet(), Directory = Path.GetDirectoryName(path)
         };
 
         while (true)
@@ -115,6 +116,8 @@ public static partial class CueSheetParser
         public string Text { get; set; } = null!;
 
         public required CueSheet Sheet { get; init; }
+
+        public required string? Directory { get; init; }
 
         public CueSheetFile? File { get; set; }
 
@@ -218,6 +221,11 @@ public static partial class CueSheetParser
             "WAVE"     => CueSheetFileType.Wave,
             _          => throw new InvalidDataException($"Unknown file type: {type}.")
         };
+
+        if (Path.IsPathFullyQualified(name) is false)
+        {
+            name = Path.GetFullPath(Path.Combine(context.Directory ?? string.Empty, name));
+        }
 
         context.File = new CueSheetFile(context.Sheet, name, mode);
 
