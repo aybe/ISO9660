@@ -144,16 +144,33 @@ internal sealed class DiscTrackCueBin : DiscTrack
 
         var tracks = new LinkedList<CueSheetTrack>(files.SelectMany(s => s.Tracks));
 
-        var position = files.Count is 1 ? GetPositionSingleFile(track, tracks) : GetPositionMultiFile(track, tracks);
+        var position = -PreGapSize; // MSF 00:00.00 is LBA -150
 
-        position = GetPositionEcma130(track, tracks, position);
-
-        return position;
-    }
-
-    private static int GetPositionEcma130(CueSheetTrack track, LinkedList<CueSheetTrack> tracks, int position)
-    {
         for (var node = tracks.First; node != null; node = node.Next)
+        {
+            var value = node.Value;
+
+            if (files.Count == 1)
+            {
+                position = value.Indices[0].Position.ToLBA();
+
+                if (value == track)
+                {
+                    break;
+                }
+            }
+            else
+            {
+                if (value == track)
+                {
+                    break;
+                }
+
+                position += Convert.ToInt32(new FileInfo(value.File.Name).Length / ISector.Size);
+            }
+        }
+
+        for (var node = tracks.First; node != null; node = node.Next) // ECMA-130 - 20.2 User Data Area
         {
             var value = node.Value;
 
@@ -161,56 +178,10 @@ internal sealed class DiscTrackCueBin : DiscTrack
             var b = value.Index is not 1 && node.Previous is { } previous && previous.Value.Type != value.Type;
             var c = value.Type is not CueSheetTrackType.Audio && node.Next is { Value.Type: CueSheetTrackType.Audio };
 
-            if (a || b || c) // 20.2 User Data Area
+            if (a || b || c)
             {
                 position += PreGapSize;
             }
-
-            if (value == track)
-            {
-                break;
-            }
-        }
-
-        return position;
-    }
-
-    private static int GetPositionMultiFile(CueSheetTrack track, LinkedList<CueSheetTrack> tracks)
-    {
-        var position = -PreGapSize; // MSF 00:00.00 is LBA -150
-
-        for (var node = tracks.First; node != null; node = node.Next)
-        {
-            var value = node.Value;
-
-            if (value == track)
-            {
-                break;
-            }
-
-            var info = new FileInfo(value.File.Name);
-
-            var bytes = info.Length;
-
-            var sectors = bytes / ISector.Size;
-
-            position += Convert.ToInt32(sectors);
-        }
-
-        return position;
-    }
-
-    private static int GetPositionSingleFile(CueSheetTrack track, LinkedList<CueSheetTrack> tracks)
-    {
-        var position = -PreGapSize; // MSF 00:00.00 is LBA -150
-
-        for (var node = tracks.First; node != null; node = node.Next)
-        {
-            var value = node.Value;
-
-            var index = value.Indices[0];
-
-            position = index.Position.ToLBA();
 
             if (value == track)
             {
