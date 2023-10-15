@@ -15,6 +15,10 @@ public sealed class CueSheetTrack
 
     public CueSheetTrackType Type { get; }
 
+    public CueSheetTrackIndex? Index0 => Indices.SingleOrDefault(s => s.Number is 0);
+
+    public CueSheetTrackIndex Index1 => Indices.Single(s => s.Number is 1);
+
     public List<CueSheetTrackIndex> Indices { get; } = new();
 
     public CueSheetTrackFlags Flags { get; set; }

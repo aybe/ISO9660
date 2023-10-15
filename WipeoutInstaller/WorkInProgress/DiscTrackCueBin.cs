@@ -15,7 +15,7 @@ internal sealed class DiscTrackCueBin : DiscTrack
 
     public override int Index => CueSheetTrack.Index;
 
-    public override MSF Position => CueSheetTrack.Indices.Single(s => s.Number is 1).Position;
+    public override MSF Position => CueSheetTrack.Index1.Position;
 
     public override DiscTrackType Type
     {
@@ -139,8 +139,8 @@ internal sealed class DiscTrackCueBin : DiscTrack
         {
             var value = node.Value;
 
-            var index0 = value.Indices.SingleOrDefault(s => s.Number is 0);
-            var index1 = value.Indices.Single(s => s.Number is 1);
+            var index0 = value.Index0;
+            var index1 = value.Index1;
 
             position = index1.Position.ToLBA(); // absolute position
 
