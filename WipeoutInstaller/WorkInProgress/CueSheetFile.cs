@@ -1,6 +1,6 @@
 ﻿namespace WipeoutInstaller.WorkInProgress;
 
-public class CueSheetFile
+public sealed class CueSheetFile
 {
     public CueSheetFile(CueSheet sheet, string name, CueSheetFileType type)
     {

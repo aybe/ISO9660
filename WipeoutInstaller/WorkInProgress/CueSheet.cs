@@ -1,6 +1,6 @@
 ﻿namespace WipeoutInstaller.WorkInProgress;
 
-public class CueSheet
+public sealed class CueSheet
 {
     public List<string> Comments { get; } = new();
 
