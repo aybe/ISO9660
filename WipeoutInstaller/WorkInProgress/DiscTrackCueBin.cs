@@ -10,15 +10,11 @@ internal sealed class DiscTrackCueBin : DiscTrack
         Stream        = File.OpenRead(cueSheetTrack.File.Name);
     }
 
-    private CueSheet CueSheet => CueSheetTrack.File.Sheet;
-
-    private CueSheetFile CueSheetFile => CueSheetTrack.File;
-
     private CueSheetTrack CueSheetTrack { get; }
 
     public override int Index => CueSheetTrack.Index;
 
-    public override int Length => GetLength();
+    public override int Length => GetLength(CueSheetTrack);
 
     public override int Position => GetPosition(CueSheetTrack);
 
@@ -66,76 +62,60 @@ internal sealed class DiscTrackCueBin : DiscTrack
         return sector;
     }
 
-    private int GetLength()
+    private static int GetLength(CueSheetTrack track)
     {
-        return CueSheet.Files.Count is 1 ? GetLengthSingleFile() : GetLengthMultiFile();
-    }
+        var lengthStream = Convert.ToInt32(new FileInfo(track.File.Name).Length / ISector.Size);
 
-    private int GetLengthMultiFile()
-    {
-        var length = GetLengthFile();
+        var length = 0;
 
-        length -= PreGapSize; // TNO1
+        var files = track.File.Sheet.Files;
 
-        var index1 = CueSheetTrack.Index1;
-
-        length -= index1.Position.ToLBA();
-
-        return length;
-    }
-
-    private int GetLengthSingleFile()
-    {
-        var extent = GetLengthFile();
-
-        var tracks = new LinkedList<CueSheetTrack>(CueSheet.Files.SelectMany(s => s.Tracks));
-
-        for (var node = tracks.First; node != null; node = node.Next)
+        if (files.Count == 1)
         {
-            var prev = node.Previous;
-            var next = node.Next;
+            var tracks = new LinkedList<CueSheetTrack>(files.SelectMany(s => s.Tracks));
 
-            var pos1 = GetPosition(node.Value);
-            var pos2 = next != null ? GetPosition(next.Value) : extent;
-
-            var size = pos2 - pos1;
-
-            var a = node.Value.Type is not CueSheetTrackType.Audio &&
-                    prev != null && prev.Value.Type != node.Value.Type; // 6.32.3.18 SCSI MMC-5
-
-            var b = node.Value.Type is not CueSheetTrackType.Audio &&
-                    next != null && next.Value.Type != node.Value.Type; // 6.32.3.19 SCSI MMC-5
-
-            var c = next != null && node.Value.Index0 != null; // more implicit convention crap
-
-            if (a || b)
+            for (var node = tracks.First; node != null; node = node.Next)
             {
-                size -= PreGapSize;
-            }
+                var prev = node.Previous;
+                var next = node.Next;
 
-            if (c)
-            {
-                size -= PreGapSize;
-            }
+                var value = node.Value;
 
-            if (node.Value == CueSheetTrack)
-            {
-                return size;
+                var pos1 = GetPosition(value);
+                var pos2 = next != null ? GetPosition(next.Value) : lengthStream;
+
+                length = pos2 - pos1;
+
+                var a = value.Type is not CueSheetTrackType.Audio &&
+                        prev != null && prev.Value.Type != value.Type; // 6.32.3.18 SCSI MMC-5
+
+                var b = value.Type is not CueSheetTrackType.Audio &&
+                        next != null && next.Value.Type != value.Type; // 6.32.3.19 SCSI MMC-5
+
+                var c = next != null && value.Index0 != null; // more implicit convention crap
+
+                if (a || b)
+                {
+                    length -= PreGapSize;
+                }
+
+                if (c)
+                {
+                    length -= PreGapSize;
+                }
+
+                if (value == track)
+                {
+                    break;
+                }
             }
         }
+        else
+        {
+            length = lengthStream - PreGapSize - track.Index1.Position.ToLBA();
+        }
 
-        throw new InvalidOperationException();
-    }
-
-    private int GetLengthFile()
-    {
-        var info = new FileInfo(CueSheetFile.Name);
-
-        var bytes = info.Length;
-
-        var sectors = bytes / ISector.Size;
-
-        return Convert.ToInt32(sectors);
+        return length;
     }
 
     private static int GetPosition(CueSheetTrack track)
