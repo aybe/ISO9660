@@ -18,6 +18,8 @@ internal sealed class DiscTrackCueBin : DiscTrack
 
     public override int Index => CueSheetTrack.Index;
 
+    public override int Length => GetLength();
+
     public override int Position => GetPosition(CueSheetTrack);
 
     public override DiscTrackType Type
@@ -64,11 +66,9 @@ internal sealed class DiscTrackCueBin : DiscTrack
         return sector;
     }
 
-    public override int GetLength()
+    private int GetLength()
     {
-        var length = CueSheet.Files.Count is 1 ? GetLengthSingleFile() : GetLengthMultiFile();
-
-        return length;
+        return CueSheet.Files.Count is 1 ? GetLengthSingleFile() : GetLengthMultiFile();
     }
 
     private int GetLengthMultiFile()

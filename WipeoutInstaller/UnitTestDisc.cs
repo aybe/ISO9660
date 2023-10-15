@@ -191,7 +191,7 @@ public class UnitTestDisc : UnitTestBase
         {
             using var indent1 = Indent(1);
 
-            var actual = track.GetLength();
+            var actual = track.Length;
 
             WriteLine(actual);
 
