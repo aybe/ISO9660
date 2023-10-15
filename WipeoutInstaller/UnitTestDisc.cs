@@ -161,31 +161,43 @@ public class UnitTestDisc : UnitTestBase
 
         using var disc = LoadFileSystem(sheet, path);
 
+        WriteLine("Tracks:");
+
         foreach (var track in disc.Tracks)
         {
             using var indent1 = Indent(1);
 
             WriteLine(track);
+        }
 
-            using var indent2 = Indent(2);
+        WriteLine("Tracks positions:");
 
+        foreach (var track in disc.Tracks)
+        {
+            using var indent1 = Indent(1);
 
-            var actualPosition = track.GetPosition();
+            var actual = track.GetPosition();
 
-            WriteLine(actualPosition);
+            WriteLine(actual);
 
-            var expectedPosition = TestIsoReadingPositions[path][track.Index];
+            var expected = TestIsoReadingPositions[path][track.Index];
 
-            Assert.AreEqual(expectedPosition, actualPosition);
+            Assert.AreEqual(expected, actual, $"Track {track.Index}");
+        }
 
+        WriteLine("Tracks lengths:");
 
-            var actualLength = track.GetLength();
+        foreach (var track in disc.Tracks)
+        {
+            using var indent1 = Indent(1);
 
-            WriteLine(actualLength);
+            var actual = track.GetLength();
 
-            var expectedLength = TestIsoReadingLengths[path][track.Index];
+            WriteLine(actual);
 
-            Assert.AreEqual(expectedLength, actualLength);
+            var expected = TestIsoReadingLengths[path][track.Index];
+
+            Assert.AreEqual(expected, actual, $"Track {track.Index}");
         }
 
         if (!disc.TryGetIso9660FileSystem(out var result))
