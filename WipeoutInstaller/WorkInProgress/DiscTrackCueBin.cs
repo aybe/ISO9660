@@ -177,7 +177,7 @@ internal sealed class DiscTrackCueBin : DiscTrack
 
     private static int GetPositionMultiFile(CueSheetTrack track, LinkedList<CueSheetTrack> tracks)
     {
-        var position = -PreGapSize; // pre-gap
+        var position = -PreGapSize; // MSF 00:00.00 is LBA -150
 
         for (var node = tracks.First; node != null; node = node.Next)
         {
@@ -193,9 +193,8 @@ internal sealed class DiscTrackCueBin : DiscTrack
             var bytes = info.Length;
 
             var sectors = bytes / ISector.Size;
-            var length = Convert.ToInt32(sectors);
 
-            position += length;
+            position += Convert.ToInt32(sectors);
         }
 
         return position;
@@ -203,24 +202,15 @@ internal sealed class DiscTrackCueBin : DiscTrack
 
     private static int GetPositionSingleFile(CueSheetTrack track, LinkedList<CueSheetTrack> tracks)
     {
-        var position = 0;
+        var position = -PreGapSize; // MSF 00:00.00 is LBA -150
 
         for (var node = tracks.First; node != null; node = node.Next)
         {
             var value = node.Value;
 
-            var index0 = value.Index0;
-            var index1 = value.Index1;
+            var index = value.Indices[0];
 
-            position = index1.Position.ToLBA(); // absolute position
-
-            if (index0 is not null)
-            {
-                if (value.Index is not 1) // pre-gap
-                {
-                    position -= position - index0.Position.ToLBA();
-                }
-            }
+            position = index.Position.ToLBA();
 
             if (value == track)
             {
