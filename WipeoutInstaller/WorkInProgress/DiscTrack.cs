@@ -12,6 +12,8 @@ public abstract class DiscTrack : Disposable
 
     internal Stream Stream { get; init; } = null!;
 
+    public abstract int GetLength();
+
     public abstract int GetPosition();
 
     public abstract ISector ReadSector(in int index);

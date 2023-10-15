@@ -2,11 +2,17 @@
 
 internal sealed class DiscTrackCueBin : DiscTrack
 {
+    private const int PreGapSize = 150;
+
     public DiscTrackCueBin(CueSheetTrack cueSheetTrack)
     {
         CueSheetTrack = cueSheetTrack;
         Stream        = File.OpenRead(cueSheetTrack.File.Name);
     }
+
+    private CueSheet CueSheet => CueSheetTrack.File.Sheet;
+
+    private CueSheetFile CueSheetFile => CueSheetTrack.File;
 
     private CueSheetTrack CueSheetTrack { get; }
 
@@ -58,6 +64,80 @@ internal sealed class DiscTrackCueBin : DiscTrack
         return sector;
     }
 
+    public override int GetLength()
+    {
+        var length = CueSheet.Files.Count is 1 ? GetLengthSingleFile() : GetLengthMultiFile();
+
+        return length;
+    }
+
+    private int GetLengthMultiFile()
+    {
+        var length = GetLengthFile();
+
+        length -= PreGapSize; // TNO1
+
+        var index1 = CueSheetTrack.Index1;
+
+        length -= index1.Position.ToLBA();
+
+        return length;
+    }
+
+    private int GetLengthSingleFile()
+    {
+        var extent = GetLengthFile();
+
+        var tracks = new LinkedList<CueSheetTrack>(CueSheet.Files.SelectMany(s => s.Tracks));
+
+        for (var node = tracks.First; node != null; node = node.Next)
+        {
+            var prev = node.Previous;
+            var next = node.Next;
+
+            var pos1 = GetPosition(node.Value);
+            var pos2 = next != null ? GetPosition(next.Value) : extent;
+
+            var size = pos2 - pos1;
+
+            var a = node.Value.Type is not CueSheetTrackType.Audio &&
+                    prev != null && prev.Value.Type != node.Value.Type; // 6.32.3.18 SCSI MMC-5
+
+            var b = node.Value.Type is not CueSheetTrackType.Audio &&
+                    next != null && next.Value.Type != node.Value.Type; // 6.32.3.19 SCSI MMC-5
+
+            var c = next != null && node.Value.Index0 != null; // more implicit convention crap
+
+            if (a || b)
+            {
+                size -= PreGapSize;
+            }
+
+            if (c)
+            {
+                size -= PreGapSize;
+            }
+
+            if (node.Value == CueSheetTrack)
+            {
+                return size;
+            }
+        }
+
+        throw new InvalidOperationException();
+    }
+
+    private int GetLengthFile()
+    {
+        var info = new FileInfo(CueSheetFile.Name);
+
+        var bytes = info.Length;
+
+        var sectors = bytes / ISector.Size;
+
+        return Convert.ToInt32(sectors);
+    }
+
     public override int GetPosition() // pretty complex non-sense
     {
         return GetPosition(CueSheetTrack);
@@ -88,7 +168,7 @@ internal sealed class DiscTrackCueBin : DiscTrack
 
             if (a || b || c) // 20.2 User Data Area
             {
-                position += 150;
+                position += PreGapSize;
             }
 
             if (value == track)
@@ -102,7 +182,7 @@ internal sealed class DiscTrackCueBin : DiscTrack
 
     private static int GetPositionMultiFile(CueSheetTrack track, LinkedList<CueSheetTrack> tracks)
     {
-        var position = -150; // pre-gap
+        var position = -PreGapSize; // pre-gap
 
         for (var node = tracks.First; node != null; node = node.Next)
         {
