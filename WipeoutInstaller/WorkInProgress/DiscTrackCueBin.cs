@@ -2,14 +2,11 @@
 
 internal sealed class DiscTrackCueBin : DiscTrack
 {
-    public DiscTrackCueBin(string cueSheetDirectory, CueSheetFile cueSheetFile, CueSheetTrack cueSheetTrack)
+    public DiscTrackCueBin(CueSheetFile cueSheetFile, CueSheetTrack cueSheetTrack)
     {
-        CueSheetDirectory = cueSheetDirectory;
-        CueSheetTrack     = cueSheetTrack;
-        Stream            = File.OpenRead(Path.Combine(cueSheetDirectory, cueSheetFile.Name));
+        CueSheetTrack = cueSheetTrack;
+        Stream        = File.OpenRead(cueSheetFile.Name);
     }
-
-    private string CueSheetDirectory { get; }
 
     private CueSheetTrack CueSheetTrack { get; }
 
@@ -63,16 +60,16 @@ internal sealed class DiscTrackCueBin : DiscTrack
 
     public override int GetPosition() // pretty complex non-sense
     {
-        return GetPosition(CueSheetTrack, CueSheetDirectory);
+        return GetPosition(CueSheetTrack);
     }
 
-    private static int GetPosition(CueSheetTrack track, string directory)
+    private static int GetPosition(CueSheetTrack track)
     {
         var files = track.File.Sheet.Files;
 
         var tracks = new LinkedList<CueSheetTrack>(files.SelectMany(s => s.Tracks));
 
-        var position = files.Count is 1 ? GetPositionSingleFile(track, tracks) : GetPositionMultiFile(track, tracks, directory);
+        var position = files.Count is 1 ? GetPositionSingleFile(track, tracks) : GetPositionMultiFile(track, tracks);
 
         position = GetPositionEcma130(track, tracks, position);
 
@@ -103,7 +100,7 @@ internal sealed class DiscTrackCueBin : DiscTrack
         return position;
     }
 
-    private static int GetPositionMultiFile(CueSheetTrack track, LinkedList<CueSheetTrack> tracks, string directory)
+    private static int GetPositionMultiFile(CueSheetTrack track, LinkedList<CueSheetTrack> tracks)
     {
         var position = -150; // pre-gap
 
@@ -116,9 +113,7 @@ internal sealed class DiscTrackCueBin : DiscTrack
                 break;
             }
 
-            var path = Path.Combine(directory, value.File.Name);
-
-            var info = new FileInfo(path);
+            var info = new FileInfo(value.File.Name);
 
             var bytes = info.Length;
 
