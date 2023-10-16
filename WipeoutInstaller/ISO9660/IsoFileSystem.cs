@@ -120,30 +120,39 @@ public sealed class IsoFileSystem : Disposable
     {
         var records = new List<PathTableRecord>();
 
-        var sector = disc.ReadSector(pvd.LocationOfOccurrenceOfTypeLPathTable);
-
-        using var reader = sector.GetUserData().ToBinaryReader();
-
         var pathTableRead = 0L;
 
         var pathTableSize = pvd.PathTableSize;
 
-        if (pathTableSize > 2048) // TODO is temporary guard, check specifications and adjust
-        {
-            throw new NotImplementedException("The path table spans over multiple sectors.");
-        }
+        var sectorIndex = pvd.LocationOfOccurrenceOfTypeLPathTable.ToInt32();
 
         while (pathTableRead < pathTableSize)
         {
-            var recordPosition = reader.BaseStream.Position;
+            var sector = disc.ReadSector(sectorIndex);
 
-            var record = new PathTableRecord(reader);
+            using var reader = sector.GetUserData().ToBinaryReader();
 
-            var recordLength = reader.BaseStream.Position - recordPosition;
+            while (pathTableRead < pathTableSize)
+            {
+                var recordPosition = reader.BaseStream.Position;
 
-            pathTableRead += recordLength;
+                var record = new PathTableRecord(reader);
 
-            records.Add(record);
+                var recordLength = reader.BaseStream.Position - recordPosition;
+
+                pathTableRead += recordLength;
+
+                records.Add(record);
+
+                var length = reader.BaseStream.Length - reader.BaseStream.Position;
+
+                if (length < PathTableRecord.MinimumLength)
+                {
+                    break;
+                }
+            }
+
+            sectorIndex++;
         }
 
         return records;

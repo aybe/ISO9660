@@ -2,6 +2,8 @@ namespace WipeoutInstaller.ISO9660;
 
 public sealed class PathTableRecord
 {
+    public const int MinimumLength = 8;
+
     public PathTableRecord(BinaryReader reader)
     {
         LengthOfDirectoryIdentifier = new Iso711(reader);
