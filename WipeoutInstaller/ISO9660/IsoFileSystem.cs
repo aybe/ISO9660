@@ -1,5 +1,4 @@
 using WipeoutInstaller.Extensions;
-using WipeoutInstaller.JSON;
 using WipeoutInstaller.WorkInProgress;
 
 namespace WipeoutInstaller.ISO9660;
@@ -16,8 +15,6 @@ public sealed class IsoFileSystem : Disposable
     }
 
     private Disc Disc { get; }
-
-    public Action<object?>? Logger { get; set; }
 
     private List<VolumeDescriptor> Descriptors { get; }
 
@@ -186,17 +183,5 @@ public sealed class IsoFileSystem : Disposable
         }
 
         return dictionary;
-    }
-
-    private void Log(object? value = null)
-    {
-        Logger?.Invoke(value);
-    }
-
-    private void LogJson(object? value = null)
-    {
-        var json = JsonUtility.ToJson(value);
-
-        Log(json);
     }
 }
