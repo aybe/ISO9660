@@ -2,7 +2,6 @@
 using System.Text;
 using WipeoutInstaller.ISO9660;
 using WipeoutInstaller.WorkInProgress;
-using IsoFileSystemEntry = WipeoutInstaller.ISO9660.IsoFileSystemEntry;
 
 namespace WipeoutInstaller;
 
@@ -202,14 +201,9 @@ public class UnitTestDisc : UnitTestBase
             Assert.AreEqual(expected, actual, $"Track {track.Index}");
         }
 
-        if (!disc.TryGetIso9660FileSystem(out var result))
-        {
-            throw new InvalidOperationException("The disc has no ISO9660 file system.");
-        }
+        var isoFileSystem = IsoFileSystem.Read(disc);
 
-        var rootDirectory = IsoFileSystem.GetRootDirectory(disc, result.PrimaryVolumeDescriptor);
-
-        var value = GetTextTree(rootDirectory);
+        var value = GetTextTree(isoFileSystem.RootDirectory);
 
         WriteLine(value);
     }

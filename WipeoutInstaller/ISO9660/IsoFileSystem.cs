@@ -5,20 +5,28 @@ namespace WipeoutInstaller.ISO9660;
 
 public sealed class IsoFileSystem : Disposable
 {
-    public IsoFileSystem(Disc disc)
+    private IsoFileSystem(IList<VolumeDescriptor> descriptors, IsoFileSystemEntryDirectory rootDirectory)
     {
-        Disc = disc;
-
-        Descriptors = GetVolumeDescriptors(Disc);
-
-        PrimaryVolumeDescriptor = Descriptors.OfType<PrimaryVolumeDescriptor>().Single();
+        Descriptors   = descriptors;
+        RootDirectory = rootDirectory;
     }
 
-    private Disc Disc { get; }
+    public IList<VolumeDescriptor> Descriptors { get; }
 
-    private List<VolumeDescriptor> Descriptors { get; }
+    public IsoFileSystemEntryDirectory RootDirectory { get; }
 
-    public PrimaryVolumeDescriptor PrimaryVolumeDescriptor { get; }
+    public static IsoFileSystem Read(Disc disc)
+    {
+        var descriptors = GetVolumeDescriptors(disc);
+
+        var pvd = descriptors.OfType<PrimaryVolumeDescriptor>().Single();
+
+        var rootDirectory = GetRootDirectory(disc, pvd);
+
+        var isoFileSystem = new IsoFileSystem(descriptors, rootDirectory);
+
+        return isoFileSystem;
+    }
 
     private static List<VolumeDescriptor> GetVolumeDescriptors(Disc disc)
     {
@@ -59,7 +67,7 @@ public sealed class IsoFileSystem : Disposable
         return descriptors;
     }
 
-    public static IsoFileSystemEntryDirectory GetRootDirectory(Disc disc, PrimaryVolumeDescriptor pvd)
+    private static IsoFileSystemEntryDirectory GetRootDirectory(Disc disc, PrimaryVolumeDescriptor pvd)
     {
         var pathTableRecords = GetPathTableRecords(disc, pvd);
         var directoryRecords = GetDirectoryRecords(disc, pathTableRecords);
