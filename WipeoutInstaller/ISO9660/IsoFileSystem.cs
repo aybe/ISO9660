@@ -17,16 +17,16 @@ public sealed class IsoFileSystem : Disposable
 
     public static IsoFileSystem Read(Disc disc)
     {
-        var descriptorSet = GetVolumeDescriptors(disc);
+        var descriptorSet = ReadVolumeDescriptors(disc);
 
-        var rootDirectory = GetRootDirectory(disc, descriptorSet.PrimaryVolumeDescriptor);
+        var rootDirectory = ReadRootDirectory(disc, descriptorSet.PrimaryVolumeDescriptor);
 
         var isoFileSystem = new IsoFileSystem(descriptorSet, rootDirectory);
 
         return isoFileSystem;
     }
 
-    private static VolumeDescriptorSet GetVolumeDescriptors(Disc disc)
+    private static VolumeDescriptorSet ReadVolumeDescriptors(Disc disc)
     {
         var sectorIndex = 16;
 
@@ -65,10 +65,10 @@ public sealed class IsoFileSystem : Disposable
         return descriptors;
     }
 
-    private static IsoFileSystemEntryDirectory GetRootDirectory(Disc disc, PrimaryVolumeDescriptor pvd)
+    private static IsoFileSystemEntryDirectory ReadRootDirectory(Disc disc, PrimaryVolumeDescriptor pvd)
     {
-        var pathTableRecords = GetPathTableRecords(disc, pvd);
-        var directoryRecords = GetDirectoryRecords(disc, pathTableRecords);
+        var pathTableRecords = ReadPathTableRecords(disc, pvd);
+        var directoryRecords = ReadDirectoryRecords(disc, pathTableRecords);
 
         var dictionary = pathTableRecords.ToDictionary(s => s.LocationOfExtent.ToInt32(), s => s);
 
@@ -116,7 +116,7 @@ public sealed class IsoFileSystem : Disposable
         return firstDirectory;
     }
 
-    private static IList<PathTableRecord> GetPathTableRecords(Disc disc, PrimaryVolumeDescriptor pvd)
+    private static IList<PathTableRecord> ReadPathTableRecords(Disc disc, PrimaryVolumeDescriptor pvd)
     {
         var records = new List<PathTableRecord>();
 
@@ -149,7 +149,7 @@ public sealed class IsoFileSystem : Disposable
         return records;
     }
 
-    private static void GetDirectoryRecords(Disc disc, ICollection<DirectoryRecord> records, int extent)
+    private static void ReadDirectoryRecords(Disc disc, ICollection<DirectoryRecord> records, int extent)
     {
         using var reader = disc.ReadSector(extent).GetUserData().ToBinaryReader();
 
@@ -166,7 +166,7 @@ public sealed class IsoFileSystem : Disposable
         }
     }
 
-    private static IDictionary<PathTableRecord, IList<DirectoryRecord>> GetDirectoryRecords(Disc disc, IEnumerable<PathTableRecord> pathTableRecords)
+    private static IDictionary<PathTableRecord, IList<DirectoryRecord>> ReadDirectoryRecords(Disc disc, IEnumerable<PathTableRecord> pathTableRecords)
     {
         var dictionary = new Dictionary<PathTableRecord, IList<DirectoryRecord>>();
 
@@ -176,7 +176,7 @@ public sealed class IsoFileSystem : Disposable
 
             var extent = pathTableRecord.LocationOfExtent.ToInt32();
 
-            GetDirectoryRecords(disc, records, extent++);
+            ReadDirectoryRecords(disc, records, extent++);
 
             var length = records[0].DataLength.ToInt32();
 
@@ -184,7 +184,7 @@ public sealed class IsoFileSystem : Disposable
 
             for (var i = 0; i < blocks; i++)
             {
-                GetDirectoryRecords(disc, records, extent++);
+                ReadDirectoryRecords(disc, records, extent++);
             }
         }
 
