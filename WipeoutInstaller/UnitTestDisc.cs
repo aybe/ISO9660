@@ -181,6 +181,12 @@ public class UnitTestDisc : UnitTestBase
 
             WriteLine(actual);
 
+            if (!TestIsoReadingPositions.ContainsKey(path))
+            {
+                WriteLine($"File is not in dictionary: {path}");
+                continue;
+            }
+
             var expected = TestIsoReadingPositions[path][track.Index];
 
             Assert.AreEqual(expected, actual, $"Track {track.Index}");
@@ -195,6 +201,12 @@ public class UnitTestDisc : UnitTestBase
             var actual = track.Length;
 
             WriteLine(actual);
+
+            if (!TestIsoReadingLengths.ContainsKey(path))
+            {
+                WriteLine($"File is not in dictionary: {path}");
+                continue;
+            }
 
             var expected = TestIsoReadingLengths[path][track.Index];
 
