@@ -207,7 +207,7 @@ public class UnitTestDisc : UnitTestBase
             throw new InvalidOperationException("The disc has no ISO9660 file system.");
         }
 
-        var rootDirectory = result.GetRootDirectory();
+        var rootDirectory = IsoFileSystem.GetRootDirectory(disc, result.PrimaryVolumeDescriptor);
 
         var value = GetTextTree(rootDirectory);
 
