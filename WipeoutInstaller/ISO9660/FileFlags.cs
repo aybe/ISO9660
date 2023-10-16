@@ -1,4 +1,4 @@
-namespace WipeoutInstaller.Iso9660;
+namespace WipeoutInstaller.ISO9660;
 
 [Flags]
 public enum FileFlags : byte

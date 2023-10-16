@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using WipeoutInstaller.ISO9660;
 using WipeoutInstaller.WorkInProgress;
+using IsoFileSystemEntry = WipeoutInstaller.ISO9660.IsoFileSystemEntry;
 
 namespace WipeoutInstaller;
 

@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace WipeoutInstaller.Iso9660;
+namespace WipeoutInstaller.ISO9660;
 
 public sealed class VolumeDescriptorSetTerminator : VolumeDescriptor
 {

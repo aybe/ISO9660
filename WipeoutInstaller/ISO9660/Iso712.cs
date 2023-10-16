@@ -1,6 +1,6 @@
 using WipeoutInstaller.Extensions;
 
-namespace WipeoutInstaller.Iso9660;
+namespace WipeoutInstaller.ISO9660;
 
 public readonly struct Iso712 : IIsoNumber1<sbyte>
 {

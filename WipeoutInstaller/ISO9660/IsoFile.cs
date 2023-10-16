@@ -1,7 +1,6 @@
 using System.Text.RegularExpressions;
-using WipeoutInstaller.Iso9660;
 
-namespace WipeoutInstaller.WorkInProgress;
+namespace WipeoutInstaller.ISO9660;
 
 public sealed partial class IsoFile : IsoFileSystemEntry
 {

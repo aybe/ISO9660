@@ -1,7 +1,7 @@
 using System.Text;
 using WipeoutInstaller.Extensions;
 
-namespace WipeoutInstaller.Iso9660;
+namespace WipeoutInstaller.ISO9660;
 
 public class IsoString // TODO rename to Iso76, pass flags for allowed chars
 {

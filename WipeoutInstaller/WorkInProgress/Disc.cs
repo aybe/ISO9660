@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using WipeoutInstaller.Extensions;
+using WipeoutInstaller.ISO9660;
 
 namespace WipeoutInstaller.WorkInProgress;
 

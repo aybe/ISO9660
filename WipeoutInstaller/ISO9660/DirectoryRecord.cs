@@ -1,6 +1,6 @@
 using WipeoutInstaller.Extensions;
 
-namespace WipeoutInstaller.Iso9660;
+namespace WipeoutInstaller.ISO9660;
 
 public sealed class DirectoryRecord
 {

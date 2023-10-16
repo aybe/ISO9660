@@ -1,8 +1,8 @@
 using WipeoutInstaller.Extensions;
-using WipeoutInstaller.Iso9660;
 using WipeoutInstaller.JSON;
+using WipeoutInstaller.WorkInProgress;
 
-namespace WipeoutInstaller.WorkInProgress;
+namespace WipeoutInstaller.ISO9660;
 
 public sealed class IsoImage : Disposable
 {

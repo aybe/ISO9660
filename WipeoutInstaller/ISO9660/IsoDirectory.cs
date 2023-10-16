@@ -1,6 +1,4 @@
-using WipeoutInstaller.Iso9660;
-
-namespace WipeoutInstaller.WorkInProgress;
+namespace WipeoutInstaller.ISO9660;
 
 public sealed class IsoDirectory : IsoFileSystemEntry
 {

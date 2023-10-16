@@ -1,9 +1,8 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
-using WipeoutInstaller.Iso9660;
 
-namespace WipeoutInstaller.WorkInProgress;
+namespace WipeoutInstaller.ISO9660;
 
 public abstract partial class IsoFileSystemEntry
 {

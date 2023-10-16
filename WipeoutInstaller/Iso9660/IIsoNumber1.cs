@@ -1,6 +1,6 @@
 using System.Numerics;
 
-namespace WipeoutInstaller.Iso9660;
+namespace WipeoutInstaller.ISO9660;
 
 public interface IIsoNumber1<out T> where T : INumber<T>
 {
