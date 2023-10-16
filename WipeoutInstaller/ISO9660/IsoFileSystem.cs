@@ -23,81 +23,6 @@ public sealed class IsoFileSystem : Disposable
 
     private PrimaryVolumeDescriptor PrimaryVolumeDescriptor { get; }
 
-    private IList<PathTableRecord> GetPathTableRecords()
-    {
-        var records = new List<PathTableRecord>();
-
-        var sector = Disc.ReadSector(PrimaryVolumeDescriptor.LocationOfOccurrenceOfTypeLPathTable);
-
-        using var reader = sector.GetUserData().ToBinaryReader();
-
-        var pathTableRead = 0L;
-
-        var pathTableSize = PrimaryVolumeDescriptor.PathTableSize;
-
-        if (pathTableSize > 2048) // TODO is temporary guard, check specifications and adjust
-        {
-            throw new NotImplementedException("The path table spans over multiple sectors.");
-        }
-
-        while (pathTableRead < pathTableSize)
-        {
-            var recordPosition = reader.BaseStream.Position;
-
-            var record = new PathTableRecord(reader);
-
-            var recordLength = reader.BaseStream.Position - recordPosition;
-
-            pathTableRead += recordLength;
-
-            records.Add(record);
-        }
-
-        return records;
-    }
-
-    private IDictionary<PathTableRecord, IList<DirectoryRecord>> GetDirectoryRecords(IEnumerable<PathTableRecord> pathTableRecords)
-    {
-        var dictionary = new Dictionary<PathTableRecord, IList<DirectoryRecord>>();
-
-        foreach (var pathTableRecord in pathTableRecords)
-        {
-            var records = dictionary.GetOrAdd(pathTableRecord, () => new List<DirectoryRecord>());
-
-            var extent = pathTableRecord.LocationOfExtent.ToInt32();
-
-            GetDirectoryRecords(records, extent++);
-
-            var length = records[0].DataLength.ToInt32();
-
-            var blocks = length / 2048 - 1; // TODO constant
-
-            for (var i = 0; i < blocks; i++)
-            {
-                GetDirectoryRecords(records, extent++);
-            }
-        }
-
-        return dictionary;
-    }
-
-    private void GetDirectoryRecords(ICollection<DirectoryRecord> records, int extent)
-    {
-        using var reader = Disc.ReadSector(extent).GetUserData().ToBinaryReader();
-
-        while (true)
-        {
-            var record = new DirectoryRecord(reader);
-
-            if (record.LengthOfDirectoryRecord == 0)
-            {
-                break;
-            }
-
-            records.Add(record);
-        }
-    }
-
     private List<VolumeDescriptor> GetVolumeDescriptors()
     {
         var sectorIndex = 16;
@@ -135,18 +60,6 @@ public sealed class IsoFileSystem : Disposable
         }
 
         return descriptors;
-    }
-
-    private void Log(object? value = null)
-    {
-        Logger?.Invoke(value);
-    }
-
-    private void LogJson(object? value = null)
-    {
-        var json = JsonUtility.ToJson(value);
-
-        Log(json);
     }
 
     public IsoFileSystemEntryDirectory GetRootDirectory()
@@ -198,5 +111,92 @@ public sealed class IsoFileSystem : Disposable
         }
 
         return firstDirectory;
+    }
+
+    private IList<PathTableRecord> GetPathTableRecords()
+    {
+        var records = new List<PathTableRecord>();
+
+        var sector = Disc.ReadSector(PrimaryVolumeDescriptor.LocationOfOccurrenceOfTypeLPathTable);
+
+        using var reader = sector.GetUserData().ToBinaryReader();
+
+        var pathTableRead = 0L;
+
+        var pathTableSize = PrimaryVolumeDescriptor.PathTableSize;
+
+        if (pathTableSize > 2048) // TODO is temporary guard, check specifications and adjust
+        {
+            throw new NotImplementedException("The path table spans over multiple sectors.");
+        }
+
+        while (pathTableRead < pathTableSize)
+        {
+            var recordPosition = reader.BaseStream.Position;
+
+            var record = new PathTableRecord(reader);
+
+            var recordLength = reader.BaseStream.Position - recordPosition;
+
+            pathTableRead += recordLength;
+
+            records.Add(record);
+        }
+
+        return records;
+    }
+
+    private void GetDirectoryRecords(ICollection<DirectoryRecord> records, int extent)
+    {
+        using var reader = Disc.ReadSector(extent).GetUserData().ToBinaryReader();
+
+        while (true)
+        {
+            var record = new DirectoryRecord(reader);
+
+            if (record.LengthOfDirectoryRecord == 0)
+            {
+                break;
+            }
+
+            records.Add(record);
+        }
+    }
+
+    private IDictionary<PathTableRecord, IList<DirectoryRecord>> GetDirectoryRecords(IEnumerable<PathTableRecord> pathTableRecords)
+    {
+        var dictionary = new Dictionary<PathTableRecord, IList<DirectoryRecord>>();
+
+        foreach (var pathTableRecord in pathTableRecords)
+        {
+            var records = dictionary.GetOrAdd(pathTableRecord, () => new List<DirectoryRecord>());
+
+            var extent = pathTableRecord.LocationOfExtent.ToInt32();
+
+            GetDirectoryRecords(records, extent++);
+
+            var length = records[0].DataLength.ToInt32();
+
+            var blocks = length / 2048 - 1; // TODO constant
+
+            for (var i = 0; i < blocks; i++)
+            {
+                GetDirectoryRecords(records, extent++);
+            }
+        }
+
+        return dictionary;
+    }
+
+    private void Log(object? value = null)
+    {
+        Logger?.Invoke(value);
+    }
+
+    private void LogJson(object? value = null)
+    {
+        var json = JsonUtility.ToJson(value);
+
+        Log(json);
     }
 }
