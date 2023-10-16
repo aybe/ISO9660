@@ -2,9 +2,9 @@ using System.Text.RegularExpressions;
 
 namespace WipeoutInstaller.ISO9660;
 
-public sealed partial class IsoFile : IsoFileSystemEntry
+public sealed partial class IsoFileSystemEntryFile : IsoFileSystemEntry
 {
-    public IsoFile(IsoDirectory? parent, DirectoryRecord record)
+    public IsoFileSystemEntryFile(IsoFileSystemEntryDirectory? parent, DirectoryRecord record)
         : base(parent, record)
     {
         Version = Convert.ToInt32(VersionRegex().Match(record.FileIdentifier).Value);

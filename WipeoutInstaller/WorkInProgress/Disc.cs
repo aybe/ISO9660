@@ -16,7 +16,7 @@ public sealed class Disc : Disposable
         }
     }
 
-    public bool TryGetIso9660FileSystem([MaybeNullWhen(false)] out IsoImage result)
+    public bool TryGetIso9660FileSystem([MaybeNullWhen(false)] out IsoFileSystem result)
         // TODO this sucks, there should be extra methods Has... and TryRead...
     {
         result = default;
@@ -28,7 +28,7 @@ public sealed class Disc : Disposable
             return false;
         }
 
-        result = new IsoImage(this);
+        result = new IsoFileSystem(this);
 
         return true;
     }

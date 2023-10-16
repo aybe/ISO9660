@@ -11,7 +11,7 @@ public abstract partial class IsoFileSystemEntry
 
     protected readonly DirectoryRecord Record;
 
-    protected IsoFileSystemEntry(IsoDirectory? parent, DirectoryRecord record)
+    protected IsoFileSystemEntry(IsoFileSystemEntryDirectory? parent, DirectoryRecord record)
     {
         Parent = parent;
         Record = record;
@@ -19,7 +19,7 @@ public abstract partial class IsoFileSystemEntry
 
     private string Identifier => Record.FileIdentifier;
 
-    public IsoDirectory? Parent { get; }
+    public IsoFileSystemEntryDirectory? Parent { get; }
 
     public string Extension
     {
@@ -48,7 +48,7 @@ public abstract partial class IsoFileSystemEntry
                 node = node.Parent;
             }
 
-            if (this is IsoDirectory)
+            if (this is IsoFileSystemEntryDirectory)
             {
                 builder.Append(DirectorySeparator);
             }

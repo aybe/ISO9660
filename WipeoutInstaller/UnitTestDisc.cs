@@ -228,7 +228,7 @@ public class UnitTestDisc : UnitTestBase
 
             builder.AppendLine($"{new string('\t', i)}{entry.Name}");
 
-            if (entry is not IsoDirectory directory)
+            if (entry is not IsoFileSystemEntryDirectory directory)
             {
                 continue;
             }

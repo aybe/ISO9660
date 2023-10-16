@@ -4,9 +4,9 @@ using WipeoutInstaller.WorkInProgress;
 
 namespace WipeoutInstaller.ISO9660;
 
-public sealed class IsoImage : Disposable
+public sealed class IsoFileSystem : Disposable
 {
-    public IsoImage(Disc disc)
+    public IsoFileSystem(Disc disc)
     {
         Disc = disc;
 
@@ -149,7 +149,7 @@ public sealed class IsoImage : Disposable
         Log(json);
     }
 
-    public IsoDirectory GetRootDirectory()
+    public IsoFileSystemEntryDirectory GetRootDirectory()
     {
         var pathTableRecords = GetPathTableRecords();
         var directoryRecords = GetDirectoryRecords(pathTableRecords);
@@ -159,9 +159,9 @@ public sealed class IsoImage : Disposable
         var pathTable1 = pathTableRecords.First();
         var directory1 = directoryRecords[pathTable1].First();
 
-        var firstDirectory = new IsoDirectory(null, directory1);
+        var firstDirectory = new IsoFileSystemEntryDirectory(null, directory1);
 
-        var stack = new Stack<(IsoDirectory, PathTableRecord)>();
+        var stack = new Stack<(IsoFileSystemEntryDirectory, PathTableRecord)>();
 
         stack.Push((firstDirectory, pathTable1));
 
@@ -182,7 +182,7 @@ public sealed class IsoImage : Disposable
                             continue;
                     }
 
-                    var child = new IsoDirectory(parent, record);
+                    var child = new IsoFileSystemEntryDirectory(parent, record);
 
                     parent.Directories.Add(child);
 
@@ -190,7 +190,7 @@ public sealed class IsoImage : Disposable
                 }
                 else
                 {
-                    var child = new IsoFile(parent, record);
+                    var child = new IsoFileSystemEntryFile(parent, record);
 
                     parent.Files.Add(child);
                 }
