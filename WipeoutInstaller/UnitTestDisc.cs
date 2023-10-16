@@ -12,7 +12,7 @@ public class UnitTestDisc : UnitTestBase
     private static readonly Dictionary<string, Dictionary<int, int>> TestIsoReadingLengths = new()
     {
         {
-            @"C:\Temp\CD-I Demo Disc - Fall 1996 - Spring 1997.cue", new Dictionary<int, int>
+            @"D:\Temp\CD-I Demo Disc - Fall 1996 - Spring 1997.cue", new Dictionary<int, int>
             {
                 { 1, 1575 },
                 { 2, 27441 },
@@ -36,13 +36,13 @@ public class UnitTestDisc : UnitTestBase
             }
         },
         {
-            @"C:\Temp\UFO - Enemy Unknown (1994)(MicroProse).cue", new Dictionary<int, int>
+            @"D:\Temp\UFO - Enemy Unknown (1994)(MicroProse).cue", new Dictionary<int, int>
             {
                 { 1, 5657 }
             }
         },
         {
-            @"C:\Temp\WipEout (Europe) (v1.1) - Multi.cue", new Dictionary<int, int>
+            @"D:\Temp\WipEout (Europe) (v1.1) - Multi.cue", new Dictionary<int, int>
             {
                 { 1, 27020 },
                 { 2, 23506 },
@@ -59,7 +59,7 @@ public class UnitTestDisc : UnitTestBase
             }
         },
         {
-            @"C:\Temp\WipEout (Europe) (v1.1) - Single.cue", new Dictionary<int, int>
+            @"D:\Temp\WipEout (Europe) (v1.1) - Single.cue", new Dictionary<int, int>
             {
                 { 1, 27020 },
                 { 2, 23506 },
@@ -80,7 +80,7 @@ public class UnitTestDisc : UnitTestBase
     private static readonly Dictionary<string, Dictionary<int, int>> TestIsoReadingPositions = new()
     {
         {
-            @"C:\Temp\CD-I Demo Disc - Fall 1996 - Spring 1997.cue", new Dictionary<int, int>
+            @"D:\Temp\CD-I Demo Disc - Fall 1996 - Spring 1997.cue", new Dictionary<int, int>
             {
                 { 1, 0 },
                 { 2, 1575 },
@@ -104,13 +104,13 @@ public class UnitTestDisc : UnitTestBase
             }
         },
         {
-            @"C:\Temp\UFO - Enemy Unknown (1994)(MicroProse).cue", new Dictionary<int, int>
+            @"D:\Temp\UFO - Enemy Unknown (1994)(MicroProse).cue", new Dictionary<int, int>
             {
                 { 1, 0 }
             }
         },
         {
-            @"C:\Temp\WipEout (Europe) (v1.1) - Multi.cue", new Dictionary<int, int>
+            @"D:\Temp\WipEout (Europe) (v1.1) - Multi.cue", new Dictionary<int, int>
             {
                 { 1, 0 },
                 { 2, 27170 },
@@ -127,7 +127,7 @@ public class UnitTestDisc : UnitTestBase
             }
         },
         {
-            @"C:\Temp\WipEout (Europe) (v1.1) - Single.cue", new Dictionary<int, int>
+            @"D:\Temp\WipEout (Europe) (v1.1) - Single.cue", new Dictionary<int, int>
             {
                 { 1, 0 },
                 { 2, 27170 },
@@ -146,10 +146,10 @@ public class UnitTestDisc : UnitTestBase
     };
 
     [TestMethod]
-    [DataRow(@"C:\Temp\CD-I Demo Disc - Fall 1996 - Spring 1997.cue")]
-    [DataRow(@"C:\Temp\UFO - Enemy Unknown (1994)(MicroProse).cue")]
-    [DataRow(@"C:\Temp\WipEout (Europe) (v1.1) - Multi.cue")]
-    [DataRow(@"C:\Temp\WipEout (Europe) (v1.1) - Single.cue")]
+    [DataRow(@"D:\Temp\CD-I Demo Disc - Fall 1996 - Spring 1997.cue")]
+    [DataRow(@"D:\Temp\UFO - Enemy Unknown (1994)(MicroProse).cue")]
+    [DataRow(@"D:\Temp\WipEout (Europe) (v1.1) - Multi.cue")]
+    [DataRow(@"D:\Temp\WipEout (Europe) (v1.1) - Single.cue")]
     public void TestIsoReading(string path)
     {
         var sheet = CueSheetParser.Parse(path);

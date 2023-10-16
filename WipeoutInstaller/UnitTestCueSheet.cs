@@ -12,17 +12,17 @@ namespace WipeoutInstaller;
 public class UnitTestCueSheet : UnitTestBase
 {
     [TestMethod]
-    [DataRow(@"C:\Temp\CD-I Demo Disc - Fall 1996 - Spring 1997.cue")]
-    [DataRow(@"C:\Temp\UFO - Enemy Unknown (1994)(MicroProse).cue")]
-    [DataRow(@"C:\Temp\WipEout (Europe) (v1.1) - Multi.cue")]
-    [DataRow(@"C:\Temp\WipEout (Europe) (v1.1) - Single.cue")]
+    [DataRow(@"D:\Temp\CD-I Demo Disc - Fall 1996 - Spring 1997.cue")]
+    [DataRow(@"D:\Temp\UFO - Enemy Unknown (1994)(MicroProse).cue")]
+    [DataRow(@"D:\Temp\WipEout (Europe) (v1.1) - Multi.cue")]
+    [DataRow(@"D:\Temp\WipEout (Europe) (v1.1) - Single.cue")]
     public void TestParsing(string path)
     {
         ParseCueSheet(path);
     }
 
     [TestMethod]
-    [DataRow(@"C:\Temp\CueFileList.txt")]
+    [DataRow(@"D:\Temp\CueFileList.txt")]
     public void TestParsingList(string path)
     {
         if (File.Exists(path))
