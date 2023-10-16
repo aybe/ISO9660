@@ -49,6 +49,7 @@ public sealed class IsoFileSystem : Disposable
             {
                 VolumeDescriptorType.BootRecord                    => new BootRecord(descriptor, reader),
                 VolumeDescriptorType.PrimaryVolumeDescriptor       => new PrimaryVolumeDescriptor(descriptor, reader),
+                VolumeDescriptorType.VolumePartitionDescriptor     => new VolumePartitionDescriptor(descriptor, reader),
                 VolumeDescriptorType.VolumeDescriptorSetTerminator => new VolumeDescriptorSetTerminator(descriptor, reader),
                 _                                                  => throw new NotImplementedException(descriptor.VolumeDescriptorType.ToString())
             };
