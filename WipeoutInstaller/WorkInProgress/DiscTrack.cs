@@ -29,6 +29,6 @@ public abstract class DiscTrack : Disposable
 
     public override string ToString()
     {
-        return $"{nameof(Index)}: {Index}, {nameof(Position)}: {Position}, {nameof(Audio)}: {Audio}";
+        return $"{nameof(Index)}: {Index}, {nameof(Position)}: {Position}, {nameof(Length)}: {Length}, {nameof(Audio)}: {Audio}";
     }
 }

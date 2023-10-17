@@ -26,4 +26,26 @@ public readonly struct RecordingDateAndTime
     public Iso711 SecondOfTheMinute { get; }
 
     public Iso712 OffsetFromGreenwichMeanTime { get; }
+
+    public DateTimeOffset ToDateTimeOffset()
+    {
+        var dateTimeOffset = new DateTimeOffset(
+            1900 + NumberOfYearsSince1900,
+            MonthOfTheYear,
+            DayOfTheMonth,
+            HourOfTheDay,
+            MinuteOfTheHour,
+            SecondOfTheMinute,
+            TimeSpan.FromMinutes(15 * OffsetFromGreenwichMeanTime.Value)
+        );
+
+        return dateTimeOffset;
+    }
+
+    public override string ToString()
+    {
+        var dateTimeOffset = ToDateTimeOffset();
+
+        return dateTimeOffset.ToString();
+    }
 }
