@@ -220,6 +220,31 @@ public class UnitTestDisc : UnitTestBase
         WriteLine(value);
     }
 
+    [TestMethod]
+    [DataRow(@"D:\Temp\NetBSD-9.3-i386.iso")]
+    [DataRow(@"D:\Temp\NetBSD-9.3-mac68k.iso")]
+    [DataRow(@"D:\Temp\NetBSD-9.3-macppc.iso")]
+    [DataRow(@"D:\Temp\Rocky-9.2-aarch64-boot.iso")]
+    [DataRow(@"D:\Temp\Rocky-9.2-aarch64-minimal.iso")]
+    [DataRow(@"D:\Temp\Rocky-9.2-ppc64le-boot.iso")]
+    [DataRow(@"D:\Temp\Rocky-9.2-ppc64le-minimal.iso")]
+    [DataRow(@"D:\Temp\Rocky-9.2-s390x-boot.iso")]
+    [DataRow(@"D:\Temp\Rocky-9.2-s390x-minimal.iso")]
+    [DataRow(@"D:\Temp\Rocky-9.2-x86_64-boot.iso")]
+    [DataRow(@"D:\Temp\Rocky-9.2-x86_64-minimal.iso")]
+    public void TestIsoFileSystemReadingFromIso(string path)
+    {
+        var stream = File.OpenRead(path);
+
+        var track = new DiscTrackIso(stream);
+
+        using var disc = new Disc();
+
+        disc.Tracks.Add(track);
+
+        var isoFileSystem = IsoFileSystem.Read(disc);
+    }
+
     private static string GetTextTree(IsoFileSystemEntry rootDirectory)
     {
         var builder = new StringBuilder();
