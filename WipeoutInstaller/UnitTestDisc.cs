@@ -5,6 +5,10 @@ using WipeoutInstaller.WorkInProgress;
 
 namespace WipeoutInstaller;
 
+// TODO NetBSD-9.3-i386.iso// TODO bootable
+// TODO NetBSD-9.3-mac68k // TODO rr jol
+// TODO NetBSD-9.3-macppc // TODO rr jol hfs
+
 [TestClass]
 [SuppressMessage("ReSharper", "StringLiteralTypo")]
 public class UnitTestDisc : UnitTestBase
