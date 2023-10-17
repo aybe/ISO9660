@@ -150,6 +150,14 @@ public class UnitTestDisc : UnitTestBase
     [DataRow(@"D:\Temp\UFO - Enemy Unknown (1994)(MicroProse).cue")]
     [DataRow(@"D:\Temp\WipEout (Europe) (v1.1) - Multi.cue")]
     [DataRow(@"D:\Temp\WipEout (Europe) (v1.1) - Single.cue")]
+    [DataRow(@"D:\Temp\Rocky-9.2-aarch64-boot.cue")]
+    [DataRow(@"D:\Temp\Rocky-9.2-aarch64-minimal.cue")]
+    [DataRow(@"D:\Temp\Rocky-9.2-ppc64le-boot.cue")]
+    [DataRow(@"D:\Temp\Rocky-9.2-ppc64le-minimal.cue")]
+    [DataRow(@"D:\Temp\Rocky-9.2-s390x-boot.cue")]
+    [DataRow(@"D:\Temp\Rocky-9.2-s390x-minimal.cue")]
+    [DataRow(@"D:\Temp\Rocky-9.2-x86_64-boot.cue")]
+    [DataRow(@"D:\Temp\Rocky-9.2-x86_64-minimal.cue")]
     public void TestIsoReading(string path)
     {
         var sheet = CueSheetParser.Parse(path);
