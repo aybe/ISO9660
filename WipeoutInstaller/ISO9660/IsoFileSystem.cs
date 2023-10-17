@@ -127,35 +127,21 @@ public sealed class IsoFileSystem : Disposable
 
         var pathTableSize = pvd.PathTableSize;
 
-        var sectorIndex = pvd.LocationOfOccurrenceOfTypeLPathTable.ToInt32();
+        var track = disc.Tracks.First();
 
+        using var reader = track.GetBinaryReader(pvd.LocationOfOccurrenceOfTypeLPathTable.ToInt32());
+        
         while (pathTableRead < pathTableSize)
         {
-            var sector = disc.ReadSector(sectorIndex);
+            var recordPosition = reader.BaseStream.Position; // BUG discrepancy when using 2352, not with 2048
 
-            using var reader = sector.GetUserData().ToBinaryReader();
+            var record = new PathTableRecord(reader);
 
-            while (pathTableRead < pathTableSize)
-            {
-                var recordPosition = reader.BaseStream.Position;
+            var recordLength = reader.BaseStream.Position - recordPosition;
 
-                var record = new PathTableRecord(reader);
+            pathTableRead += recordLength;
 
-                var recordLength = reader.BaseStream.Position - recordPosition;
-
-                pathTableRead += recordLength;
-
-                records.Add(record);
-
-                var length = reader.BaseStream.Length - reader.BaseStream.Position;
-
-                if (length < PathTableRecord.MinimumLength)
-                {
-                    break;
-                }
-            }
-
-            sectorIndex++;
+            records.Add(record);
         }
 
         return records;

@@ -27,7 +27,7 @@ public sealed class DiscTrackIso : DiscTrack
 
     public override int Position { get; } = 0;
 
-    private int GetSectorSize()
+    public override int GetSectorSize()
     {
         var length = Stream.Length;
 
