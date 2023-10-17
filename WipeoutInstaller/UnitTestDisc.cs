@@ -233,24 +233,49 @@ public class UnitTestDisc : UnitTestBase
     [DataRow(@"D:\Temp\NetBSD-9.3-mac68k.iso")]
     [DataRow(@"D:\Temp\NetBSD-9.3-macppc.iso")]
     [DataRow(@"D:\Temp\Rocky-9.2-aarch64-boot.iso")]
-    [DataRow(@"D:\Temp\Rocky-9.2-aarch64-minimal.iso")]
+    [DataRow(@"D:\Temp\Rocky-9.2-aarch64-minimal.iso")] // DVD
     [DataRow(@"D:\Temp\Rocky-9.2-ppc64le-boot.iso")]
-    [DataRow(@"D:\Temp\Rocky-9.2-ppc64le-minimal.iso")]
+    [DataRow(@"D:\Temp\Rocky-9.2-ppc64le-minimal.iso")] // DVD
     [DataRow(@"D:\Temp\Rocky-9.2-s390x-boot.iso")]
-    [DataRow(@"D:\Temp\Rocky-9.2-s390x-minimal.iso")]
+    [DataRow(@"D:\Temp\Rocky-9.2-s390x-minimal.iso")] // DVD
     [DataRow(@"D:\Temp\Rocky-9.2-x86_64-boot.iso")]
-    [DataRow(@"D:\Temp\Rocky-9.2-x86_64-minimal.iso")]
+    [DataRow(@"D:\Temp\Rocky-9.2-x86_64-minimal.iso")] // DVD
     public void TestIsoFileSystemReadingFromIso(string path)
     {
-        var stream = File.OpenRead(path);
+        try
+        {
+            var stream = File.OpenRead(path);
 
-        var track = new DiscTrackIso(stream);
+            var streamLength = stream.Length;
 
-        using var disc = new Disc();
+            var sectorSize = true switch
+            {
+                true when streamLength % Constants.SectorSize2048 == 0 => Constants.SectorSize2048,
+                true when streamLength % Constants.SectorSize2324 == 0 => Constants.SectorSize2324,
+                true when streamLength % Constants.SectorSize2336 == 0 => Constants.SectorSize2336,
+                _                                                      => throw new NotSupportedException()
+            };
 
-        disc.Tracks.Add(track);
+            var streamSectors = streamLength / sectorSize;
 
-        var isoFileSystem = IsoFileSystem.Read(disc);
+            var max = MSF.Max.ToLBA();
+
+            if (streamSectors > max)
+            {
+                throw new IsoImageNotSupportedException("Length of image is greater than a CD's maximum, most likely a DVD image.");
+            }
+
+            var track = new DiscTrackIso(stream);
+
+            using var disc = new Disc();
+
+            disc.Tracks.Add(track);
+
+            var isoFileSystem = IsoFileSystem.Read(disc);
+        }
+        catch (IsoImageNotSupportedException)
+        {
+        }
     }
 
     private static string GetTextTree(IsoFileSystemEntry rootDirectory)
@@ -365,5 +390,30 @@ public class UnitTestDisc : UnitTestBase
                 WriteLine(track);
             }
         }
+    }
+
+    private sealed class IsoImageNotSupportedException : Exception
+    {
+        public IsoImageNotSupportedException(string? message) : base(message)
+        {
+        }
+    }
+
+    private class Constants // TODO move this crap
+    {
+        /// <summary>
+        ///     Mode 1 / Mode 2 Form 1.
+        /// </summary>
+        public const int SectorSize2048 = 2048;
+
+        /// <summary>
+        ///     Mode 2 Form 2.
+        /// </summary>
+        public const int SectorSize2324 = 2324;
+
+        /// <summary>
+        ///     Mode 2 Form-Less.
+        /// </summary>
+        public const int SectorSize2336 = 2336;
     }
 }
