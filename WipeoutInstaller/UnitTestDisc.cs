@@ -259,9 +259,39 @@ public class UnitTestDisc : UnitTestBase
 
         WriteLine();
 
-        var disc = LoadFileSystem(sheet);
+        {
+            WriteLine("Searching...");
+            WriteLine();
 
-        return disc;
+            var file = sheet.Files.FirstOrDefault(s => s.Type is CueSheetFileType.Binary)
+                       ?? throw new InvalidOperationException("Failed to find file.");
+
+            WriteLine(file.Name);
+
+            var track = file.Tracks.FirstOrDefault(s => s.Type is CueSheetTrackType.Mode1Raw or CueSheetTrackType.Mode2Raw or CueSheetTrackType.Mode1Cooked)
+                        ?? throw new InvalidOperationException("Failed to find track.");
+
+            WriteLine(track.Type);
+
+            var index = track.Indices.FirstOrDefault(s => s.Number is 1)
+                        ?? throw new InvalidOperationException("Failed to find index.");
+
+            WriteLine(index.Position);
+        }
+
+        {
+            var disc = new Disc();
+
+            foreach (var file in sheet.Files)
+            {
+                foreach (var track in file.Tracks)
+                {
+                    disc.Tracks.Add(new DiscTrackCueBin(track));
+                }
+            }
+
+            return disc;
+        }
     }
 
     private Disc LoadDiscFromIso(string path)
@@ -312,43 +342,6 @@ public class UnitTestDisc : UnitTestBase
         var tree = builder.ToString();
 
         return tree;
-    }
-
-    private Disc LoadFileSystem(CueSheet sheet)
-    {
-        {
-            WriteLine("Searching...");
-            WriteLine();
-
-            var file = sheet.Files.FirstOrDefault(s => s.Type is CueSheetFileType.Binary)
-                       ?? throw new InvalidOperationException("Failed to find file.");
-
-            WriteLine(file.Name);
-
-            var track = file.Tracks.FirstOrDefault(s => s.Type is CueSheetTrackType.Mode1Raw or CueSheetTrackType.Mode2Raw or CueSheetTrackType.Mode1Cooked)
-                        ?? throw new InvalidOperationException("Failed to find track.");
-
-            WriteLine(track.Type);
-
-            var index = track.Indices.FirstOrDefault(s => s.Number is 1)
-                        ?? throw new InvalidOperationException("Failed to find index.");
-
-            WriteLine(index.Position);
-        }
-
-        {
-            var disc = new Disc();
-
-            foreach (var file in sheet.Files)
-            {
-                foreach (var track in file.Tracks)
-                {
-                    disc.Tracks.Add(new DiscTrackCueBin(track));
-                }
-            }
-
-            return disc;
-        }
     }
 
     private void PrintTableOfContents(CueSheet sheet)
