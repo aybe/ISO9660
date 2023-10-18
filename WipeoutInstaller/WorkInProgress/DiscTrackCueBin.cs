@@ -63,9 +63,10 @@ internal sealed class DiscTrackCueBin : DiscTrack
 
         var sector = type switch // TODO implement other track types
         {
-            CueSheetTrackType.Mode1Raw => ISector.Read<SectorMode1>(Stream),
-            CueSheetTrackType.Mode2Raw => ISector.Read<SectorMode2Form1>(Stream),
-            _                          => throw new NotSupportedException($"Track mode not supported: {type}.")
+            CueSheetTrackType.Mode1Cooked => ISector.Read<SectorCooked2048>(Stream),
+            CueSheetTrackType.Mode1Raw    => ISector.Read<SectorMode1>(Stream),
+            CueSheetTrackType.Mode2Raw    => ISector.Read<SectorMode2Form1>(Stream),
+            _                             => throw new NotSupportedException($"Track mode not supported: {type}.")
         };
 
         return sector;
