@@ -149,7 +149,7 @@ public sealed class IsoFileSystem : Disposable
 
     private static void ReadDirectoryRecords(Disc disc, ICollection<DirectoryRecord> records, int extent)
     {
-        using var reader = disc.ReadSector(extent).GetUserData().ToBinaryReader();
+        using var reader = disc.Tracks.First().GetBinaryReader(extent);
 
         while (true)
         {
