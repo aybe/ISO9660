@@ -48,28 +48,6 @@ internal sealed class DiscTrackCueBin : DiscTrack
         return sector;
     }
 
-    public override int GetSectorSize()
-    {
-        var type = Track.Type;
-
-        var size = type switch
-        {
-            CueSheetTrackType.Audio             => 2352,
-            CueSheetTrackType.Karaoke           => 2448,
-            CueSheetTrackType.Mode1Cooked       => 2048,
-            CueSheetTrackType.Mode1Raw          => 2352,
-            CueSheetTrackType.Mode2Form1Cooked  => 2048,
-            CueSheetTrackType.Mode2Form2Cooked  => 2324,
-            CueSheetTrackType.Mode2Mixed        => 2336,
-            CueSheetTrackType.Mode2Raw          => 2352,
-            CueSheetTrackType.InteractiveCooked => 2336,
-            CueSheetTrackType.InteractiveRaw    => 2352,
-            _                                   => throw new NotSupportedException(type.ToString())
-        };
-
-        return size;
-    }
-
     public override ISector ReadSector(in int index)
     {
         if (index < 0 || index >= Length)

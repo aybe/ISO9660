@@ -34,9 +34,8 @@ public sealed class IsoFileSystem : Disposable
 
         while (true)
         {
-            var sector = disc.ReadSector(sectorIndex);
 
-            using var reader = sector.GetUserData().ToBinaryReader();
+            using var reader = disc.Tracks.First().GetBinaryReader(sectorIndex);
 
             var descriptor = new VolumeDescriptor
             {

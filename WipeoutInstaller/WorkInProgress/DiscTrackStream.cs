@@ -35,17 +35,25 @@ internal sealed class DiscTrackStream : Stream
         }
     }
 
-    public override long Position
+    public override long Position // TODO simplify
     {
         get
         {
+            var sector = Track.GetSector();
+
+            var sectorSize = sector.GetSize();
+
+            var userDataPosition = sector.GetUserDataPosition();
+
+            var userDataLength = sector.GetUserDataLength();
+
             var empty = Queue.Count == 0;
 
             var sectors = (empty ? Index : Index - 1) - Track.Position;
 
-            var sectorSize = Track.GetSectorSize();
+            var sectorStartByte = sectorSize * sectors + userDataPosition;
 
-            var bytes = sectorSize * sectors + (empty ? 0 : sectorSize - Queue.Count);
+            var bytes = sectorStartByte + (empty ? 0 : userDataLength - Queue.Count);
 
             return bytes;
         }

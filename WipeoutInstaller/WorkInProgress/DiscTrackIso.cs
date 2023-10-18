@@ -54,25 +54,6 @@ public sealed class DiscTrackIso : DiscTrack
         return sector;
     }
 
-    public override int GetSectorSize()
-    {
-        var length = Stream.Length;
-
-        const int size2048 = SectorCooked2048.UserDataSize;
-        const int size2324 = SectorCooked2324.UserDataSize;
-        const int size2336 = SectorCooked2336.UserDataSize;
-
-        var size = true switch
-        {
-            true when length % size2048 is 0 => size2048,
-            true when length % size2324 is 0 => size2324,
-            true when length % size2336 is 0 => size2336,
-            _                                => throw new NotSupportedException()
-        };
-
-        return size;
-    }
-
     public override ISector ReadSector(in int index)
     {
         var size = GetSectorSize();

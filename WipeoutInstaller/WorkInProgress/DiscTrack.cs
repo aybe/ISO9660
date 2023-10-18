@@ -25,7 +25,14 @@ public abstract class DiscTrack : Disposable
 
     public abstract ISector GetSector();
 
-    public abstract int GetSectorSize(); // TODO property
+    public int GetSectorSize() // TODO this kinda sucks but that will do for now...
+    {
+        var sector = GetSector();
+
+        var sectorSize = sector.GetSize();
+
+        return sectorSize;
+    }
 
     public abstract ISector ReadSector(in int index);
 

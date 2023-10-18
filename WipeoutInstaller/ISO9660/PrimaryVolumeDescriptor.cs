@@ -9,17 +9,17 @@ public class PrimaryVolumeDescriptor : VolumeDescriptor
     public PrimaryVolumeDescriptor(VolumeDescriptor descriptor, BinaryReader reader)
         : base(descriptor)
     {
-        reader.Seek(1);
+        reader.ReadBytes(1); // reader.Seek(1); // TODO
 
         SystemIdentifier = new IsoString(reader, 32, IsoStringFlags.ACharacters);
 
         VolumeIdentifier = new IsoString(reader, 32, IsoStringFlags.DCharacters);
 
-        reader.Seek(8);
+        reader.ReadBytes(8); // reader.Seek(8); // TODO
 
         VolumeSpaceSize = new Iso733(reader);
 
-        reader.Seek(32);
+        reader.ReadBytes(32); // reader.Seek(32); // TODO
 
         VolumeSetSize = new Iso723(reader);
 
