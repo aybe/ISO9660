@@ -18,6 +18,11 @@ public unsafe struct SectorCooked2324 : ISector
         return 0;
     }
 
+    public readonly int GetSize()
+    {
+        return 2324;
+    }
+
     Span<byte> ISector.GetUserData()
     {
         return ISector.GetSlice(ref this, UserDataPosition, UserDataSize);

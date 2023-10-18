@@ -64,6 +64,11 @@ public interface ISector
 
     uint GetEdcSum();
 
+    int GetSize()
+    {
+        return Size;
+    }
+
     Span<byte> GetUserData();
 
     int GetUserDataLength();
