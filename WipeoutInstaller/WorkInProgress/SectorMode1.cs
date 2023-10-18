@@ -31,5 +31,15 @@ public unsafe struct SectorMode1 : ISector, ISectorHeader
         return ISector.GetSlice(ref this, ISector.UserDataPositionMode1, ISector.UserDataSizeMode1);
     }
 
+    public readonly int GetUserDataLength()
+    {
+        return ISector.UserDataSizeMode1;
+    }
+
+    public readonly int GetUserDataPosition()
+    {
+        return ISector.UserDataPositionMode1;
+    }
+
     SectorHeader ISectorHeader.Header => ISector.GetHeader(ref this, ISector.HeaderPosition, ISector.HeaderSize);
 }

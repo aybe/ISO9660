@@ -23,5 +23,15 @@ public unsafe struct SectorMode2FormLess : ISector, ISectorHeader
         return ISector.GetSlice(ref this, ISector.UserDataPositionMode2FormLess, ISector.UserDataSizeMode2FormLess);
     }
 
+    public readonly int GetUserDataLength()
+    {
+        return ISector.UserDataSizeMode2FormLess;
+    }
+
+    public readonly int GetUserDataPosition()
+    {
+        return ISector.UserDataPositionMode2FormLess;
+    }
+
     SectorHeader ISectorHeader.Header => ISector.GetHeader(ref this, ISector.HeaderPosition, ISector.HeaderSize);
 }

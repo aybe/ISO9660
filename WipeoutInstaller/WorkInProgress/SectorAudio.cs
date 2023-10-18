@@ -18,4 +18,14 @@ public unsafe struct SectorAudio : ISector
     {
         return ISector.GetSlice(ref this, ISector.UserDataPositionAudio, ISector.UserDataSizeAudio);
     }
+
+    public readonly int GetUserDataLength()
+    {
+        return ISector.UserDataSizeAudio;
+    }
+
+    public readonly int GetUserDataPosition()
+    {
+        return ISector.UserDataPositionAudio;
+    }
 }

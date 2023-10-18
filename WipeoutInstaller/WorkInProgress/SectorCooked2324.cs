@@ -22,4 +22,14 @@ public unsafe struct SectorCooked2324 : ISector
     {
         return ISector.GetSlice(ref this, UserDataPosition, UserDataSize);
     }
+
+    public readonly int GetUserDataLength()
+    {
+        return UserDataSize;
+    }
+
+    public readonly int GetUserDataPosition()
+    {
+        return UserDataPosition;
+    }
 }

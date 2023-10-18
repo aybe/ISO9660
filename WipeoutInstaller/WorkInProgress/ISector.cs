@@ -66,6 +66,10 @@ public interface ISector
 
     Span<byte> GetUserData();
 
+    int GetUserDataLength();
+
+    int GetUserDataPosition();
+
     public static unsafe uint GetEdcSum<T>(ref T sector, in int start, in int length)
         where T : struct, ISector
     // TODO can't we use method below?
