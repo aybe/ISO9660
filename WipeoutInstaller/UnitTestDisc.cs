@@ -151,30 +151,43 @@ public class UnitTestDisc : UnitTestBase
 
     [TestMethod]
     [DataRow(@"D:\Temp\CD-I Demo Disc - Fall 1996 - Spring 1997.cue")]
+    [DataRow(@"D:\Temp\NetBSD-9.3-i386.iso")]
+    [DataRow(@"D:\Temp\NetBSD-9.3-mac68k.iso")]
+    [DataRow(@"D:\Temp\NetBSD-9.3-macppc.iso")]
+    [DataRow(@"D:\Temp\Rocky-9.2-aarch64-boot.cue")]
+    [DataRow(@"D:\Temp\Rocky-9.2-aarch64-boot.iso")]
+    [DataRow(@"D:\Temp\Rocky-9.2-aarch64-minimal.cue")] // DVD
+    [DataRow(@"D:\Temp\Rocky-9.2-aarch64-minimal.iso")] // DVD
+    [DataRow(@"D:\Temp\Rocky-9.2-ppc64le-boot.cue")]
+    [DataRow(@"D:\Temp\Rocky-9.2-ppc64le-boot.iso")]
+    [DataRow(@"D:\Temp\Rocky-9.2-ppc64le-minimal.cue")] // DVD
+    [DataRow(@"D:\Temp\Rocky-9.2-ppc64le-minimal.iso")] // DVD
+    [DataRow(@"D:\Temp\Rocky-9.2-s390x-boot.cue")]
+    [DataRow(@"D:\Temp\Rocky-9.2-s390x-boot.iso")]
+    [DataRow(@"D:\Temp\Rocky-9.2-s390x-minimal.cue")] // BUG not seen as DVD?
+    [DataRow(@"D:\Temp\Rocky-9.2-s390x-minimal.iso")] // DVD
+    [DataRow(@"D:\Temp\Rocky-9.2-x86_64-boot.cue")]
+    [DataRow(@"D:\Temp\Rocky-9.2-x86_64-boot.iso")]
+    [DataRow(@"D:\Temp\Rocky-9.2-x86_64-minimal.cue")] // DVD
+    [DataRow(@"D:\Temp\Rocky-9.2-x86_64-minimal.iso")] // DVD
     [DataRow(@"D:\Temp\UFO - Enemy Unknown (1994)(MicroProse).cue")]
     [DataRow(@"D:\Temp\WipEout (Europe) (v1.1) - Multi.cue")]
     [DataRow(@"D:\Temp\WipEout (Europe) (v1.1) - Single.cue")]
-    [DataRow(@"D:\Temp\Rocky-9.2-aarch64-boot.cue")]
-    [DataRow(@"D:\Temp\Rocky-9.2-aarch64-minimal.cue")]
-    [DataRow(@"D:\Temp\Rocky-9.2-ppc64le-boot.cue")]
-    [DataRow(@"D:\Temp\Rocky-9.2-ppc64le-minimal.cue")]
-    [DataRow(@"D:\Temp\Rocky-9.2-s390x-boot.cue")]
-    [DataRow(@"D:\Temp\Rocky-9.2-s390x-minimal.cue")]
-    [DataRow(@"D:\Temp\Rocky-9.2-x86_64-boot.cue")]
-    [DataRow(@"D:\Temp\Rocky-9.2-x86_64-minimal.cue")]
     public void TestIsoReading(string path)
     {
-        // TODO add here the logic that checks whether it is a DVD or not
+        var extension = Path.GetExtension(path);
 
-        var sheet = CueSheetParser.Parse(path);
+        using var disc = true switch
+        {
+            true when string.Equals(extension, ".cue", StringComparison.OrdinalIgnoreCase) => LoadDiscFromCue(path),
+            true when string.Equals(extension, ".iso", StringComparison.OrdinalIgnoreCase) => LoadDiscFromIso(path),
+            _                                                                              => throw new NotSupportedException(path)
+        };
 
-        WriteLine();
-
-        PrintTableOfContents(sheet);
-
-        WriteLine();
-
-        using var disc = LoadFileSystem(sheet, path);
+        if (disc.Tracks.First().Length > MSF.Max.ToLBA())
+        {
+            Assert.Inconclusive("Image too long for a CD, most likely a DVD.");
+        }
 
         WriteLine("Tracks:");
 
@@ -234,54 +247,36 @@ public class UnitTestDisc : UnitTestBase
         WriteLine(value);
     }
 
-    [TestMethod]
-    [DataRow(@"D:\Temp\NetBSD-9.3-i386.iso")]
-    [DataRow(@"D:\Temp\NetBSD-9.3-mac68k.iso")]
-    [DataRow(@"D:\Temp\NetBSD-9.3-macppc.iso")]
-    [DataRow(@"D:\Temp\Rocky-9.2-aarch64-boot.iso")]
-    [DataRow(@"D:\Temp\Rocky-9.2-aarch64-minimal.iso")] // DVD
-    [DataRow(@"D:\Temp\Rocky-9.2-ppc64le-boot.iso")]
-    [DataRow(@"D:\Temp\Rocky-9.2-ppc64le-minimal.iso")] // DVD
-    [DataRow(@"D:\Temp\Rocky-9.2-s390x-boot.iso")]
-    [DataRow(@"D:\Temp\Rocky-9.2-s390x-minimal.iso")] // DVD
-    [DataRow(@"D:\Temp\Rocky-9.2-x86_64-boot.iso")]
-    [DataRow(@"D:\Temp\Rocky-9.2-x86_64-minimal.iso")] // DVD
-    public void TestIsoFileSystemReadingFromIso(string path)
+    private Disc LoadDiscFromCue(string path)
     {
-        try
-        {
-            var stream = File.OpenRead(path);
+        WriteLine(path);
 
-            var streamLength = stream.Length;
+        var sheet = CueSheetParser.Parse(path);
 
-            var sectorSize = true switch
-            {
-                true when streamLength % Constants.SectorSize2048 == 0 => Constants.SectorSize2048,
-                true when streamLength % Constants.SectorSize2324 == 0 => Constants.SectorSize2324,
-                true when streamLength % Constants.SectorSize2336 == 0 => Constants.SectorSize2336,
-                _                                                      => throw new NotSupportedException()
-            };
+        WriteLine();
 
-            var streamSectors = streamLength / sectorSize;
+        PrintTableOfContents(sheet);
 
-            var max = MSF.Max.ToLBA();
+        WriteLine();
 
-            if (streamSectors > max)
-            {
-                throw new IsoImageNotSupportedException("Length of image is greater than a CD's maximum, most likely a DVD image.");
-            }
+        var disc = LoadFileSystem(sheet, path);
 
-            var track = new DiscTrackIso(stream);
+        return disc;
+    }
 
-            using var disc = new Disc();
+    private Disc LoadDiscFromIso(string path)
+    {
+        WriteLine(path);
 
-            disc.Tracks.Add(track);
+        var stream = File.OpenRead(path);
 
-            var isoFileSystem = IsoFileSystem.Read(disc);
-        }
-        catch (IsoImageNotSupportedException)
-        {
-        }
+        var track = new DiscTrackIso(stream);
+
+        var disc = new Disc();
+
+        disc.Tracks.Add(track);
+
+        return disc;
     }
 
     private static string GetTextTree(IsoFileSystemEntry rootDirectory)
@@ -333,7 +328,7 @@ public class UnitTestDisc : UnitTestBase
 
             WriteLine(file.Name);
 
-            var track = file.Tracks.FirstOrDefault(s => s.Type is CueSheetTrackType.Mode1Raw or CueSheetTrackType.Mode2Raw)
+            var track = file.Tracks.FirstOrDefault(s => s.Type is CueSheetTrackType.Mode1Raw or CueSheetTrackType.Mode2Raw or CueSheetTrackType.Mode1Cooked)
                         ?? throw new InvalidOperationException("Failed to find track.");
 
             WriteLine(track.Type);
@@ -372,9 +367,9 @@ public class UnitTestDisc : UnitTestBase
     {
         return trackType switch
         {
-            CueSheetTrackType.Mode1Raw => SectorType.Mode1,
-            CueSheetTrackType.Mode2Raw => SectorType.Mode2Form1,
-            _                          => throw new ArgumentOutOfRangeException(nameof(trackType), trackType, null)
+            CueSheetTrackType.Mode1Raw    => SectorType.Mode1,
+            CueSheetTrackType.Mode2Raw    => SectorType.Mode2Form1,
+            _                             => throw new ArgumentOutOfRangeException(nameof(trackType), trackType, null)
         };
     }
 
@@ -396,30 +391,5 @@ public class UnitTestDisc : UnitTestBase
                 WriteLine(track);
             }
         }
-    }
-
-    private sealed class IsoImageNotSupportedException : Exception
-    {
-        public IsoImageNotSupportedException(string? message) : base(message)
-        {
-        }
-    }
-
-    private class Constants // TODO move this crap
-    {
-        /// <summary>
-        ///     Mode 1 / Mode 2 Form 1.
-        /// </summary>
-        public const int SectorSize2048 = 2048;
-
-        /// <summary>
-        ///     Mode 2 Form 2.
-        /// </summary>
-        public const int SectorSize2324 = 2324;
-
-        /// <summary>
-        ///     Mode 2 Form-Less.
-        /// </summary>
-        public const int SectorSize2336 = 2336;
     }
 }
