@@ -26,6 +26,28 @@ internal sealed class DiscTrackCueBin : DiscTrack
         Stream.Dispose();
     }
 
+    public override ISector GetSector()
+    {
+        var type = Track.Type;
+
+        ISector sector = type switch
+        {
+            CueSheetTrackType.Audio             => new SectorAudio(),
+            CueSheetTrackType.Karaoke           => throw new NotImplementedException(),
+            CueSheetTrackType.Mode1Cooked       => new SectorCooked2048(),
+            CueSheetTrackType.Mode1Raw          => new SectorMode1(),
+            CueSheetTrackType.Mode2Form1Cooked  => new SectorCooked2324(),
+            CueSheetTrackType.Mode2Form2Cooked  => new SectorCooked2336(),
+            CueSheetTrackType.Mode2Mixed        => throw new NotImplementedException(),
+            CueSheetTrackType.Mode2Raw          => new SectorMode2Form1(),
+            CueSheetTrackType.InteractiveCooked => throw new NotImplementedException(),
+            CueSheetTrackType.InteractiveRaw    => throw new NotImplementedException(),
+            _                                   => throw new NotSupportedException(type.ToString())
+        };
+
+        return sector;
+    }
+
     public override int GetSectorSize()
     {
         var type = Track.Type;

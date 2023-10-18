@@ -23,6 +23,8 @@ public abstract class DiscTrack : Disposable
         return new BinaryReader(new DiscTrackStream(this, sector), Encoding.Default, true);
     }
 
+    public abstract ISector GetSector();
+
     public abstract int GetSectorSize(); // TODO property
 
     public abstract ISector ReadSector(in int index);
