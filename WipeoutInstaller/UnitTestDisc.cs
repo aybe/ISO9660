@@ -259,7 +259,7 @@ public class UnitTestDisc : UnitTestBase
 
         WriteLine();
 
-        var disc = LoadFileSystem(sheet, path);
+        var disc = LoadFileSystem(sheet);
 
         return disc;
     }
@@ -314,11 +314,8 @@ public class UnitTestDisc : UnitTestBase
         return tree;
     }
 
-    private Disc LoadFileSystem(CueSheet sheet, string path) // TODO cue sheet could hold path
+    private Disc LoadFileSystem(CueSheet sheet)
     {
-        var fileDirectory = Path.GetDirectoryName(path)
-                            ?? throw new InvalidOperationException("Failed to get directory name.");
-
         {
             WriteLine("Searching...");
             WriteLine();
@@ -337,15 +334,6 @@ public class UnitTestDisc : UnitTestBase
                         ?? throw new InvalidOperationException("Failed to find index.");
 
             WriteLine(index.Position);
-
-
-            var filePath = Path.Combine(fileDirectory, file.Name);
-
-            using var fileStream = File.OpenRead(filePath);
-
-            var fileSectorMode = GetSectorType(track.Type);
-
-            WriteLine(fileSectorMode);
         }
 
         {
@@ -361,16 +349,6 @@ public class UnitTestDisc : UnitTestBase
 
             return disc;
         }
-    }
-
-    private static SectorType GetSectorType(CueSheetTrackType trackType)
-    {
-        return trackType switch
-        {
-            CueSheetTrackType.Mode1Raw    => SectorType.Mode1,
-            CueSheetTrackType.Mode2Raw    => SectorType.Mode2Form1,
-            _                             => throw new ArgumentOutOfRangeException(nameof(trackType), trackType, null)
-        };
     }
 
     private void PrintTableOfContents(CueSheet sheet)
