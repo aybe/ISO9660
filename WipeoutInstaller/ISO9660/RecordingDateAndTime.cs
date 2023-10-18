@@ -29,23 +29,21 @@ public readonly struct RecordingDateAndTime
 
     public DateTimeOffset ToDateTimeOffset()
     {
-        var dateTimeOffset = new DateTimeOffset(
-            1900 + NumberOfYearsSince1900,
-            MonthOfTheYear,
-            DayOfTheMonth,
-            HourOfTheDay,
-            MinuteOfTheHour,
-            SecondOfTheMinute,
-            TimeSpan.FromMinutes(15 * OffsetFromGreenwichMeanTime.Value)
-        );
+        var a = 1900 + NumberOfYearsSince1900;
+        var b = MonthOfTheYear;
+        var c = DayOfTheMonth;
+        var d = HourOfTheDay;
+        var e = MinuteOfTheHour;
+        var f = SecondOfTheMinute;
+        var g = TimeSpan.FromMinutes(15 * OffsetFromGreenwichMeanTime.Value);
 
-        return dateTimeOffset;
+        DateTimeParser.TryParse(a, b, c, d, e, f, g, out var result);
+
+        return result;
     }
 
     public override string ToString()
     {
-        var dateTimeOffset = ToDateTimeOffset();
-
-        return dateTimeOffset.ToString();
+        return ToDateTimeOffset().ToString();
     }
 }

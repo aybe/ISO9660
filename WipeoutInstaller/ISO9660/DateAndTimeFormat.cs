@@ -38,4 +38,24 @@ public sealed class DateAndTimeFormat
     public string HundredthsOfASecond { get; }
 
     public Iso712 OffsetFromGreenwichMeanTime { get; }
+
+    public DateTimeOffset ToDateTimeOffset()
+    {
+        var a = int.Parse(Year);
+        var b = int.Parse(MonthOfTheYear);
+        var c = int.Parse(DayOfTheMonth);
+        var d = int.Parse(HourOfTheDay);
+        var e = int.Parse(MinuteOfTheHour);
+        var f = int.Parse(SecondOfTheMinute);
+        var g = TimeSpan.FromMinutes(15 * OffsetFromGreenwichMeanTime.Value);
+
+        DateTimeParser.TryParse(a, b, c, d, e, f, g, out var result);
+
+        return result;
+    }
+
+    public override string ToString()
+    {
+        return ToDateTimeOffset().ToString();
+    }
 }
