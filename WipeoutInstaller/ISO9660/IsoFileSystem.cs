@@ -34,6 +34,7 @@ public sealed class IsoFileSystem : Disposable
 
         while (true)
         {
+            // NOTE here we don't need a 'stream of sectors' as opposed to PTRs which can overlap sectors
 
             using var reader = disc.Tracks.First().GetBinaryReader(sectorIndex);
 

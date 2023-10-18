@@ -164,6 +164,8 @@ public class UnitTestDisc : UnitTestBase
     [DataRow(@"D:\Temp\Rocky-9.2-x86_64-minimal.cue")]
     public void TestIsoReading(string path)
     {
+        // TODO add here the logic that checks whether it is a DVD or not
+
         var sheet = CueSheetParser.Parse(path);
 
         WriteLine();

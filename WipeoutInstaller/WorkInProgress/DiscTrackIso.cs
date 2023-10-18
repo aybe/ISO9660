@@ -11,7 +11,7 @@ public sealed class DiscTrackIso : DiscTrack
 
     public override bool Audio { get; } = false;
 
-    public override int Index { get; } = 1;
+    public override int Index { get; } = 1; // TODO this isn't the right way
 
     public override int Length
     {
