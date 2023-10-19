@@ -58,7 +58,7 @@ internal sealed class DiscTrackCueBin : DiscTrack
             throw new ArgumentOutOfRangeException(nameof(index), index, null);
         }
 
-        var size = GetSectorSize();
+        var size = Sector.GetSize();
 
         Stream.Position = index * size;
 

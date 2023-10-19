@@ -27,7 +27,7 @@ internal sealed class DiscTrackStream : Stream
         {
             var sectors = Track.Length - Track.Position;
 
-            var sectorSize = Track.GetSectorSize();
+            var sectorSize = Track.Sector.GetSize();
 
             var bytes = sectors * sectorSize;
 
