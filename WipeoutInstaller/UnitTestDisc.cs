@@ -5,10 +5,6 @@ using WipeoutInstaller.WorkInProgress;
 
 namespace WipeoutInstaller;
 
-// TODO NetBSD-9.3-i386.iso// TODO bootable
-// TODO NetBSD-9.3-mac68k // TODO rr jol
-// TODO NetBSD-9.3-macppc // TODO rr jol hfs
-
 [TestClass]
 [SuppressMessage("ReSharper", "StringLiteralTypo")]
 public class UnitTestDisc : UnitTestBase
@@ -151,9 +147,9 @@ public class UnitTestDisc : UnitTestBase
 
     [TestMethod]
     [DataRow(@"D:\Temp\CD-I Demo Disc - Fall 1996 - Spring 1997.cue")]
-    [DataRow(@"D:\Temp\NetBSD-9.3-i386.iso")]
-    [DataRow(@"D:\Temp\NetBSD-9.3-mac68k.iso")]
-    [DataRow(@"D:\Temp\NetBSD-9.3-macppc.iso")]
+    [DataRow(@"D:\Temp\NetBSD-9.3-i386.iso")]   // TODO BootRecord
+    [DataRow(@"D:\Temp\NetBSD-9.3-mac68k.iso")] // TODO RockRidge, Joliet
+    [DataRow(@"D:\Temp\NetBSD-9.3-macppc.iso")] // TODO RockRidge, Joliet, HFS
     [DataRow(@"D:\Temp\Rocky-9.2-aarch64-boot.cue")]
     [DataRow(@"D:\Temp\Rocky-9.2-aarch64-boot.iso")]
     [DataRow(@"D:\Temp\Rocky-9.2-aarch64-minimal.cue")] // DVD
