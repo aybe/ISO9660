@@ -160,7 +160,7 @@ public class UnitTestDisc : UnitTestBase
     [DataRow(@"D:\Temp\Rocky-9.2-ppc64le-minimal.iso")] // DVD
     [DataRow(@"D:\Temp\Rocky-9.2-s390x-boot.cue")]
     [DataRow(@"D:\Temp\Rocky-9.2-s390x-boot.iso")]
-    [DataRow(@"D:\Temp\Rocky-9.2-s390x-minimal.cue")] // BUG not seen as DVD?
+    [DataRow(@"D:\Temp\Rocky-9.2-s390x-minimal.cue")] // DVD
     [DataRow(@"D:\Temp\Rocky-9.2-s390x-minimal.iso")] // DVD
     [DataRow(@"D:\Temp\Rocky-9.2-x86_64-boot.cue")]
     [DataRow(@"D:\Temp\Rocky-9.2-x86_64-boot.iso")]
