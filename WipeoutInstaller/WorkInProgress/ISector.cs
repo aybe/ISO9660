@@ -66,7 +66,7 @@ public interface ISector
 
     int GetSize() // TODO property
     {
-        return Size;
+        return Marshal.SizeOf(this); // TODO return a literal value in implementations
     }
 
     Span<byte> GetUserData();
@@ -81,7 +81,9 @@ public interface ISector
     {
         var pointer = Unsafe.AsPointer(ref sector);
 
-        var span = new Span<byte>(pointer, Size);
+        var size = Unsafe.SizeOf<T>();
+
+        var span = new Span<byte>(pointer, size);
 
         var slice = span.Slice(start, length);
 
@@ -124,7 +126,9 @@ public interface ISector
 
     public static ISector Read<T>(Stream stream) where T : struct, ISector
     {
-        Span<byte> span = stackalloc byte[Size];
+        var size = Unsafe.SizeOf<T>();
+
+        Span<byte> span = stackalloc byte[size];
 
         stream.ReadExactly(span);
 
