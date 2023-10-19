@@ -2,7 +2,7 @@
 
 public sealed class DiscTrackIso : DiscTrack
 {
-    public DiscTrackIso(Stream stream, int index)
+    public DiscTrackIso(Stream stream, int index, int position)
     {
         ISector[] sectors =
         {
@@ -18,6 +18,8 @@ public sealed class DiscTrackIso : DiscTrack
         Stream = stream;
 
         Index = index;
+
+        Position = position;
     }
 
     private Stream Stream { get; }
@@ -28,7 +30,7 @@ public sealed class DiscTrackIso : DiscTrack
 
     public override int Length { get; }
 
-    public override int Position { get; } = 0; // TODO ?
+    public override int Position { get; }
 
     public override ISector Sector { get; }
 
