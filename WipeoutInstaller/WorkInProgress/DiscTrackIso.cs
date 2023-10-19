@@ -34,6 +34,11 @@ public sealed class DiscTrackIso : DiscTrack
 
     public override ISector Sector { get; }
 
+    protected override void DisposeManaged()
+    {
+        Stream.Dispose();
+    }
+
     public override ISector ReadSector(in int index)
     {
         var size = Sector.Size;
