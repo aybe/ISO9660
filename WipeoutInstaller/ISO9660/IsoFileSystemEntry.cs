@@ -21,6 +21,8 @@ public abstract partial class IsoFileSystemEntry
 
     public IsoFileSystemEntryDirectory? Parent { get; }
 
+    public DateTimeOffset Modified => Record.RecordingDateAndTime.ToDateTimeOffset();
+
     public string Extension
     {
         get
