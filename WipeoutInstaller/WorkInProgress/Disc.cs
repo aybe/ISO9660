@@ -13,21 +13,4 @@ public sealed class Disc : Disposable
             track.Dispose();
         }
     }
-
-    public ISector ReadSector(in int index)
-    {
-        foreach (var track in Tracks)
-        {
-            if (index < track.Position)
-            {
-                continue;
-            }
-
-            var sector = track.ReadSector(index);
-
-            return sector;
-        }
-
-        throw new ArgumentOutOfRangeException(nameof(index), index, null);
-    }
 }
