@@ -164,9 +164,24 @@ public class UnitTestDisc : UnitTestBase
 
         Assert.AreEqual(expected, tryFindFile);
 
-        if (result != null)
+        if (result == null)
         {
-            WriteLine(() => result);
+            return;
+        }
+
+        WriteLine(() => result);
+
+        {
+            using var stream = new MemoryStream();
+
+            disc.ReadFile(result, DiscReadFileMode.Raw, stream);
+        }
+
+        {
+            using var stream = new MemoryStream();
+
+            disc.ReadFile(result, DiscReadFileMode.Usr, stream);
+        }
         }
     }
 
