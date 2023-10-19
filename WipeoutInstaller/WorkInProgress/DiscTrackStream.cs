@@ -39,7 +39,7 @@ internal sealed class DiscTrackStream : Stream
     {
         get
         {
-            var sector = Track.GetSector();
+            var sector = Track.Sector;
 
             var sectorSize = sector.GetSize();
 

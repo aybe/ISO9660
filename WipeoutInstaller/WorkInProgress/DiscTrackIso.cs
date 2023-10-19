@@ -27,31 +27,34 @@ public sealed class DiscTrackIso : DiscTrack
 
     public override int Position { get; } = 0;
 
-    public override ISector GetSector()
+    public override ISector Sector
     {
-        var length = Stream.Length;
-
-        const int size2048 = SectorCooked2048.UserDataSize;
-        const int size2324 = SectorCooked2324.UserDataSize;
-        const int size2336 = SectorCooked2336.UserDataSize;
-
-        var size = true switch
+        get
         {
-            true when length % size2048 is 0 => size2048,
-            true when length % size2324 is 0 => size2324,
-            true when length % size2336 is 0 => size2336,
-            _                                => throw new NotSupportedException()
-        };
+            var length = Stream.Length;
 
-        ISector sector = size switch
-        {
-            size2048 => new SectorCooked2048(),
-            size2324 => new SectorCooked2324(),
-            size2336 => new SectorCooked2336(),
-            _        => throw new NotSupportedException()
-        };
+            const int size2048 = SectorCooked2048.UserDataSize;
+            const int size2324 = SectorCooked2324.UserDataSize;
+            const int size2336 = SectorCooked2336.UserDataSize;
 
-        return sector;
+            var size = true switch
+            {
+                true when length % size2048 is 0 => size2048,
+                true when length % size2324 is 0 => size2324,
+                true when length % size2336 is 0 => size2336,
+                _                                => throw new NotSupportedException()
+            };
+
+            ISector sector = size switch
+            {
+                size2048 => new SectorCooked2048(),
+                size2324 => new SectorCooked2324(),
+                size2336 => new SectorCooked2336(),
+                _        => throw new NotSupportedException()
+            };
+
+            return sector;
+        }
     }
 
     public override ISector ReadSector(in int index)
