@@ -8,6 +8,8 @@ public unsafe struct SectorCooked2336 : ISector
 
     public fixed byte UserData[UserDataSize];
 
+    public readonly int Size => 2336;
+
     readonly uint ISector.GetEdc()
     {
         return 0;
@@ -16,11 +18,6 @@ public unsafe struct SectorCooked2336 : ISector
     readonly uint ISector.GetEdcSum()
     {
         return 0;
-    }
-
-    public readonly int GetSize()
-    {
-        return 2336;
     }
 
     Span<byte> ISector.GetUserData()

@@ -27,7 +27,7 @@ internal sealed class DiscTrackStream : Stream
         {
             var sectors = Track.Length - Track.Position;
 
-            var sectorSize = Track.Sector.GetSize();
+            var sectorSize = Track.Sector.Size;
 
             var bytes = sectors * sectorSize;
 
@@ -41,7 +41,7 @@ internal sealed class DiscTrackStream : Stream
         {
             var sector = Track.Sector;
 
-            var sectorSize = sector.GetSize();
+            var sectorSize = sector.Size;
 
             var userDataPosition = sector.GetUserDataPosition();
 

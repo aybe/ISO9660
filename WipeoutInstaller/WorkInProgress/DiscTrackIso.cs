@@ -17,7 +17,7 @@ public sealed class DiscTrackIso : DiscTrack
     {
         get
         {
-            var size = Sector.GetSize();
+            var size = Sector.Size;
 
             var length = Stream.Length / size;
 
@@ -59,7 +59,7 @@ public sealed class DiscTrackIso : DiscTrack
 
     public override ISector ReadSector(in int index)
     {
-        var size = Sector.GetSize();
+        var size = Sector.Size;
 
         var position = index * size;
 

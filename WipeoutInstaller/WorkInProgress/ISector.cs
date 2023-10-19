@@ -60,14 +60,11 @@ public interface ISector
     public const int UserDataSizeMode2Form2 = 2324;
     public const int UserDataSizeMode2FormLess = 2336;
 
+    int Size => RawSize;
+
     uint GetEdc();
 
     uint GetEdcSum();
-
-    int GetSize() // TODO property
-    {
-        return Marshal.SizeOf(this); // TODO return a literal value in implementations
-    }
 
     Span<byte> GetUserData();
 
