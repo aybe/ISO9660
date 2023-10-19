@@ -2,7 +2,7 @@
 
 public sealed class DiscTrackIso : DiscTrack
 {
-    public DiscTrackIso(Stream stream)
+    public DiscTrackIso(Stream stream, int index)
     {
         ISector[] sectors =
         {
@@ -16,13 +16,15 @@ public sealed class DiscTrackIso : DiscTrack
         Length = Convert.ToInt32(stream.Length / Sector.Size);
 
         Stream = stream;
+
+        Index = index;
     }
 
     private Stream Stream { get; }
 
     public override bool Audio { get; } = false;
 
-    public override int Index { get; } = 1; // TODO in ctor
+    public override int Index { get; }
 
     public override int Length { get; }
 

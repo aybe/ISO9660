@@ -300,7 +300,7 @@ public class UnitTestDisc : UnitTestBase
 
         var stream = File.OpenRead(path);
 
-        var track = new DiscTrackIso(stream);
+        var track = new DiscTrackIso(stream, 1);
 
         var disc = new Disc();
 
