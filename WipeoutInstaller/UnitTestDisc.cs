@@ -146,6 +146,31 @@ public class UnitTestDisc : UnitTestBase
     };
 
     [TestMethod]
+    [DataRow(@"D:\Temp\WipEout (Europe) (v1.1) - Multi.cue", "/BAD/WIPEOUT/LOG.BAK", false)]
+    [DataRow(@"D:\Temp\WipEout (Europe) (v1.1) - Multi.cue", "/BADWOPAL.AV", false)]
+    [DataRow(@"D:\Temp\WipEout (Europe) (v1.1) - Multi.cue", "/WIPEOUT/LOG.BAK", true)]
+    [DataRow(@"D:\Temp\WipEout (Europe) (v1.1) - Multi.cue", "/WOPAL.AV", true)]
+    [DataRow(@"D:\Temp\WipEout (Europe) (v1.1) - Single.cue", "/BAD/WIPEOUT/LOG.BAK", false)]
+    [DataRow(@"D:\Temp\WipEout (Europe) (v1.1) - Single.cue", "/BADWOPAL.AV", false)]
+    [DataRow(@"D:\Temp\WipEout (Europe) (v1.1) - Single.cue", "/WIPEOUT/LOG.BAK", true)]
+    [DataRow(@"D:\Temp\WipEout (Europe) (v1.1) - Single.cue", "/WOPAL.AV", true)]
+    public void TestIsoFindFile(string cueSheetPath, string filePath, bool expected)
+    {
+        using var disc = LoadDiscFromCue(cueSheetPath);
+
+        var ifs = IsoFileSystem.Read(disc);
+
+        var tryFindFile = ifs.TryFindFile(filePath, out var result);
+
+        Assert.AreEqual(expected, tryFindFile);
+
+        if (result != null)
+        {
+            WriteLine(() => result);
+        }
+    }
+
+    [TestMethod]
     [DataRow(@"D:\Temp\CD-I Demo Disc - Fall 1996 - Spring 1997.cue")]
     [DataRow(@"D:\Temp\NetBSD-9.3-i386.iso")]   // TODO BootRecord
     [DataRow(@"D:\Temp\NetBSD-9.3-mac68k.iso")] // TODO RockRidge, Joliet

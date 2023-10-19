@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using WipeoutInstaller.Extensions;
 using WipeoutInstaller.WorkInProgress;
 
@@ -24,6 +25,49 @@ public sealed class IsoFileSystem : Disposable
         var isoFileSystem = new IsoFileSystem(descriptorSet, rootDirectory);
 
         return isoFileSystem;
+    }
+
+    public bool TryFindFile(string filePath, [MaybeNullWhen(false)] out IsoFileSystemEntryFile result)
+    {
+        result = default;
+
+        var split = filePath.Split(IsoFileSystemEntry.DirectorySeparator, StringSplitOptions.RemoveEmptyEntries);
+
+        var queue = new Queue<string>(split);
+
+        var stack = new Stack<IsoFileSystemEntryDirectory>();
+
+        stack.Push(RootDirectory);
+
+        while (stack.Count > 0 && queue.Count > 0)
+        {
+            var directory = stack.Pop();
+
+            var entryName = queue.Peek();
+
+            var entryFile = directory.Files
+                .SingleOrDefault(s => string.Equals(s.Name, entryName, StringComparison.Ordinal));
+
+            if (entryFile != null)
+            {
+                result = entryFile;
+                return true;
+            }
+
+            var entryDirectory = directory.Directories
+                .SingleOrDefault(s => string.Equals(s.Name, entryName, StringComparison.Ordinal));
+
+            if (entryDirectory == null)
+            {
+                continue;
+            }
+
+            queue.Dequeue();
+
+            stack.Push(entryDirectory);
+        }
+
+        return false;
     }
 
     private static VolumeDescriptorSet ReadVolumeDescriptors(Disc disc)
