@@ -41,11 +41,6 @@ public static class DateTimeParser
             return false;
         }
 
-        if (!IsInRange(offset, min.Offset, max.Offset))
-        {
-            return false;
-        }
-
         result = new DateTimeOffset(year, month, day, hour, minute, second, offset);
 
         return true;
