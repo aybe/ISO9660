@@ -13,6 +13,8 @@ public sealed class DiscTrackIso : DiscTrack
 
         Sector = sectors.Single(s => stream.Length % s.GetUserDataLength() == 0);
 
+        Length = Convert.ToInt32(stream.Length / Sector.Size);
+
         Stream = stream;
     }
 
@@ -22,17 +24,7 @@ public sealed class DiscTrackIso : DiscTrack
 
     public override int Index { get; } = 1; // TODO in ctor
 
-    public override int Length // TODO in ctor
-    {
-        get
-        {
-            var size = Sector.Size;
-
-            var length = Stream.Length / size;
-
-            return Convert.ToInt32(length);
-        }
-    }
+    public override int Length { get; }
 
     public override int Position { get; } = 0; // TODO ?
 
