@@ -4,7 +4,7 @@ namespace WipeoutInstaller.WorkInProgress;
 
 public sealed class Disc : Disposable
 {
-    public List<DiscTrack> Tracks { get; } = new();
+    public IList<DiscTrack> Tracks { get; } = new List<DiscTrack>();
 
     protected override void DisposeManaged()
     {
