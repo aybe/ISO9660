@@ -16,6 +16,11 @@ public unsafe struct SectorMode2Form1 : ISector, ISectorHeader
 
     public fixed byte QParity[ISector.QParitySizeMode2Form1];
 
+    public Span<byte> AsByteSpan()
+    {
+        return ISector.AsByteSpan(ref this);
+    }
+
     public uint GetEdc()
     {
         return ISector.ReadUInt32LE(ref this, ISector.EdcPositionMode2Form1);

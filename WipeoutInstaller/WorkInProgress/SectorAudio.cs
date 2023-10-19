@@ -4,6 +4,11 @@ public unsafe struct SectorAudio : ISector
 {
     public fixed byte Data[ISector.UserDataSizeAudio];
 
+    public Span<byte> AsByteSpan()
+    {
+        return ISector.AsByteSpan(ref this);
+    }
+
     public uint GetEdc()
     {
         throw new NotSupportedException();

@@ -8,6 +8,11 @@ public unsafe struct SectorMode2FormLess : ISector, ISectorHeader
 
     public fixed byte UserData[ISector.UserDataSizeMode2FormLess];
 
+    public Span<byte> AsByteSpan()
+    {
+        return ISector.AsByteSpan(ref this);
+    }
+
     public uint GetEdc()
     {
         throw new NotSupportedException();

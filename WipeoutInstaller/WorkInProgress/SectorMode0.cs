@@ -8,6 +8,11 @@ public unsafe struct SectorMode0 : ISector, ISectorHeader
 
     public fixed byte UserData[ISector.UserDataSizeMode0];
 
+    public Span<byte> AsByteSpan()
+    {
+        return ISector.AsByteSpan(ref this);
+    }
+
     public readonly uint GetEdc()
     {
         return 0;

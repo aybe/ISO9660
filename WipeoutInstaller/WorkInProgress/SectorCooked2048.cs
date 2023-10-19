@@ -10,6 +10,11 @@ public unsafe struct SectorCooked2048 : ISector
 
     public readonly int Size => 2048;
 
+    public Span<byte> AsByteSpan()
+    {
+        return ISector.AsByteSpan(ref this);
+    }
+
     readonly uint ISector.GetEdc()
     {
         return 0;

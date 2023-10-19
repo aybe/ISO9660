@@ -12,6 +12,11 @@ public unsafe struct SectorMode2Form2 : ISector, ISectorHeader
 
     public fixed byte ReservedOrEdc[ISector.EdcSize];
 
+    public Span<byte> AsByteSpan()
+    {
+        return ISector.AsByteSpan(ref this);
+    }
+
     public uint GetEdc()
     {
         return ISector.ReadUInt32LE(ref this, ISector.EdcPositionMode2Form2);

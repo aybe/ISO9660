@@ -62,6 +62,8 @@ public interface ISector
 
     int Size => RawSize;
 
+    Span<byte> AsByteSpan();
+
     uint GetEdc();
 
     uint GetEdcSum();
@@ -97,6 +99,12 @@ public interface ISector
         var header = MemoryMarshal.Read<SectorHeader>(slice);
 
         return header;
+    }
+
+    public static Span<byte> AsByteSpan<T>(scoped ref T sector)
+        where T : struct, ISector
+    {
+        return GetSlice(ref sector, 0, sector.Size);
     }
 
     public static Span<byte> GetSlice<T>(scoped ref T sector, int start, int length)
