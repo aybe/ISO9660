@@ -64,7 +64,7 @@ public interface ISector
 
     uint GetEdcSum();
 
-    int GetSize()
+    int GetSize() // TODO property
     {
         return Size;
     }

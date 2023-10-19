@@ -21,7 +21,7 @@ internal sealed class DiscTrackStream : Stream
 
     public override bool CanWrite => false;
 
-    public override long Length
+    public override long Length // TODO simplify
     {
         get
         {

@@ -2,7 +2,7 @@
 
 internal sealed class DiscTrackCueBin : DiscTrack
 {
-    private const int PreGapSize = 150;
+    private const int PreGapSize = 150; // TODO move
 
     public DiscTrackCueBin(CueSheetTrack track)
     {
@@ -77,7 +77,7 @@ internal sealed class DiscTrackCueBin : DiscTrack
 
     private static int GetLength(CueSheetTrack track)
     {
-        var lengthStream = Convert.ToInt32(new FileInfo(track.File.Name).Length / ISector.Size);
+        var lengthStream = Convert.ToInt32(new FileInfo(track.File.Name).Length / ISector.Size); // BUG fetch correct sector size
 
         var length = 0;
 

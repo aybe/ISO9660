@@ -4,16 +4,16 @@ public sealed class DiscTrackIso : DiscTrack
 {
     public DiscTrackIso(Stream stream)
     {
-        Stream = stream;
+        Stream = stream; // TODO GetSector here, throw immediately if wrong
     }
 
     private Stream Stream { get; }
 
     public override bool Audio { get; } = false;
 
-    public override int Index { get; } = 1; // TODO this isn't the right way
+    public override int Index { get; } = 1; // TODO in ctor
 
-    public override int Length
+    public override int Length // TODO in ctor
     {
         get
         {
@@ -25,7 +25,7 @@ public sealed class DiscTrackIso : DiscTrack
         }
     }
 
-    public override int Position { get; } = 0;
+    public override int Position { get; } = 0; // TODO ?
 
     public override ISector Sector
     {
