@@ -37,9 +37,7 @@ public readonly struct RecordingDateAndTime
         var f = SecondOfTheMinute;
         var g = TimeSpan.FromMinutes(15 * OffsetFromGreenwichMeanTime.Value);
 
-        DateTimeParser.TryParse(a, b, c, d, e, f, g, out var result);
-
-        return result;
+        return DateTimeParser.TryParse(a, b, c, d, e, f, g, out var result) ? result : DateTimeOffset.UnixEpoch;
     }
 
     public override string ToString()
