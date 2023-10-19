@@ -2,8 +2,7 @@ namespace WipeoutInstaller.ISO9660;
 
 public static class DateTimeParser
 {
-    public static bool TryParse(
-        in int year, in int month, in int day, in int hour, in int minute, in int second, in TimeSpan offset,
+    public static bool TryParse(in int year, in int month, in int day, in int hour, in int minute, in int second, int millisecond, in TimeSpan offset,
         out DateTimeOffset result)
     {
         result = default;
@@ -41,7 +40,12 @@ public static class DateTimeParser
             return false;
         }
 
-        result = new DateTimeOffset(year, month, day, hour, minute, second, offset);
+        if (!IsInRange(millisecond, min.Millisecond, max.Millisecond))
+        {
+            return false;
+        }
+
+        result = new DateTimeOffset(year, month, day, hour, minute, second, millisecond, offset);
 
         return true;
     }
