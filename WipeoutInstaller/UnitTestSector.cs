@@ -20,11 +20,11 @@ public class UnitTestSector : UnitTestBase
         using var stream = File.OpenRead(path);
         using var reader = new BinaryReader(stream);
 
-        Assert.AreEqual(0, stream.Length % ISector.Size);
+        Assert.AreEqual(0, stream.Length % ISector.RawSize);
 
-        stream.Position = sectorIndex * ISector.Size;
+        stream.Position = sectorIndex * ISector.RawSize;
 
-        var span = reader.ReadBytes(ISector.Size).AsSpan();
+        var span = reader.ReadBytes(ISector.RawSize).AsSpan();
 
         var header = MemoryMarshal.Read<SectorHeader>(span.Slice(ISector.HeaderPosition, ISector.HeaderSize));
 
@@ -149,11 +149,11 @@ public class UnitTestSector : UnitTestBase
         Assert.AreEqual(4, Unsafe.SizeOf<SectorSubHeader>());
         Assert.AreEqual(8, Unsafe.SizeOf<SectorSubHeaderBlock>());
 
-        Assert.AreEqual(ISector.Size, Unsafe.SizeOf<SectorAudio>());
-        Assert.AreEqual(ISector.Size, Unsafe.SizeOf<SectorMode0>());
-        Assert.AreEqual(ISector.Size, Unsafe.SizeOf<SectorMode1>());
-        Assert.AreEqual(ISector.Size, Unsafe.SizeOf<SectorMode2Form1>());
-        Assert.AreEqual(ISector.Size, Unsafe.SizeOf<SectorMode2Form2>());
-        Assert.AreEqual(ISector.Size, Unsafe.SizeOf<SectorMode2FormLess>());
+        Assert.AreEqual(ISector.RawSize, Unsafe.SizeOf<SectorAudio>());
+        Assert.AreEqual(ISector.RawSize, Unsafe.SizeOf<SectorMode0>());
+        Assert.AreEqual(ISector.RawSize, Unsafe.SizeOf<SectorMode1>());
+        Assert.AreEqual(ISector.RawSize, Unsafe.SizeOf<SectorMode2Form1>());
+        Assert.AreEqual(ISector.RawSize, Unsafe.SizeOf<SectorMode2Form2>());
+        Assert.AreEqual(ISector.RawSize, Unsafe.SizeOf<SectorMode2FormLess>());
     }
 }

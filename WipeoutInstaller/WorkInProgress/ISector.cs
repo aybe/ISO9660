@@ -15,7 +15,7 @@ public interface ISector
     // https://archive.org/details/CDCrackingUncoveredProtectionAgainstUnsanctionedCDCopyingKrisKaspersky
 {
 
-    public const int Size = 2352;
+    public const int RawSize = 2352;
     
     public const int SyncPosition = 0;
     public const int SyncSize = 12;

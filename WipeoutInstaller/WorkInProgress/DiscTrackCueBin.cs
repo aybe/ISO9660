@@ -77,7 +77,7 @@ internal sealed class DiscTrackCueBin : DiscTrack
 
     private static int GetLength(CueSheetTrack track)
     {
-        var lengthStream = Convert.ToInt32(new FileInfo(track.File.Name).Length / ISector.Size); // BUG fetch correct sector size
+        var lengthStream = Convert.ToInt32(new FileInfo(track.File.Name).Length / ISector.RawSize); // BUG fetch correct sector size
 
         var length = 0;
 
@@ -159,7 +159,7 @@ internal sealed class DiscTrackCueBin : DiscTrack
                     break;
                 }
 
-                position += Convert.ToInt32(new FileInfo(value.File.Name).Length / ISector.Size);
+                position += Convert.ToInt32(new FileInfo(value.File.Name).Length / ISector.RawSize);
             }
         }
 
