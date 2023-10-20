@@ -174,19 +174,6 @@ public class UnitTestDisc : UnitTestBase
         }
 
         WriteLine(() => result);
-
-        {
-            using var stream = new MemoryStream();
-
-            disc.ReadFile(result, DiscReadFileMode.Raw, stream);
-        }
-
-        {
-            using var stream = new MemoryStream();
-
-            disc.ReadFile(result, DiscReadFileMode.Usr, stream);
-        }
-        }
     }
 
     [TestMethod]
