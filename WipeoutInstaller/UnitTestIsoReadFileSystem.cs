@@ -6,7 +6,7 @@ namespace WipeoutInstaller;
 
 [TestClass]
 [SuppressMessage("ReSharper", "StringLiteralTypo")]
-public class UnitTestDisc : UnitTestIso
+public sealed class UnitTestIsoReadFileSystem : UnitTestIso
 {
     private static readonly Dictionary<string, Dictionary<int, int>> TestIsoReadingLengths = new()
     {
@@ -168,7 +168,7 @@ public class UnitTestDisc : UnitTestIso
     [DataRow(@"D:\Temp\UFO - Enemy Unknown (1994)(MicroProse).cue")]
     [DataRow(@"D:\Temp\WipEout (Europe) (v1.1) - Multi.cue")]
     [DataRow(@"D:\Temp\WipEout (Europe) (v1.1) - Single.cue")]
-    public void TestIsoReading(string path)
+    public void TestIsoReadFileSystem(string path)
     {
         var extension = Path.GetExtension(path);
 
