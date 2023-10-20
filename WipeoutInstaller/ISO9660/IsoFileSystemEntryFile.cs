@@ -11,10 +11,18 @@ public sealed partial class IsoFileSystemEntryFile : IsoFileSystemEntry
 
         var match = regex.Match(record.FileIdentifier);
 
-        if (match.Success) // BUG who is wrong, NetBSD or ECMA-130?
+        int version;
+
+        if (match.Success && int.TryParse(match.Value, out var i))
         {
-            Version = Convert.ToInt32(match.Value);
+            version = i;
         }
+        else // NetBSD shit, might be present but as padding field
+        {
+            version = 1;
+        }
+
+        Version = version;
     }
 
     public int Length => Record.DataLength;
