@@ -368,6 +368,7 @@ FodyWeavers.xsd
 ################################################################################
 
 *.cd
+*.csv
 CDROMTools
 CDROMToolsDemo
 CDROMToolsDocumentation

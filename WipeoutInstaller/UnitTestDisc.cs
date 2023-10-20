@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using WipeoutInstaller.ISO9660;
+using WipeoutInstaller.Templates;
 using WipeoutInstaller.WorkInProgress;
 
 namespace WipeoutInstaller;
@@ -145,24 +146,27 @@ public class UnitTestDisc : UnitTestBase
         }
     };
 
-    [TestMethod]
-    [DataRow(@"D:\Temp\WipEout (Europe) (v1.1) - Multi.cue", "/BAD/WIPEOUT/LOG.BAK", false)]
-    [DataRow(@"D:\Temp\WipEout (Europe) (v1.1) - Multi.cue", "/BADWOPAL.AV", false)]
-    [DataRow(@"D:\Temp\WipEout (Europe) (v1.1) - Multi.cue", "/WIPEOUT/LOG.BAK", true)]
-    [DataRow(@"D:\Temp\WipEout (Europe) (v1.1) - Multi.cue", "/WOPAL.AV", true)]
-    [DataRow(@"D:\Temp\WipEout (Europe) (v1.1) - Single.cue", "/BAD/WIPEOUT/LOG.BAK", false)]
-    [DataRow(@"D:\Temp\WipEout (Europe) (v1.1) - Single.cue", "/BADWOPAL.AV", false)]
-    [DataRow(@"D:\Temp\WipEout (Europe) (v1.1) - Single.cue", "/WIPEOUT/LOG.BAK", true)]
-    [DataRow(@"D:\Temp\WipEout (Europe) (v1.1) - Single.cue", "/WOPAL.AV", true)]
-    public void TestIsoFindFile(string cueSheetPath, string filePath, bool expected)
+    public static IEnumerable<object[]> TestIsoFindFileInit()
     {
-        using var disc = LoadDiscFromCue(cueSheetPath);
+        var files = TestData.GetCsvTestData<TestDataIsoFindFile>(@"Templates\TestDataIsoFindFile.csv");
+
+        foreach (var file in files)
+        {
+            yield return new object[] { file.Source, file.Target, file.Exists };
+        }
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(TestIsoFindFileInit), DynamicDataSourceType.Method)]
+    public void TestIsoFindFile(string source, string target, bool exists)
+    {
+        using var disc = LoadDiscFromCue(source);
 
         var ifs = IsoFileSystem.Read(disc);
 
-        var tryFindFile = ifs.TryFindFile(filePath, out var result);
+        var tryFindFile = ifs.TryFindFile(target, out var result);
 
-        Assert.AreEqual(expected, tryFindFile);
+        Assert.AreEqual(exists, tryFindFile);
 
         if (result == null)
         {
