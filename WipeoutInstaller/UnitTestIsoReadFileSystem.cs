@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using WipeoutInstaller.ISO9660;
 using WipeoutInstaller.Templates;
-using WipeoutInstaller.WorkInProgress;
 
 namespace WipeoutInstaller;
 
@@ -167,11 +166,6 @@ public sealed class UnitTestIsoReadFileSystem : UnitTestIso
             true when string.Equals(extension, ".iso", StringComparison.OrdinalIgnoreCase) => LoadDiscFromIso(path),
             _                                                                              => throw new NotSupportedException(path)
         };
-
-        if (disc.Tracks.First().Length > MSF.Max.ToLBA())
-        {
-            Assert.Inconclusive("Image too long for a CD, most likely a DVD.");
-        }
 
         WriteLine("Tracks:");
 
