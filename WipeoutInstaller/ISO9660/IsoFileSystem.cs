@@ -96,14 +96,14 @@ public sealed class IsoFileSystem : Disposable
                 VolumeDescriptorType.SupplementaryVolumeDescriptor => new SupplementaryVolumeDescriptor(descriptor, reader),
                 VolumeDescriptorType.VolumePartitionDescriptor     => new VolumePartitionDescriptor(descriptor, reader),
                 VolumeDescriptorType.VolumeDescriptorSetTerminator => new VolumeDescriptorSetTerminator(descriptor, reader),
-                _                                                  => throw new NotImplementedException(descriptor.VolumeDescriptorType.ToString())
+                _                                                  => throw new NotSupportedException(descriptor.VolumeDescriptorType.ToString())
             };
 
             descriptors.Add(descriptor);
 
             if (descriptor is VolumeDescriptorSetTerminator)
             {
-                break; // TODO add a mechanism to read N max descriptors
+                break;
             }
 
             sectorIndex++;

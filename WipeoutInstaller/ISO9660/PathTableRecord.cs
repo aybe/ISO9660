@@ -2,8 +2,6 @@ namespace WipeoutInstaller.ISO9660;
 
 public sealed class PathTableRecord
 {
-    public const int MinimumLength = 8;
-
     public PathTableRecord(BinaryReader reader)
     {
         LengthOfDirectoryIdentifier = new Iso711(reader);
@@ -17,7 +15,7 @@ public sealed class PathTableRecord
         DirectoryIdentifier = new IsoString(reader, LengthOfDirectoryIdentifier,
             IsoStringFlags.DCharacters | IsoStringFlags.Byte00 | IsoStringFlags.Byte01);
 
-        PaddingField = LengthOfDirectoryIdentifier % 2 is not 0 // TODO add method but invert
+        PaddingField = LengthOfDirectoryIdentifier % 2 is not 0
             ? reader.ReadByte()
             : null;
     }

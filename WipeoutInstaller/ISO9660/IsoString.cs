@@ -3,7 +3,7 @@ using WipeoutInstaller.Extensions;
 
 namespace WipeoutInstaller.ISO9660;
 
-public class IsoString // TODO rename to Iso76, pass flags for allowed chars
+public class IsoString // TODO rename to Iso76
 {
     private const string ACharacters = """!"%&'()*+,-./0123456789:;<=>?ABCDEFGHIJKLMNOPQRSTUVWXYZ_""" + Space;
     private const string DCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_" + Space;
@@ -55,7 +55,7 @@ public class IsoString // TODO rename to Iso76, pass flags for allowed chars
                           $"{Environment.NewLine}" +
                           $"The allowed characters are: '{chars}'.";
 
-            Console.WriteLine(message); // throw new InvalidDataException(message); // BUG/TODO many test fail then
+            Console.WriteLine(message); // throw new InvalidDataException(message); // BUG many test fail then
         }
 
         Value = ascii;
