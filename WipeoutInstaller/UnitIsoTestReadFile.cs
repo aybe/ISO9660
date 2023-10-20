@@ -5,7 +5,7 @@ using WipeoutInstaller.Templates;
 namespace WipeoutInstaller;
 
 [TestClass]
-public sealed class UnitIsoTestReadFile : UnitTestDisc
+public sealed class UnitIsoTestReadFile : UnitTestIso
 {
     public static IEnumerable<object[]> TestIsoReadFileInit()
     {

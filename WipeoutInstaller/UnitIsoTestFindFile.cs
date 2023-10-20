@@ -4,7 +4,7 @@ using WipeoutInstaller.Templates;
 namespace WipeoutInstaller;
 
 [TestClass]
-public sealed class UnitIsoTestFindFile : UnitTestDisc
+public sealed class UnitIsoTestFindFile : UnitTestIso
 {
     public static IEnumerable<object[]> TestIsoFindFileInit()
     {
