@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using WipeoutInstaller.ISO9660;
+using WipeoutInstaller.Templates;
 using WipeoutInstaller.WorkInProgress;
 
 namespace WipeoutInstaller;
@@ -144,30 +145,18 @@ public sealed class UnitTestIsoReadFileSystem : UnitTestIso
         }
     };
 
+    public static IEnumerable<object[]> TestIsoReadFileInit()
+    {
+        var files = TestData.GetCsvTestData<TestDataIsoReadFileSystem>(@"Templates\TestDataIsoReadFileSystem.csv");
+
+        foreach (var file in files)
+        {
+            yield return new object[] { file.Path };
+        }
+    }
+
     [TestMethod]
-    [DataRow(@"D:\Temp\CD-I Demo Disc - Fall 1996 - Spring 1997.cue")]
-    [DataRow(@"D:\Temp\NetBSD-9.3-i386.iso")]   // TODO BootRecord
-    [DataRow(@"D:\Temp\NetBSD-9.3-mac68k.iso")] // TODO RockRidge, Joliet
-    [DataRow(@"D:\Temp\NetBSD-9.3-macppc.iso")] // TODO RockRidge, Joliet, HFS
-    [DataRow(@"D:\Temp\Rocky-9.2-aarch64-boot.cue")]
-    [DataRow(@"D:\Temp\Rocky-9.2-aarch64-boot.iso")]
-    [DataRow(@"D:\Temp\Rocky-9.2-aarch64-minimal.cue")] // DVD
-    [DataRow(@"D:\Temp\Rocky-9.2-aarch64-minimal.iso")] // DVD
-    [DataRow(@"D:\Temp\Rocky-9.2-ppc64le-boot.cue")]
-    [DataRow(@"D:\Temp\Rocky-9.2-ppc64le-boot.iso")]
-    [DataRow(@"D:\Temp\Rocky-9.2-ppc64le-minimal.cue")] // DVD
-    [DataRow(@"D:\Temp\Rocky-9.2-ppc64le-minimal.iso")] // DVD
-    [DataRow(@"D:\Temp\Rocky-9.2-s390x-boot.cue")]
-    [DataRow(@"D:\Temp\Rocky-9.2-s390x-boot.iso")]
-    [DataRow(@"D:\Temp\Rocky-9.2-s390x-minimal.cue")] // DVD
-    [DataRow(@"D:\Temp\Rocky-9.2-s390x-minimal.iso")] // DVD
-    [DataRow(@"D:\Temp\Rocky-9.2-x86_64-boot.cue")]
-    [DataRow(@"D:\Temp\Rocky-9.2-x86_64-boot.iso")]
-    [DataRow(@"D:\Temp\Rocky-9.2-x86_64-minimal.cue")] // DVD
-    [DataRow(@"D:\Temp\Rocky-9.2-x86_64-minimal.iso")] // DVD
-    [DataRow(@"D:\Temp\UFO - Enemy Unknown (1994)(MicroProse).cue")]
-    [DataRow(@"D:\Temp\WipEout (Europe) (v1.1) - Multi.cue")]
-    [DataRow(@"D:\Temp\WipEout (Europe) (v1.1) - Single.cue")]
+    [DynamicData(nameof(TestIsoReadFileInit), DynamicDataSourceType.Method)]
     public void TestIsoReadFileSystem(string path)
     {
         var extension = Path.GetExtension(path);

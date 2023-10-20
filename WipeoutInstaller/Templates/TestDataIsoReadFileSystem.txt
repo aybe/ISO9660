@@ -1,0 +1,3 @@
+Path:
+    string
+    Full path to the .cue or .iso file to test.
