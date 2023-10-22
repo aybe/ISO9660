@@ -1,9 +1,7 @@
 ﻿namespace ISO9660.CDRWIN;
 
-public sealed class CueSheet
+public sealed class CueSheet : CueSheetElement
 {
-    public List<string> Comments { get; } = new();
-
     public ulong? Catalog { get; set; }
 
     public string? Performer { get; set; }

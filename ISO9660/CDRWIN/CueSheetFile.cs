@@ -1,6 +1,6 @@
 ﻿namespace ISO9660.CDRWIN;
 
-public sealed class CueSheetFile
+public sealed class CueSheetFile : CueSheetElement
 {
     public CueSheetFile(CueSheet sheet, string name, CueSheetFileType type)
     {

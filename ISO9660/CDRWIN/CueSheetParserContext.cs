@@ -12,6 +12,8 @@ internal sealed class CueSheetParserContext
 
     public required string? Directory { get; init; }
 
+    public CueSheetElement? Element { get; set; }
+
     public CueSheetFile? File { get; set; }
 
     public CueSheetTrack? Track { get; set; }

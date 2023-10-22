@@ -2,7 +2,7 @@
 
 namespace ISO9660.CDRWIN;
 
-public sealed class CueSheetTrackIndex
+public sealed class CueSheetTrackIndex : CueSheetElement
 {
     public CueSheetTrackIndex(CueSheetTrack track, int number, MSF position)
     {

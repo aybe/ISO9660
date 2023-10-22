@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -27,6 +28,8 @@ public static partial class CueSheetParser
         {
             Sheet = new CueSheet(), Directory = Path.GetDirectoryName(path)
         };
+
+        context.Element = context.Sheet;
 
         while (true)
         {
@@ -211,9 +214,13 @@ public static partial class CueSheetParser
             name = Path.GetFullPath(Path.Combine(context.Directory ?? string.Empty, name));
         }
 
-        context.File = new CueSheetFile(context.Sheet, name, mode);
+        var file = new CueSheetFile(context.Sheet, name, mode);
 
-        context.Sheet.Files.Add(context.File);
+        context.File = file;
+
+        context.Sheet.Files.Add(file);
+
+        context.Element = file;
     }
 
     private static void FlagsHandler(CueSheetParserContext context)
@@ -274,6 +281,8 @@ public static partial class CueSheetParser
         }
 
         context.Track.Indices.Add(index);
+
+        context.Element = index;
     }
 
     private static void PerformerHandler(CueSheetParserContext context)
@@ -311,7 +320,14 @@ public static partial class CueSheetParser
     {
         var comment = context.Match.Groups[1].Value;
 
-        context.Sheet.Comments.Add(comment);
+        if (context.Element == null)
+        {
+            Trace.TraceWarning($"Ignoring comment at line {context.Line} as it has no parent: {context.Text}.");
+        }
+        else
+        {
+            context.Element.Comments.Add(comment);
+        }
     }
 
     private static void TitleHandler(CueSheetParserContext context)
@@ -367,9 +383,13 @@ public static partial class CueSheetParser
             _            => throw new InvalidDataException($"Unknown track mode: {type}.")
         };
 
-        context.Track = new CueSheetTrack(context.File, index, mode);
+        var track = new CueSheetTrack(context.File, index, mode);
 
-        context.File.Tracks.Add(context.Track);
+        context.Track = track;
+
+        context.File.Tracks.Add(track);
+
+        context.Element = track;
     }
 
     private static void IsrcHandler(CueSheetParserContext context)
