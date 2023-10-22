@@ -43,7 +43,7 @@ public static partial class CueSheetParser
 
             context.TextIndent = text.TakeWhile(char.IsWhiteSpace).Count();
 
-            context.Line++;
+            context.TextLine++;
 
             var handled = false;
 
@@ -67,7 +67,7 @@ public static partial class CueSheetParser
 
             if (handled is false)
             {
-                throw new InvalidDataException($"Unexpected value at line {context.Line}: {context.Text.Trim()}");
+                throw new InvalidDataException($"Unexpected value at line {context.TextLine}: {context.Text.Trim()}");
             }
         }
 
@@ -94,7 +94,7 @@ public static partial class CueSheetParser
 #pragma warning restore CS8777 // Parameter must have a non-null value when exiting.
         }
 
-        var message = $"""The value "{context.Text.Trim()}" at line {context.Line} expects '{valueName}' to be 'not null'.""";
+        var message = $"""The value "{context.Text.Trim()}" at line {context.TextLine} expects '{valueName}' to be 'not null'.""";
 
         throw new InvalidDataException(message);
     }
@@ -109,7 +109,7 @@ public static partial class CueSheetParser
 #pragma warning restore CS8777 // Parameter must have a non-null value when exiting.
         }
 
-        var message = $"""The value "{context.Text.Trim()}" at line {context.Line} expects '{valueName}' to be 'null'.""";
+        var message = $"""The value "{context.Text.Trim()}" at line {context.TextLine} expects '{valueName}' to be 'null'.""";
 
         throw new InvalidDataException(message);
     }

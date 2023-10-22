@@ -4,11 +4,11 @@ namespace ISO9660.CDRWIN;
 
 internal sealed class CueSheetParserContext
 {
-    public int Line { get; set; }
-
     public string Text { get; set; } = string.Empty;
 
     public int TextIndent { get; set; }
+
+    public int TextLine { get; set; }
 
     public required CueSheet Sheet { get; init; }
 
