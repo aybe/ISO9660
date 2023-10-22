@@ -22,6 +22,16 @@ internal sealed class CueSheetParserContext
 
     public Match Match { get; set; } = null!;
 
+    public T Peek<T>() where T : CueSheetElement
+    {
+        var element = ElementStack.FirstOrDefault(s => s.Target is T)
+                      ?? throw new InvalidOperationException($"Failed to find a parent of type {typeof(T).Name}.");
+
+        var target = (element.Target as T)!;
+
+        return target;
+    }
+
     public CueSheetParserElement Peek(Func<CueSheetParserElement, bool> predicate)
     {
         var element = ElementStack.First(predicate);
