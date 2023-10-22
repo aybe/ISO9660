@@ -16,8 +16,6 @@ internal sealed class CueSheetParserContext
 
     private Stack<CueSheetParserElement> ElementStack { get; } = new();
 
-    public CueSheetFile? File { get; set; }
-
     public CueSheetTrack? Track { get; set; }
 
     public Match Match { get; set; } = null!;

@@ -207,8 +207,6 @@ public static partial class CueSheetParser
 
         var file = new CueSheetFile(context.Sheet, name, mode);
 
-        context.File = file;
-
         context.Sheet.Files.Add(file);
 
         context.Push(file);
@@ -336,13 +334,13 @@ public static partial class CueSheetParser
 
     private static void TrackHandler(CueSheetParserContext context)
     {
-        ThrowIfNull(context, context.File);
+        var file = context.Peek<CueSheetFile>();
 
         var index = Parse(context.Match.Groups[1], int.Parse);
 
-        if (context.File.Tracks.Count is not 0) // first can be any index
+        if (file.Tracks.Count is not 0) // first can be any index
         {
-            var last = context.File.Tracks.Last();
+            var last = file.Tracks.Last();
 
             if (index != last.Index + 1)
             {
@@ -369,11 +367,11 @@ public static partial class CueSheetParser
             _            => throw new InvalidDataException($"Unknown track mode: {type}.")
         };
 
-        var track = new CueSheetTrack(context.File, index, mode);
+        var track = new CueSheetTrack(file, index, mode);
 
         context.Track = track;
 
-        context.File.Tracks.Add(track);
+        file.Tracks.Add(track);
 
         context.Push(track);
     }
