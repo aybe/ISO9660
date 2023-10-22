@@ -71,16 +71,6 @@ public static partial class CueSheetParser
             }
         }
 
-        if (context.File is null)
-        {
-            throw new InvalidDataException("There must be at least one file defined.");
-        }
-
-        if (context.Track is null)
-        {
-            throw new InvalidDataException("There must at least one track defined.");
-        }
-
         return context.Sheet;
     }
 
