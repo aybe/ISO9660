@@ -4,6 +4,8 @@ namespace ISO9660.CDRWIN;
 
 internal sealed class CueSheetParserContext
 {
+    private Stack<CueSheetParserElement> Elements { get; } = new();
+
     public string Text { get; set; } = string.Empty;
 
     public int TextIndent { get; set; }
@@ -15,8 +17,6 @@ internal sealed class CueSheetParserContext
     public required CueSheet Sheet { get; init; }
 
     public required string? SheetDirectory { get; init; }
-
-    private Stack<CueSheetParserElement> ElementStack { get; } = new();
 
     public T Peek<T>() where T : CueSheetElement
     {
@@ -30,7 +30,7 @@ internal sealed class CueSheetParserContext
 
     public CueSheetParserElement Peek(Func<CueSheetParserElement, bool> predicate)
     {
-        var element = ElementStack.First(predicate);
+        var element = Elements.First(predicate);
 
         return element;
     }
@@ -39,7 +39,7 @@ internal sealed class CueSheetParserContext
     {
         result = default!;
 
-        var element = ElementStack.FirstOrDefault(s => s.Target is T);
+        var element = Elements.FirstOrDefault(s => s.Target is T);
 
         if (element == null)
         {
@@ -55,6 +55,6 @@ internal sealed class CueSheetParserContext
     {
         var indent = Text.TakeWhile(char.IsWhiteSpace).Count();
 
-        ElementStack.Push(new CueSheetParserElement(indent, target));
+        Elements.Push(new CueSheetParserElement(indent, target));
     }
 }
