@@ -1,6 +1,7 @@
 ﻿using System.Security.Cryptography;
 using WipeoutInstaller.ISO9660;
 using WipeoutInstaller.Templates;
+using WipeoutInstaller.WorkInProgress;
 
 namespace WipeoutInstaller;
 

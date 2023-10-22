@@ -1,4 +1,4 @@
-﻿namespace WipeoutInstaller;
+﻿namespace WipeoutInstaller.WorkInProgress;
 
 public enum DiscReadFileMode
 {

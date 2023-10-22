@@ -1,7 +1,6 @@
 ﻿using WipeoutInstaller.ISO9660;
-using WipeoutInstaller.WorkInProgress;
 
-namespace WipeoutInstaller;
+namespace WipeoutInstaller.WorkInProgress;
 
 public static class DiscExtensions
 {
