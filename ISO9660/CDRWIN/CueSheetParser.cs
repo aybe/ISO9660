@@ -23,7 +23,7 @@ public static partial class CueSheetParser
         using var stream = File.OpenRead(path);
         using var reader = new StreamReader(stream, Encoding.Default, true);
 
-        var context = new Context
+        var context = new CueSheetParserContext
         {
             Sheet = new CueSheet(), Directory = Path.GetDirectoryName(path)
         };
@@ -81,7 +81,7 @@ public static partial class CueSheetParser
     }
 
     private static void ThrowIfNull<T>(
-        Context context, [NotNull] T? value, [CallerArgumentExpression(nameof(value))] string valueName = null!)
+        CueSheetParserContext context, [NotNull] T? value, [CallerArgumentExpression(nameof(value))] string valueName = null!)
     {
         if (!EqualityComparer<T>.Default.Equals(value, default))
         {
@@ -96,7 +96,7 @@ public static partial class CueSheetParser
     }
 
     private static void ThrowIfNotNull<T>(
-        Context context, [NotNull] T? value, [CallerArgumentExpression(nameof(value))] string valueName = null!)
+        CueSheetParserContext context, [NotNull] T? value, [CallerArgumentExpression(nameof(value))] string valueName = null!)
     {
         if (EqualityComparer<T>.Default.Equals(value, default))
         {
@@ -108,23 +108,6 @@ public static partial class CueSheetParser
         var message = $"""The value "{context.Text.Trim()}" at line {context.Line} expects '{valueName}' to be 'null'.""";
 
         throw new InvalidDataException(message);
-    }
-
-    private sealed class Context
-    {
-        public int Line { get; set; }
-
-        public string Text { get; set; } = null!;
-
-        public required CueSheet Sheet { get; init; }
-
-        public required string? Directory { get; init; }
-
-        public CueSheetFile? File { get; set; }
-
-        public CueSheetTrack? Track { get; set; }
-
-        public Match Match { get; set; } = null!;
     }
 }
 
@@ -176,8 +159,8 @@ public static partial class CueSheetParser
 
 public static partial class CueSheetParser
 {
-    private static readonly IReadOnlyDictionary<Action<Context>, Func<Regex>> Dictionary =
-        new Dictionary<Action<Context>, Func<Regex>>
+    private static readonly IReadOnlyDictionary<Action<CueSheetParserContext>, Func<Regex>> Dictionary =
+        new Dictionary<Action<CueSheetParserContext>, Func<Regex>>
         {
             { WhiteSpaceHandler, WhiteSpaceRegex },
             { FileHandler, FileRegex },
@@ -193,11 +176,11 @@ public static partial class CueSheetParser
             { CommentHandler, CommentRegex }
         }.AsReadOnly();
 
-    private static void WhiteSpaceHandler(Context context)
+    private static void WhiteSpaceHandler(CueSheetParserContext context)
     {
     }
 
-    private static void CatalogHandler(Context context)
+    private static void CatalogHandler(CueSheetParserContext context)
     {
         ThrowIfNotNull(context, context.Sheet.Catalog);
 
@@ -206,7 +189,7 @@ public static partial class CueSheetParser
         context.Sheet.Catalog = catalog;
     }
 
-    private static void FileHandler(Context context)
+    private static void FileHandler(CueSheetParserContext context)
     {
         var name = context.Match.Groups[1].Value;
         var type = context.Match.Groups[2].Value;
@@ -233,7 +216,7 @@ public static partial class CueSheetParser
         context.Sheet.Files.Add(context.File);
     }
 
-    private static void FlagsHandler(Context context)
+    private static void FlagsHandler(CueSheetParserContext context)
     {
         ThrowIfNull(context, context.Track);
 
@@ -256,7 +239,7 @@ public static partial class CueSheetParser
         }
     }
 
-    private static void IndexHandler(Context context)
+    private static void IndexHandler(CueSheetParserContext context)
     {
         ThrowIfNull(context, context.Track);
 
@@ -293,7 +276,7 @@ public static partial class CueSheetParser
         context.Track.Indices.Add(index);
     }
 
-    private static void PerformerHandler(Context context)
+    private static void PerformerHandler(CueSheetParserContext context)
     {
         var performer = context.Match.Groups[1].Value;
 
@@ -311,7 +294,7 @@ public static partial class CueSheetParser
         }
     }
 
-    private static void PreGapHandler(Context context)
+    private static void PreGapHandler(CueSheetParserContext context)
     {
         ThrowIfNull(context, context.Track);
 
@@ -324,14 +307,14 @@ public static partial class CueSheetParser
         context.Track.PreGap = new MSF(m, s, f);
     }
 
-    private static void RemHandler(Context context)
+    private static void RemHandler(CueSheetParserContext context)
     {
         var comment = context.Match.Groups[1].Value;
 
         context.Sheet.Comments.Add(comment);
     }
 
-    private static void TitleHandler(Context context)
+    private static void TitleHandler(CueSheetParserContext context)
     {
         var title = context.Match.Groups[1].Value;
 
@@ -349,7 +332,7 @@ public static partial class CueSheetParser
         }
     }
 
-    private static void TrackHandler(Context context)
+    private static void TrackHandler(CueSheetParserContext context)
     {
         ThrowIfNull(context, context.File);
 
@@ -389,7 +372,7 @@ public static partial class CueSheetParser
         context.File.Tracks.Add(context.Track);
     }
 
-    private static void IsrcHandler(Context context)
+    private static void IsrcHandler(CueSheetParserContext context)
     {
         ThrowIfNull(context, context.Track);
 
@@ -400,7 +383,7 @@ public static partial class CueSheetParser
         context.Track.Isrc = isrc;
     }
 
-    private static void CommentHandler(Context context)
+    private static void CommentHandler(CueSheetParserContext context)
     {
     }
 }
