@@ -8,11 +8,11 @@ internal sealed class CueSheetParserContext
 
     public string Text { get; set; } = string.Empty;
 
+    public int TextIndent { get; set; }
+
     public required CueSheet Sheet { get; init; }
 
     public required string? Directory { get; init; }
-
-    public int Indent { get; set; }
 
     private Stack<CueSheetParserElement> ElementStack { get; } = new();
 

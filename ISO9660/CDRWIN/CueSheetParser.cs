@@ -41,9 +41,9 @@ public static partial class CueSheetParser
 
             context.Text = text;
 
-            context.Line++;
+            context.TextIndent = text.TakeWhile(char.IsWhiteSpace).Count();
 
-            context.Indent = text.TakeWhile(char.IsWhiteSpace).Count();
+            context.Line++;
 
             var handled = false;
 
@@ -319,7 +319,7 @@ public static partial class CueSheetParser
 
     private static void RemHandler(CueSheetParserContext context)
     {
-        var element = context.Peek(s => s.Indent <= context.Indent);
+        var element = context.Peek(s => s.Indent <= context.TextIndent);
 
         var comment = context.Match.Groups[1].Value;
 
