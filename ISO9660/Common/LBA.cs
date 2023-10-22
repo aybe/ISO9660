@@ -1,4 +1,4 @@
-namespace WipeoutInstaller.WorkInProgress;
+namespace ISO9660.Common;
 
 public readonly struct LBA : IComparable<LBA>, IEquatable<LBA>
 {

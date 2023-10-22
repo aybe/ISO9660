@@ -1,5 +1,6 @@
 ﻿// ReSharper disable StringLiteralTypo
 
+using ISO9660.CDRWIN;
 using WipeoutInstaller.Extensions;
 using WipeoutInstaller.WorkInProgress;
 

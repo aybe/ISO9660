@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace WipeoutInstaller.WorkInProgress;
+namespace ISO9660.CDRWIN;
 
 [SuppressMessage("ReSharper", "IdentifierTypo")]
 public enum CueSheetFileType

@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using ISO9660.CDRWIN;
 using WipeoutInstaller.ISO9660;
 using WipeoutInstaller.WorkInProgress;
 

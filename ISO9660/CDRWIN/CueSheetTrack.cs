@@ -1,4 +1,6 @@
-﻿namespace WipeoutInstaller.WorkInProgress;
+﻿using ISO9660.Common;
+
+namespace ISO9660.CDRWIN;
 
 public sealed class CueSheetTrack
 {

@@ -1,4 +1,4 @@
-namespace WipeoutInstaller.WorkInProgress;
+namespace ISO9660.Common;
 
 public readonly struct MSF : IComparable<MSF>, IEquatable<MSF>
 {
