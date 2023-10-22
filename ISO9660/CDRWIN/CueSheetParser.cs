@@ -74,21 +74,6 @@ public static partial class CueSheetParser
         return context.Sheet;
     }
 
-    private static void ThrowIfNull<T>(
-        CueSheetParserContext context, [NotNull] T? value, [CallerArgumentExpression(nameof(value))] string valueName = null!)
-    {
-        if (!EqualityComparer<T>.Default.Equals(value, default))
-        {
-#pragma warning disable CS8777 // Parameter must have a non-null value when exiting.
-            return;
-#pragma warning restore CS8777 // Parameter must have a non-null value when exiting.
-        }
-
-        var message = $"""The value "{context.Text.Trim()}" at line {context.TextLine} expects '{valueName}' to be 'not null'.""";
-
-        throw new InvalidDataException(message);
-    }
-
     private static void ThrowIfNotNull<T>(
         CueSheetParserContext context, [NotNull] T? value, [CallerArgumentExpression(nameof(value))] string valueName = null!)
     {
@@ -239,8 +224,6 @@ public static partial class CueSheetParser
     {
         var track = context.Peek<CueSheetTrack>();
 
-        ThrowIfNull(context, track);
-
         var i = Parse(context.Match.Groups[1], byte.Parse);
         var m = Parse(context.Match.Groups[2], byte.Parse);
         var s = Parse(context.Match.Groups[3], byte.Parse);
@@ -306,8 +289,6 @@ public static partial class CueSheetParser
     private static void PreGapHandler(CueSheetParserContext context)
     {
         var track = context.Peek<CueSheetTrack>();
-
-        ThrowIfNull(context, track);
 
         ThrowIfNotNull(context, track.PreGap);
 
@@ -399,8 +380,6 @@ public static partial class CueSheetParser
     private static void IsrcHandler(CueSheetParserContext context)
     {
         var track = context.Peek<CueSheetTrack>();
-
-        ThrowIfNull(context, track);
 
         ThrowIfNotNull(context, track.Isrc);
 
