@@ -23,6 +23,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\ISO9660\ISO9660.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<None Update="Templates\*.csv">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
