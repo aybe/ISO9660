@@ -1,18 +1,25 @@
-﻿namespace WipeoutInstaller.WorkInProgress;
+﻿using WipeoutInstaller.Extensions;
+
+namespace WipeoutInstaller.WorkInProgress;
 
 internal sealed class DiscTrackStream : Stream
+    // better than exposing track stream which might represent N tracks
 {
-    private readonly Queue<byte> Queue;
-
     private readonly DiscTrack Track;
 
-    private int Index;
+    private readonly int UserDataLength;
+
+    private int SectorNumber;
+
+    private int SectorOffset;
 
     public DiscTrackStream(in DiscTrack track, in int index)
     {
-        Queue = new Queue<byte>(4096);
         Track = track;
-        Index = index;
+
+        UserDataLength = Track.Sector.GetUserDataLength();
+
+        Position = index * UserDataLength;
     }
 
     public override bool CanRead => true;
@@ -21,43 +28,18 @@ internal sealed class DiscTrackStream : Stream
 
     public override bool CanWrite => false;
 
-    public override long Length // TODO simplify
+    public override long Length => (Track.Length - Track.Position) * UserDataLength;
+
+    public override long Position
     {
-        get
+        get => SectorNumber * UserDataLength + SectorOffset;
+        set
         {
-            var sectors = Track.Length - Track.Position;
+            var position = value.ToInt32();
 
-            var sectorSize = Track.Sector.Size;
-
-            var bytes = sectors * sectorSize;
-
-            return bytes;
+            SectorNumber = position / UserDataLength;
+            SectorOffset = position % UserDataLength;
         }
-    }
-
-    public override long Position // TODO simplify
-    {
-        get
-        {
-            var sector = Track.Sector;
-
-            var sectorSize = sector.Size;
-
-            var userDataPosition = sector.GetUserDataPosition();
-
-            var userDataLength = sector.GetUserDataLength();
-
-            var empty = Queue.Count == 0;
-
-            var sectors = (empty ? Index : Index - 1) - Track.Position;
-
-            var sectorStartByte = sectorSize * sectors + userDataPosition;
-
-            var bytes = sectorStartByte + (empty ? 0 : userDataLength - Queue.Count);
-
-            return bytes;
-        }
-        set => throw new NotImplementedException();
     }
 
     public override void Flush()
@@ -70,32 +52,39 @@ internal sealed class DiscTrackStream : Stream
 
         var total = 0;
 
-        while (count > 0)
+        var input = Span<byte>.Empty;
+
+        while (count > 0 && SectorNumber < Track.Length)
         {
-            if (Queue.Count == 0)
+            if (input.IsEmpty)
             {
-                var sector = Track.ReadSector(Index);
-
-                Index++;
-
-                var data = sector.GetUserData();
-
-                foreach (var item in data)
-                {
-                    Queue.Enqueue(item);
-                }
+                input = Track.ReadSector(SectorNumber).GetUserData();
             }
 
-            var items = Math.Min(count, Queue.Count);
+            var len = Math.Min(count, input.Length - SectorOffset);
 
-            while (items > 0)
+            var src = input.Slice(SectorOffset, len);
+
+            var dst = bytes.AsSpan(index, len);
+
+            src.CopyTo(dst);
+
+            total += len;
+            count -= len;
+            index += len;
+
+            SectorOffset += len;
+
+            if (SectorOffset < input.Length)
             {
-                bytes[index] = Queue.Dequeue();
-                index++;
-                count--;
-                total++;
-                items--;
+                continue;
             }
+
+            SectorNumber++;
+
+            SectorOffset = 0;
+
+            input = Span<byte>.Empty;
         }
 
         return total;
@@ -103,7 +92,17 @@ internal sealed class DiscTrackStream : Stream
 
     public override long Seek(long offset, SeekOrigin origin)
     {
-        throw new NotImplementedException();
+        var position = origin switch
+        {
+            SeekOrigin.Begin   => offset,
+            SeekOrigin.Current => Position + offset,
+            SeekOrigin.End     => Length - offset,
+            _                  => throw new ArgumentOutOfRangeException(nameof(origin), origin, null)
+        };
+
+        Position = position;
+
+        return Position;
     }
 
     public override void SetLength(long value)
