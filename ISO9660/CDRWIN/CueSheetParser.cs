@@ -51,9 +51,9 @@ public static partial class CueSheetParser
             {
                 var regex = pair.Value();
 
-                context.Match = regex.Match(context.Text);
+                context.TextMatch = regex.Match(context.Text);
 
-                handled = context.Match.Success;
+                handled = context.TextMatch.Success;
 
                 if (handled is false)
                 {
@@ -163,15 +163,15 @@ public static partial class CueSheetParser
     {
         ThrowIfNotNull(context, context.Sheet.Catalog);
 
-        var catalog = Parse(context.Match.Groups[1], ulong.Parse);
+        var catalog = Parse(context.TextMatch.Groups[1], ulong.Parse);
 
         context.Sheet.Catalog = catalog;
     }
 
     private static void FileHandler(CueSheetParserContext context)
     {
-        var name = context.Match.Groups[1].Value;
-        var type = context.Match.Groups[2].Value;
+        var name = context.TextMatch.Groups[1].Value;
+        var type = context.TextMatch.Groups[2].Value;
 
         var mode = type switch
         {
@@ -203,7 +203,7 @@ public static partial class CueSheetParser
 
         ThrowIfNotNull(context, track.Flags);
 
-        foreach (var capture in context.Match.Groups[1].Captures.Cast<Capture>())
+        foreach (var capture in context.TextMatch.Groups[1].Captures.Cast<Capture>())
         {
             var value = capture.Value;
 
@@ -224,10 +224,10 @@ public static partial class CueSheetParser
     {
         var track = context.Peek<CueSheetTrack>();
 
-        var i = Parse(context.Match.Groups[1], byte.Parse);
-        var m = Parse(context.Match.Groups[2], byte.Parse);
-        var s = Parse(context.Match.Groups[3], byte.Parse);
-        var f = Parse(context.Match.Groups[4], byte.Parse);
+        var i = Parse(context.TextMatch.Groups[1], byte.Parse);
+        var m = Parse(context.TextMatch.Groups[2], byte.Parse);
+        var s = Parse(context.TextMatch.Groups[3], byte.Parse);
+        var f = Parse(context.TextMatch.Groups[4], byte.Parse);
 
         var index = new CueSheetTrackIndex(track, i, new MSF(m, s, f));
 
@@ -261,7 +261,7 @@ public static partial class CueSheetParser
 
     private static void PerformerHandler(CueSheetParserContext context)
     {
-        var performer = context.Match.Groups[1].Value;
+        var performer = context.TextMatch.Groups[1].Value;
 
         if (context.TryPeek<CueSheetTrack>(out var track))
         {
@@ -292,9 +292,9 @@ public static partial class CueSheetParser
 
         ThrowIfNotNull(context, track.PreGap);
 
-        var m = Parse(context.Match.Groups[1], byte.Parse);
-        var s = Parse(context.Match.Groups[2], byte.Parse);
-        var f = Parse(context.Match.Groups[3], byte.Parse);
+        var m = Parse(context.TextMatch.Groups[1], byte.Parse);
+        var s = Parse(context.TextMatch.Groups[2], byte.Parse);
+        var f = Parse(context.TextMatch.Groups[3], byte.Parse);
 
         track.PreGap = new MSF(m, s, f);
     }
@@ -303,14 +303,14 @@ public static partial class CueSheetParser
     {
         var element = context.Peek(s => s.Indent <= context.TextIndent);
 
-        var comment = context.Match.Groups[1].Value;
+        var comment = context.TextMatch.Groups[1].Value;
 
         element.Target.Comments.Add(comment);
     }
 
     private static void TitleHandler(CueSheetParserContext context)
     {
-        var title = context.Match.Groups[1].Value;
+        var title = context.TextMatch.Groups[1].Value;
 
         if (context.TryPeek<CueSheetTrack>(out var track))
         {
@@ -339,7 +339,7 @@ public static partial class CueSheetParser
     {
         var file = context.Peek<CueSheetFile>();
 
-        var index = Parse(context.Match.Groups[1], int.Parse);
+        var index = Parse(context.TextMatch.Groups[1], int.Parse);
 
         if (file.Tracks.Count is not 0) // first can be any index
         {
@@ -353,7 +353,7 @@ public static partial class CueSheetParser
             }
         }
 
-        var type = context.Match.Groups[2].Value;
+        var type = context.TextMatch.Groups[2].Value;
 
         var mode = type switch
         {
@@ -383,7 +383,7 @@ public static partial class CueSheetParser
 
         ThrowIfNotNull(context, track.Isrc);
 
-        var isrc = context.Match.Groups[1].Value;
+        var isrc = context.TextMatch.Groups[1].Value;
 
         track.Isrc = isrc;
     }

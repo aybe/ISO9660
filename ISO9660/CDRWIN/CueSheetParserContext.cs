@@ -10,13 +10,13 @@ internal sealed class CueSheetParserContext
 
     public int TextLine { get; set; }
 
+    public Match TextMatch { get; set; } = null!;
+
     public required CueSheet Sheet { get; init; }
 
     public required string? Directory { get; init; }
 
     private Stack<CueSheetParserElement> ElementStack { get; } = new();
-
-    public Match Match { get; set; } = null!;
 
     public T Peek<T>() where T : CueSheetElement
     {
