@@ -16,18 +16,16 @@ internal sealed class CueSheetParserContext
 
     private Stack<CueSheetParserElement> ElementStack { get; } = new();
 
-    public CueSheetTrack? Track { get; set; }
-
     public Match Match { get; set; } = null!;
 
     public T Peek<T>() where T : CueSheetElement
     {
-        var element = ElementStack.FirstOrDefault(s => s.Target is T)
-                      ?? throw new InvalidOperationException($"Failed to find a parent of type {typeof(T).Name}.");
+        if (!TryPeek(out T result))
+        {
+            throw new InvalidOperationException($"Failed to find a parent of type {typeof(T).Name}.");
+        }
 
-        var target = (element.Target as T)!;
-
-        return target;
+        return result;
     }
 
     public CueSheetParserElement Peek(Func<CueSheetParserElement, bool> predicate)
@@ -35,6 +33,22 @@ internal sealed class CueSheetParserContext
         var element = ElementStack.First(predicate);
 
         return element;
+    }
+
+    public bool TryPeek<T>(out T result) where T : CueSheetElement
+    {
+        result = default!;
+
+        var element = ElementStack.FirstOrDefault(s => s.Target is T);
+
+        if (element == null)
+        {
+            return false;
+        }
+
+        result = (element.Target as T)!;
+
+        return true;
     }
 
     public void Push(CueSheetElement target)

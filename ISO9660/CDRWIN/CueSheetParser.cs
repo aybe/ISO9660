@@ -214,9 +214,9 @@ public static partial class CueSheetParser
 
     private static void FlagsHandler(CueSheetParserContext context)
     {
-        ThrowIfNull(context, context.Track);
+        var track = context.Peek<CueSheetTrack>();
 
-        ThrowIfNotNull(context, context.Track.Flags);
+        ThrowIfNotNull(context, track.Flags);
 
         foreach (var capture in context.Match.Groups[1].Captures.Cast<Capture>())
         {
@@ -231,26 +231,28 @@ public static partial class CueSheetParser
                 _      => throw new InvalidDataException($"Unknown track flag: {value}.")
             };
 
-            context.Track.Flags |= flags;
+            track.Flags |= flags;
         }
     }
 
     private static void IndexHandler(CueSheetParserContext context)
     {
-        ThrowIfNull(context, context.Track);
+        var track = context.Peek<CueSheetTrack>();
+
+        ThrowIfNull(context, track);
 
         var i = Parse(context.Match.Groups[1], byte.Parse);
         var m = Parse(context.Match.Groups[2], byte.Parse);
         var s = Parse(context.Match.Groups[3], byte.Parse);
         var f = Parse(context.Match.Groups[4], byte.Parse);
 
-        var index = new CueSheetTrackIndex(context.Track, i, new MSF(m, s, f));
+        var index = new CueSheetTrackIndex(track, i, new MSF(m, s, f));
 
-        if (context.Track.Indices.Count == 0)
+        if (track.Indices.Count == 0)
         {
             var zero = MSF.Min;
 
-            if (index is not { Number: 0 or 1 } && index.Position != zero && context.Track.Index is 1)
+            if (index is not { Number: 0 or 1 } && index.Position != zero && track.Index is 1)
             {
                 var message = $"""Track 1 index isn't 0 or 1 and doesn't start at {zero} for "{context.Text}".""";
 
@@ -259,7 +261,7 @@ public static partial class CueSheetParser
         }
         else
         {
-            var last = context.Track.Indices.Last();
+            var last = track.Indices.Last();
 
             if (index.Number != last.Number + 1)
             {
@@ -269,7 +271,7 @@ public static partial class CueSheetParser
             }
         }
 
-        context.Track.Indices.Add(index);
+        track.Indices.Add(index);
 
         context.Push(index);
     }
@@ -278,31 +280,42 @@ public static partial class CueSheetParser
     {
         var performer = context.Match.Groups[1].Value;
 
-        if (context.Track == null)
+        if (context.TryPeek<CueSheetTrack>(out var track))
         {
-            ThrowIfNotNull(context, context.Sheet.Performer);
+            ThrowIfNotNull(context, track.Performer);
 
-            context.Sheet.Performer = performer;
+            track.Performer = performer;
+
+            return;
         }
-        else
+
+        if (context.TryPeek<CueSheet>(out var sheet))
         {
-            ThrowIfNotNull(context, context.Track.Performer);
+            ThrowIfNotNull(context, sheet.Performer);
 
-            context.Track.Performer = performer;
+            sheet.Performer = performer;
+
+            return;
         }
+
+        const string message = "Failed to find parent track or sheet for performer.";
+
+        throw new InvalidOperationException(message);
     }
 
     private static void PreGapHandler(CueSheetParserContext context)
     {
-        ThrowIfNull(context, context.Track);
+        var track = context.Peek<CueSheetTrack>();
 
-        ThrowIfNotNull(context, context.Track.PreGap);
+        ThrowIfNull(context, track);
+
+        ThrowIfNotNull(context, track.PreGap);
 
         var m = Parse(context.Match.Groups[1], byte.Parse);
         var s = Parse(context.Match.Groups[2], byte.Parse);
         var f = Parse(context.Match.Groups[3], byte.Parse);
 
-        context.Track.PreGap = new MSF(m, s, f);
+        track.PreGap = new MSF(m, s, f);
     }
 
     private static void RemHandler(CueSheetParserContext context)
@@ -318,18 +331,27 @@ public static partial class CueSheetParser
     {
         var title = context.Match.Groups[1].Value;
 
-        if (context.Track == null)
+        if (context.TryPeek<CueSheetTrack>(out var track))
         {
-            ThrowIfNotNull(context, context.Sheet.Title);
+            ThrowIfNotNull(context, track.Title);
 
-            context.Sheet.Title = title;
+            track.Title = title;
+
+            return;
         }
-        else
+
+        if (context.TryPeek<CueSheet>(out var sheet))
         {
-            ThrowIfNotNull(context, context.Track.Title);
+            ThrowIfNotNull(context, sheet.Title);
 
-            context.Track.Title = title;
+            sheet.Title = title;
+
+            return;
         }
+
+        const string message = "Failed to find parent track or sheet for title";
+
+        throw new InvalidOperationException(message);
     }
 
     private static void TrackHandler(CueSheetParserContext context)
@@ -369,8 +391,6 @@ public static partial class CueSheetParser
 
         var track = new CueSheetTrack(file, index, mode);
 
-        context.Track = track;
-
         file.Tracks.Add(track);
 
         context.Push(track);
@@ -378,13 +398,15 @@ public static partial class CueSheetParser
 
     private static void IsrcHandler(CueSheetParserContext context)
     {
-        ThrowIfNull(context, context.Track);
+        var track = context.Peek<CueSheetTrack>();
 
-        ThrowIfNotNull(context, context.Track.Isrc);
+        ThrowIfNull(context, track);
+
+        ThrowIfNotNull(context, track.Isrc);
 
         var isrc = context.Match.Groups[1].Value;
 
-        context.Track.Isrc = isrc;
+        track.Isrc = isrc;
     }
 
     private static void CommentHandler(CueSheetParserContext context)
