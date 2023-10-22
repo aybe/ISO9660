@@ -1,54 +1,32 @@
-﻿// ReSharper disable StringLiteralTypo
-
-using ISO9660.CDRWIN;
-using WipeoutInstaller.Extensions;
-using WipeoutInstaller.WorkInProgress;
-
-// ReSharper disable IdentifierTypo
-// ReSharper disable UnusedAutoPropertyAccessor.Global
+﻿using ISO9660.CDRWIN;
+using WipeoutInstaller.Templates;
 
 namespace WipeoutInstaller;
 
 [TestClass]
 public class UnitTestCueSheet : UnitTestBase
 {
-    [TestMethod]
-    [DataRow(@"D:\Temp\CD-I Demo Disc - Fall 1996 - Spring 1997.cue")]
-    [DataRow(@"D:\Temp\UFO - Enemy Unknown (1994)(MicroProse).cue")]
-    [DataRow(@"D:\Temp\WipEout (Europe) (v1.1) - Multi.cue")]
-    [DataRow(@"D:\Temp\WipEout (Europe) (v1.1) - Single.cue")]
-    public void TestParsing(string path)
+    public static IEnumerable<object[]> TestParsingListInit()
     {
-        ParseCueSheet(path);
+        var files = TestData.GetCsvTestData<TestDataCueSheet>(@"Templates\TestDataCueSheet.csv");
+
+        foreach (var file in files)
+        {
+            yield return new object[] { file.Path };
+        }
     }
 
     [TestMethod]
-    [DataRow(@"D:\Temp\CueFileList.txt")]
-    public void TestParsingList(string path)
+    [DynamicData(nameof(TestParsingListInit), DynamicDataSourceType.Method)]
+    public void TestParsing(string path)
     {
         if (File.Exists(path))
         {
-            var lines = File.ReadAllLines(path);
-
-            foreach (var line in lines)
-            {
-                if (File.Exists(line))
-                {
-                    TestContext.WriteLine();
-                    TestContext.WriteLine($"Trying to parse file: {line}");
-                    TestContext.WriteLine();
-
-                    ParseCueSheet(line);
-                }
-                else
-                {
-                    TestContext.WriteLine($"File not found: {line}");
-                }
-            }
+            ParseCueSheet(path);
         }
         else
         {
-            TestContext.WriteLine($"File list not found: {path}");
+            Assert.Inconclusive($"File not found: {path}");
         }
     }
 
