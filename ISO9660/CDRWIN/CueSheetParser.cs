@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -29,7 +28,7 @@ public static partial class CueSheetParser
             Sheet = new CueSheet(), Directory = Path.GetDirectoryName(path)
         };
 
-        context.Element = context.Sheet;
+        context.Push(context.Sheet);
 
         while (true)
         {
@@ -43,6 +42,8 @@ public static partial class CueSheetParser
             context.Text = text;
 
             context.Line++;
+
+            context.Indent = text.TakeWhile(char.IsWhiteSpace).Count();
 
             var handled = false;
 
@@ -220,7 +221,7 @@ public static partial class CueSheetParser
 
         context.Sheet.Files.Add(file);
 
-        context.Element = file;
+        context.Push(file);
     }
 
     private static void FlagsHandler(CueSheetParserContext context)
@@ -282,7 +283,7 @@ public static partial class CueSheetParser
 
         context.Track.Indices.Add(index);
 
-        context.Element = index;
+        context.Push(index);
     }
 
     private static void PerformerHandler(CueSheetParserContext context)
@@ -318,16 +319,11 @@ public static partial class CueSheetParser
 
     private static void RemHandler(CueSheetParserContext context)
     {
+        var element = context.Peek(s => s.Indent <= context.Indent);
+
         var comment = context.Match.Groups[1].Value;
 
-        if (context.Element == null)
-        {
-            Trace.TraceWarning($"Ignoring comment at line {context.Line} as it has no parent: {context.Text}.");
-        }
-        else
-        {
-            context.Element.Comments.Add(comment);
-        }
+        element.Target.Comments.Add(comment);
     }
 
     private static void TitleHandler(CueSheetParserContext context)
@@ -389,7 +385,7 @@ public static partial class CueSheetParser
 
         context.File.Tracks.Add(track);
 
-        context.Element = track;
+        context.Push(track);
     }
 
     private static void IsrcHandler(CueSheetParserContext context)
