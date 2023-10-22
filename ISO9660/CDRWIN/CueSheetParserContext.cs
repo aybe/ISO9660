@@ -14,7 +14,7 @@ internal sealed class CueSheetParserContext
 
     public required CueSheet Sheet { get; init; }
 
-    public required string? Directory { get; init; }
+    public required string? SheetDirectory { get; init; }
 
     private Stack<CueSheetParserElement> ElementStack { get; } = new();
 

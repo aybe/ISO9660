@@ -25,7 +25,7 @@ public static partial class CueSheetParser
 
         var context = new CueSheetParserContext
         {
-            Sheet = new CueSheet(), Directory = Path.GetDirectoryName(path)
+            Sheet = new CueSheet(), SheetDirectory = Path.GetDirectoryName(path)
         };
 
         context.Push(context.Sheet);
@@ -187,7 +187,7 @@ public static partial class CueSheetParser
 
         if (Path.IsPathFullyQualified(name) is false)
         {
-            name = Path.GetFullPath(Path.Combine(context.Directory ?? string.Empty, name));
+            name = Path.GetFullPath(Path.Combine(context.SheetDirectory ?? string.Empty, name));
         }
 
         var file = new CueSheetFile(context.Sheet, name, mode);
