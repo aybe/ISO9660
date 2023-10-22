@@ -22,7 +22,7 @@ public abstract record TestData
 
         var configuration = new CsvConfiguration(CultureInfo.InvariantCulture)
         {
-            AllowComments = true, IgnoreBlankLines = true, TrimOptions = TrimOptions.Trim
+            AllowComments = true, BadDataFound = null, IgnoreBlankLines = true, TrimOptions = TrimOptions.Trim
         };
 
         using var reader = new CsvReader(new StreamReader(File.OpenRead(path)), configuration);
