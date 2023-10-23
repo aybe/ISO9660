@@ -1,4 +1,4 @@
-namespace WipeoutInstaller.WorkInProgress;
+namespace ISO9660.Tests.WorkInProgress;
 
 public enum SectorMode : byte
 {

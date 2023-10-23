@@ -1,8 +1,8 @@
 ﻿using System.Linq.Expressions;
+using ISO9660.Tests.Extensions;
 using JetBrains.Annotations;
-using WipeoutInstaller.Extensions;
 
-namespace WipeoutInstaller;
+namespace ISO9660.Tests;
 
 public abstract class UnitTestBase
 {

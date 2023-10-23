@@ -1,4 +1,4 @@
-﻿namespace WipeoutInstaller.Extensions;
+﻿namespace ISO9660.Tests.Extensions;
 
 public static class IntegerExtensions
 {

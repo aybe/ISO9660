@@ -1,9 +1,9 @@
 ﻿using System.Text;
 using ISO9660.CDRWIN;
-using WipeoutInstaller.ISO9660;
-using WipeoutInstaller.WorkInProgress;
+using ISO9660.Tests.ISO9660;
+using ISO9660.Tests.WorkInProgress;
 
-namespace WipeoutInstaller;
+namespace ISO9660.Tests;
 
 public abstract class UnitTestIso : UnitTestBase
 {

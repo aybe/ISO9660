@@ -2,7 +2,7 @@ using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace WipeoutInstaller.WorkInProgress;
+namespace ISO9660.Tests.WorkInProgress;
 
 public interface ISector
     // CD-ROM

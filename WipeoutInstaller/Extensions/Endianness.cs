@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace WipeoutInstaller.Extensions;
+namespace ISO9660.Tests.Extensions;
 
 [SuppressMessage("ReSharper", "InconsistentNaming")]
 public enum Endianness

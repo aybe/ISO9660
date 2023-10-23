@@ -1,4 +1,4 @@
-﻿namespace WipeoutInstaller.WorkInProgress;
+﻿namespace ISO9660.Tests.WorkInProgress;
 
 public unsafe struct SectorCooked2336 : ISector
 {

@@ -3,9 +3,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using ISO9660.Common;
-using WipeoutInstaller.WorkInProgress;
+using ISO9660.Tests.WorkInProgress;
 
-namespace WipeoutInstaller;
+namespace ISO9660.Tests;
 
 [TestClass]
 [SuppressMessage("ReSharper", "StringLiteralTypo")]

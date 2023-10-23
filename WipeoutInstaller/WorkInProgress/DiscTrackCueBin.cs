@@ -1,6 +1,6 @@
 ﻿using ISO9660.CDRWIN;
 
-namespace WipeoutInstaller.WorkInProgress;
+namespace ISO9660.Tests.WorkInProgress;
 
 internal sealed class DiscTrackCueBin : DiscTrack
 {

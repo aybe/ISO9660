@@ -1,7 +1,7 @@
 ﻿using System.Text;
-using WipeoutInstaller.Extensions;
+using ISO9660.Tests.Extensions;
 
-namespace WipeoutInstaller.WorkInProgress;
+namespace ISO9660.Tests.WorkInProgress;
 
 public abstract class DiscTrack : Disposable
 {

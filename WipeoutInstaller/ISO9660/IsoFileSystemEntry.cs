@@ -2,7 +2,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 
-namespace WipeoutInstaller.ISO9660;
+namespace ISO9660.Tests.ISO9660;
 
 public abstract partial class IsoFileSystemEntry
 {

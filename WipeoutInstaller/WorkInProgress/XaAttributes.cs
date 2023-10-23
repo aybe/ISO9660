@@ -1,4 +1,4 @@
-﻿namespace WipeoutInstaller.WorkInProgress;
+﻿namespace ISO9660.Tests.WorkInProgress;
 
 [Flags]
 public enum XaAttributes : ushort

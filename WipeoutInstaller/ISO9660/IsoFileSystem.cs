@@ -1,8 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
-using WipeoutInstaller.Extensions;
-using WipeoutInstaller.WorkInProgress;
+using ISO9660.Tests.Extensions;
+using ISO9660.Tests.WorkInProgress;
 
-namespace WipeoutInstaller.ISO9660;
+namespace ISO9660.Tests.ISO9660;
 
 public sealed class IsoFileSystem : Disposable
 {

@@ -1,6 +1,6 @@
-﻿using WipeoutInstaller.Extensions;
+﻿using ISO9660.Tests.Extensions;
 
-namespace WipeoutInstaller.WorkInProgress;
+namespace ISO9660.Tests.WorkInProgress;
 
 internal sealed class DiscTrackStream : Stream
     // better than exposing track stream which might represent N tracks

@@ -3,7 +3,7 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using JetBrains.Annotations;
 
-namespace WipeoutInstaller.Templates;
+namespace ISO9660.Tests.Templates;
 
 /// <remarks>
 ///     <para>

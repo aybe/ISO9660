@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace WipeoutInstaller.JSON;
+namespace ISO9660.Tests.JSON;
 
 public class BaseFirstContractResolver : DefaultContractResolver
 {

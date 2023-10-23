@@ -1,7 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
-using WipeoutInstaller.Extensions;
+using ISO9660.Tests.Extensions;
 
-namespace WipeoutInstaller.ISO9660;
+namespace ISO9660.Tests.ISO9660;
 
 public class PrimaryVolumeDescriptor : VolumeDescriptor
 {

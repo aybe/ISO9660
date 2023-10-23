@@ -1,7 +1,7 @@
 ﻿using ISO9660.CDRWIN;
-using WipeoutInstaller.Templates;
+using ISO9660.Tests.Templates;
 
-namespace WipeoutInstaller;
+namespace ISO9660.Tests;
 
 [TestClass]
 public class UnitTestCueSheet : UnitTestBase

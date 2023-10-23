@@ -1,4 +1,4 @@
-namespace WipeoutInstaller.ISO9660;
+namespace ISO9660.Tests.ISO9660;
 
 public static class DateTimeParser
 {

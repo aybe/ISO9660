@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using WipeoutInstaller.ISO9660;
-using WipeoutInstaller.Templates;
+using ISO9660.Tests.ISO9660;
+using ISO9660.Tests.Templates;
 
-namespace WipeoutInstaller;
+namespace ISO9660.Tests;
 
 [TestClass]
 [SuppressMessage("ReSharper", "StringLiteralTypo")]

@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using JetBrains.Annotations;
 
-namespace WipeoutInstaller.Extensions;
+namespace ISO9660.Tests.Extensions;
 
 public static class BinaryReaderExtensions
 {

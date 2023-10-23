@@ -1,6 +1,6 @@
-﻿using WipeoutInstaller.ISO9660;
+﻿using ISO9660.Tests.ISO9660;
 
-namespace WipeoutInstaller.WorkInProgress;
+namespace ISO9660.Tests.WorkInProgress;
 
 public static class DiscExtensions
 {

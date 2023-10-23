@@ -1,4 +1,4 @@
-namespace WipeoutInstaller.WorkInProgress;
+namespace ISO9660.Tests.WorkInProgress;
 
 public unsafe struct SectorMode1 : ISector, ISectorHeader
 {
