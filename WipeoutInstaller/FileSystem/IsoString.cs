@@ -5,13 +5,26 @@ namespace ISO9660.Tests.FileSystem;
 
 public class IsoString // TODO rename to Iso76
 {
-    private const string ACharacters = """!"%&'()*+,-./0123456789:;<=>?ABCDEFGHIJKLMNOPQRSTUVWXYZ_""" + Space;
-    private const string DCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_" + Space;
-    private const string Separator1 = ".";
-    private const string Separator2 = ";";
-    private const string Space = " ";
-    public const string Byte00 = "\u0000";
-    public const string Byte01 = "\u0001";
+    private const string ACharacters =
+        """!"%&'()*+,-./0123456789:;<=>?ABCDEFGHIJKLMNOPQRSTUVWXYZ_""" + Space;
+
+    private const string DCharacters =
+        "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_" + Space;
+
+    private const string Separator1 =
+        ".";
+
+    private const string Separator2 =
+        ";";
+
+    private const string Space =
+        " ";
+
+    public const string Byte00 =
+        "\u0000";
+
+    public const string Byte01 =
+        "\u0001";
 
     public IsoString(in BinaryReader reader, in int length, IsoStringFlags flags)
     {
