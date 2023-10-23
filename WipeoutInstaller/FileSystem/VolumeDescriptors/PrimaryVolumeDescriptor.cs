@@ -65,7 +65,7 @@ public class PrimaryVolumeDescriptor : VolumeDescriptor
 
         ApplicationUse = reader.ReadBytes(512);
 
-        Reserved2 = reader.ReadByte();
+        Reserved2 = reader.ReadBytes(653);
     }
 
     public IsoString SystemIdentifier { get; }
@@ -120,5 +120,5 @@ public class PrimaryVolumeDescriptor : VolumeDescriptor
 
     public byte[] ApplicationUse { get; }
 
-    public byte Reserved2 { get; set; }
+    public byte[] Reserved2 { get; set; }
 }
