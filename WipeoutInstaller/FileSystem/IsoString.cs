@@ -5,6 +5,8 @@ namespace ISO9660.Tests.FileSystem;
 
 public class IsoString // TODO rename to Iso76
 {
+    // NOTE: d-characters has no space but as strings are padded we do need it!
+
     private const string ACharacters =
         """!"%&'()*+,-./0123456789:;<=>?ABCDEFGHIJKLMNOPQRSTUVWXYZ_""" + Space;
 
