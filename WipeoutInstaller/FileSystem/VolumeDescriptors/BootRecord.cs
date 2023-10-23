@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace ISO9660.Tests.FileSystem;
+namespace ISO9660.Tests.FileSystem.VolumeDescriptors;
 
 public sealed class BootRecord : VolumeDescriptor
 {

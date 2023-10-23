@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using ISO9660.Tests.Extensions;
+using ISO9660.Tests.FileSystem.VolumeDescriptors;
 using ISO9660.Tests.WorkInProgress;
 
 namespace ISO9660.Tests.FileSystem;

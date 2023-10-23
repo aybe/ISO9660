@@ -1,25 +1,27 @@
 using System.Diagnostics.CodeAnalysis;
-using ISO9660.Tests.Extensions;
 
-namespace ISO9660.Tests.FileSystem;
+namespace ISO9660.Tests.FileSystem.VolumeDescriptors;
 
-public class PrimaryVolumeDescriptor : VolumeDescriptor
+public sealed class SupplementaryVolumeDescriptor : VolumeDescriptor
 {
     [SetsRequiredMembers]
-    public PrimaryVolumeDescriptor(VolumeDescriptor descriptor, BinaryReader reader)
+    public SupplementaryVolumeDescriptor(VolumeDescriptor descriptor, BinaryReader reader)
         : base(descriptor)
     {
-        reader.Seek(1);
+        // TODO A1
+        // TODO D1
+
+        VolumeFlags = reader.ReadByte();
 
         SystemIdentifier = new IsoString(reader, 32, IsoStringFlags.ACharacters);
 
         VolumeIdentifier = new IsoString(reader, 32, IsoStringFlags.DCharacters);
 
-        reader.Seek(8);
+        UnusedField = reader.ReadBytes(8);
 
         VolumeSpaceSize = new Iso733(reader);
 
-        reader.Seek(32);
+        EscapeSequences = reader.ReadBytes(32);
 
         VolumeSetSize = new Iso723(reader);
 
@@ -67,14 +69,20 @@ public class PrimaryVolumeDescriptor : VolumeDescriptor
 
         ApplicationUse = reader.ReadBytes(512);
 
-        Reserved2 = reader.ReadByte();
+        Reserved2 = reader.ReadBytes(653);
     }
+
+    public byte VolumeFlags { get; }
 
     public IsoString SystemIdentifier { get; }
 
     public IsoString VolumeIdentifier { get; }
 
-    public Iso733 VolumeSpaceSize { get; set; }
+    public byte[] UnusedField { get; }
+
+    public Iso733 VolumeSpaceSize { get; }
+
+    public byte[] EscapeSequences { get; }
 
     public Iso723 VolumeSetSize { get; }
 
@@ -92,7 +100,7 @@ public class PrimaryVolumeDescriptor : VolumeDescriptor
 
     public Iso732 LocationOfOptionalOccurrenceOfTypeMPathTable { get; }
 
-    public DirectoryRecord DirectoryRecordForRootDirectory { get; set; }
+    public DirectoryRecord DirectoryRecordForRootDirectory { get; }
 
     public IsoString VolumeSetIdentifier { get; }
 
@@ -118,9 +126,9 @@ public class PrimaryVolumeDescriptor : VolumeDescriptor
 
     public Iso711 FileStructureVersion { get; }
 
-    public byte Reserved1 { get; set; }
+    public byte Reserved1 { get; }
 
     public byte[] ApplicationUse { get; }
 
-    public byte Reserved2 { get; set; }
+    public byte[] Reserved2 { get; }
 }

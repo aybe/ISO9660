@@ -1,27 +1,25 @@
 using System.Diagnostics.CodeAnalysis;
+using ISO9660.Tests.Extensions;
 
-namespace ISO9660.Tests.FileSystem;
+namespace ISO9660.Tests.FileSystem.VolumeDescriptors;
 
-public sealed class SupplementaryVolumeDescriptor : VolumeDescriptor
+public class PrimaryVolumeDescriptor : VolumeDescriptor
 {
     [SetsRequiredMembers]
-    public SupplementaryVolumeDescriptor(VolumeDescriptor descriptor, BinaryReader reader)
+    public PrimaryVolumeDescriptor(VolumeDescriptor descriptor, BinaryReader reader)
         : base(descriptor)
     {
-        // TODO A1
-        // TODO D1
-
-        VolumeFlags = reader.ReadByte();
+        reader.Seek(1);
 
         SystemIdentifier = new IsoString(reader, 32, IsoStringFlags.ACharacters);
 
         VolumeIdentifier = new IsoString(reader, 32, IsoStringFlags.DCharacters);
 
-        UnusedField = reader.ReadBytes(8);
+        reader.Seek(8);
 
         VolumeSpaceSize = new Iso733(reader);
 
-        EscapeSequences = reader.ReadBytes(32);
+        reader.Seek(32);
 
         VolumeSetSize = new Iso723(reader);
 
@@ -69,20 +67,14 @@ public sealed class SupplementaryVolumeDescriptor : VolumeDescriptor
 
         ApplicationUse = reader.ReadBytes(512);
 
-        Reserved2 = reader.ReadBytes(653);
+        Reserved2 = reader.ReadByte();
     }
-
-    public byte VolumeFlags { get; }
 
     public IsoString SystemIdentifier { get; }
 
     public IsoString VolumeIdentifier { get; }
 
-    public byte[] UnusedField { get; }
-
-    public Iso733 VolumeSpaceSize { get; }
-
-    public byte[] EscapeSequences { get; }
+    public Iso733 VolumeSpaceSize { get; set; }
 
     public Iso723 VolumeSetSize { get; }
 
@@ -100,7 +92,7 @@ public sealed class SupplementaryVolumeDescriptor : VolumeDescriptor
 
     public Iso732 LocationOfOptionalOccurrenceOfTypeMPathTable { get; }
 
-    public DirectoryRecord DirectoryRecordForRootDirectory { get; }
+    public DirectoryRecord DirectoryRecordForRootDirectory { get; set; }
 
     public IsoString VolumeSetIdentifier { get; }
 
@@ -126,9 +118,9 @@ public sealed class SupplementaryVolumeDescriptor : VolumeDescriptor
 
     public Iso711 FileStructureVersion { get; }
 
-    public byte Reserved1 { get; }
+    public byte Reserved1 { get; set; }
 
     public byte[] ApplicationUse { get; }
 
-    public byte[] Reserved2 { get; }
+    public byte Reserved2 { get; set; }
 }

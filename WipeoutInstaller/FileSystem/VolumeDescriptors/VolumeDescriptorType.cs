@@ -1,4 +1,4 @@
-namespace ISO9660.Tests.FileSystem;
+namespace ISO9660.Tests.FileSystem.VolumeDescriptors;
 
 public enum VolumeDescriptorType : byte
 {

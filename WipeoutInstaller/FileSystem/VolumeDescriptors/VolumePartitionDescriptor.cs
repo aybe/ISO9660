@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using ISO9660.Tests.Extensions;
 
-namespace ISO9660.Tests.FileSystem;
+namespace ISO9660.Tests.FileSystem.VolumeDescriptors;
 
 public sealed class VolumePartitionDescriptor : VolumeDescriptor
 {

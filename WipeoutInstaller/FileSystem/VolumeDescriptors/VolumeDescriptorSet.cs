@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
 
-namespace ISO9660.Tests.FileSystem;
+namespace ISO9660.Tests.FileSystem.VolumeDescriptors;
 
 public sealed class VolumeDescriptorSet : Collection<VolumeDescriptor>
 {
