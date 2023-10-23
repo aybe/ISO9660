@@ -85,6 +85,16 @@ public sealed class IsoFileSystem : Disposable
 
             var descriptor = new VolumeDescriptor(reader);
 
+            if (Enum.IsDefined(descriptor.VolumeDescriptorType) == false)
+            {
+                throw new NotSupportedException($"Unknown volume descriptor type: '{descriptor.VolumeDescriptorType}'.");
+            }
+
+            if (descriptor.StandardIdentifier != "CD001")
+            {
+                throw new NotSupportedException($"Unknown volume standard identifier: '{descriptor.StandardIdentifier}'.");
+            }
+
             descriptor = descriptor.VolumeDescriptorType switch
             {
                 VolumeDescriptorType.BootRecord                    => new BootRecord(descriptor, reader),
