@@ -72,7 +72,7 @@ public class PrimaryVolumeDescriptor : VolumeDescriptor
 
     public IsoString VolumeIdentifier { get; }
 
-    public Iso733 VolumeSpaceSize { get; set; }
+    public Iso733 VolumeSpaceSize { get; }
 
     public Iso723 VolumeSetSize { get; }
 
@@ -90,7 +90,7 @@ public class PrimaryVolumeDescriptor : VolumeDescriptor
 
     public Iso732 LocationOfOptionalOccurrenceOfTypeMPathTable { get; }
 
-    public DirectoryRecord DirectoryRecordForRootDirectory { get; set; }
+    public DirectoryRecord DirectoryRecordForRootDirectory { get; }
 
     public IsoString VolumeSetIdentifier { get; }
 
@@ -116,9 +116,9 @@ public class PrimaryVolumeDescriptor : VolumeDescriptor
 
     public Iso711 FileStructureVersion { get; }
 
-    public byte Reserved1 { get; set; }
+    public byte Reserved1 { get; }
 
     public byte[] ApplicationUse { get; }
 
-    public byte[] Reserved2 { get; set; }
+    public byte[] Reserved2 { get; }
 }
