@@ -1,10 +1,7 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace ISO9660.Tests.FileSystem.VolumeDescriptors;
 
 public sealed class VolumeDescriptorSetTerminator : VolumeDescriptor
 {
-    [SetsRequiredMembers]
     public VolumeDescriptorSetTerminator(VolumeDescriptor descriptor, BinaryReader reader)
         : base(descriptor)
     {

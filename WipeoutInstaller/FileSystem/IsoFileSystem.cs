@@ -83,12 +83,7 @@ public sealed class IsoFileSystem : Disposable
 
             using var reader = disc.Tracks.First().GetBinaryReader(sectorIndex);
 
-            var descriptor = new VolumeDescriptor
-            {
-                VolumeDescriptorType    = reader.Read<VolumeDescriptorType>(), // 711
-                StandardIdentifier      = reader.ReadStringAscii(5),
-                VolumeDescriptorVersion = new Iso711(reader)
-            };
+            var descriptor = new VolumeDescriptor(reader);
 
             descriptor = descriptor.VolumeDescriptorType switch
             {

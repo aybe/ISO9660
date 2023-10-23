@@ -1,14 +1,16 @@
-using System.Diagnostics.CodeAnalysis;
+using ISO9660.Tests.Extensions;
 
 namespace ISO9660.Tests.FileSystem.VolumeDescriptors;
 
 public class VolumeDescriptor
 {
-    internal VolumeDescriptor()
+    internal VolumeDescriptor(BinaryReader reader)
     {
+        VolumeDescriptorType    = reader.Read<VolumeDescriptorType>(); // 711
+        StandardIdentifier      = reader.ReadStringAscii(5);
+        VolumeDescriptorVersion = new Iso711(reader);
     }
 
-    [SetsRequiredMembers]
     protected VolumeDescriptor(VolumeDescriptor descriptor)
     {
         VolumeDescriptorType    = descriptor.VolumeDescriptorType;
@@ -16,9 +18,9 @@ public class VolumeDescriptor
         VolumeDescriptorVersion = descriptor.VolumeDescriptorVersion;
     }
 
-    public required VolumeDescriptorType VolumeDescriptorType { get; init; }
+    public VolumeDescriptorType VolumeDescriptorType { get; }
 
-    public required string StandardIdentifier { get; init; }
+    public string StandardIdentifier { get; }
 
-    public required Iso711 VolumeDescriptorVersion { get; init; }
+    public Iso711 VolumeDescriptorVersion { get; }
 }

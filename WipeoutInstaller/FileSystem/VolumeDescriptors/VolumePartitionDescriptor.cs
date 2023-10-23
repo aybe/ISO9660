@@ -1,11 +1,9 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using ISO9660.Tests.Extensions;
+﻿using ISO9660.Tests.Extensions;
 
 namespace ISO9660.Tests.FileSystem.VolumeDescriptors;
 
 public sealed class VolumePartitionDescriptor : VolumeDescriptor
 {
-    [SetsRequiredMembers]
     public VolumePartitionDescriptor(VolumeDescriptor descriptor, BinaryReader reader)
         : base(descriptor)
     {
