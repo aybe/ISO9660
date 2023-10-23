@@ -1,3 +1,5 @@
+using ISO9660.Tests.Extensions;
+
 namespace ISO9660.Tests.FileSystem.VolumeDescriptors;
 
 public sealed class SupplementaryVolumeDescriptor : VolumeDescriptor
@@ -14,7 +16,7 @@ public sealed class SupplementaryVolumeDescriptor : VolumeDescriptor
 
         VolumeIdentifier = new IsoString(reader, 32, IsoStringFlags.DCharacters);
 
-        UnusedField = reader.ReadBytes(8);
+        reader.Seek(8);
 
         VolumeSpaceSize = new Iso733(reader);
 
@@ -74,8 +76,6 @@ public sealed class SupplementaryVolumeDescriptor : VolumeDescriptor
     public IsoString SystemIdentifier { get; }
 
     public IsoString VolumeIdentifier { get; }
-
-    public byte[] UnusedField { get; }
 
     public Iso733 VolumeSpaceSize { get; }
 
