@@ -1,4 +1,4 @@
-namespace ISO9660.Tests.ISO9660;
+namespace ISO9660.Tests.FileSystem;
 
 [Flags]
 public enum FileFlags : byte

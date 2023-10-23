@@ -1,7 +1,7 @@
 using System.Text;
 using ISO9660.Tests.Extensions;
 
-namespace ISO9660.Tests.ISO9660;
+namespace ISO9660.Tests.FileSystem;
 
 public class IsoString // TODO rename to Iso76
 {

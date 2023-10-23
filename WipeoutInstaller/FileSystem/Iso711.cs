@@ -1,6 +1,6 @@
 using ISO9660.Tests.Extensions;
 
-namespace ISO9660.Tests.ISO9660;
+namespace ISO9660.Tests.FileSystem;
 
 public readonly struct Iso711 : IIsoNumber1<byte>
 {

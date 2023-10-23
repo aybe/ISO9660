@@ -1,5 +1,5 @@
 ﻿using System.Security.Cryptography;
-using ISO9660.Tests.ISO9660;
+using ISO9660.Tests.FileSystem;
 using ISO9660.Tests.Templates;
 using ISO9660.Tests.WorkInProgress;
 

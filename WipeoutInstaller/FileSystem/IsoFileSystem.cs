@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using ISO9660.Tests.Extensions;
 using ISO9660.Tests.WorkInProgress;
 
-namespace ISO9660.Tests.ISO9660;
+namespace ISO9660.Tests.FileSystem;
 
 public sealed class IsoFileSystem : Disposable
 {

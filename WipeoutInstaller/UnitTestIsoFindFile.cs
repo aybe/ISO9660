@@ -1,4 +1,4 @@
-﻿using ISO9660.Tests.ISO9660;
+﻿using ISO9660.Tests.FileSystem;
 using ISO9660.Tests.Templates;
 
 namespace ISO9660.Tests;
