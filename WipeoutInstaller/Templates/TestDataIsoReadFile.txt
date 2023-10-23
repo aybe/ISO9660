@@ -1,9 +1,9 @@
 Source:
     string
-    Full path to the .cue file to test, e.g. "C:\Temp\Wipeout.cue"
+    Full path to the .cue file to test, e.g. "C:\Temp\Wipeout.cue".
 Target:
     string
-    Full path to the file in the ISO9660 file system, e.g. "/WIPEOUT/TEXTURES/WIPEOUT.TIM"
+    Full path to the file in the ISO9660 file system, e.g. "/WIPEOUT/TEXTURES/WIPEOUT.TIM".
 Sha256:
     string
     SHA-256 hash of the target file being tested.

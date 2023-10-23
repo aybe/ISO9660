@@ -15,7 +15,7 @@ public sealed class CueSheetFile : CueSheetElement
 
     public CueSheetFileType Type { get; }
 
-    public List<CueSheetTrack> Tracks { get; } = new();
+    public IList<CueSheetTrack> Tracks { get; } = new List<CueSheetTrack>();
 
     public string? Title { get; set; }
 

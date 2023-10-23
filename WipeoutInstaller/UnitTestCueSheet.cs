@@ -6,7 +6,7 @@ namespace WipeoutInstaller;
 [TestClass]
 public class UnitTestCueSheet : UnitTestBase
 {
-    public static IEnumerable<object[]> TestParsingListInit()
+    public static IEnumerable<object[]> TestCueSheetListInit()
     {
         var files = TestData.GetCsvTestData<TestDataCueSheet>(@"Templates\TestDataCueSheet.csv");
 
@@ -17,8 +17,8 @@ public class UnitTestCueSheet : UnitTestBase
     }
 
     [TestMethod]
-    [DynamicData(nameof(TestParsingListInit), DynamicDataSourceType.Method)]
-    public void TestParsing(string path)
+    [DynamicData(nameof(TestCueSheetListInit), DynamicDataSourceType.Method)]
+    public void TestCueSheet(string path)
     {
         if (File.Exists(path))
         {

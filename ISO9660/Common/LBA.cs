@@ -2,31 +2,30 @@ namespace ISO9660.Common;
 
 public readonly struct LBA : IComparable<LBA>, IEquatable<LBA>
 {
-    public readonly int Position;
+    private readonly int Value;
 
-    public static LBA Min { get; } = MSF.Min.ToLBA();
-
-    public static LBA Max { get; } = MSF.Max.ToLBA();
-
-    public LBA(int position)
+    public LBA(int value)
     {
-        Position = position;
+        Value = value;
     }
 
     public MSF ToMSF()
     {
-        var position = Position - 150;
-        return new MSF(position / (60 * 75), position / 75 % 60, position % 75);
+        var value = Value - 150;
+
+        var msf = new MSF(value / (60 * 75), value / 75 % 60, value % 75);
+
+        return msf;
     }
 
     public int CompareTo(LBA other)
     {
-        return Position.CompareTo(other.Position);
+        return Value.CompareTo(other.Value);
     }
 
     public bool Equals(LBA other)
     {
-        return Position == other.Position;
+        return Value == other.Value;
     }
 
     public override bool Equals(object? obj)
@@ -36,12 +35,12 @@ public readonly struct LBA : IComparable<LBA>, IEquatable<LBA>
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(Position);
+        return HashCode.Combine(Value);
     }
 
     public override string ToString()
     {
-        return Position.ToString();
+        return Value.ToString();
     }
 
     public static bool operator ==(LBA x, LBA y)
@@ -76,36 +75,36 @@ public readonly struct LBA : IComparable<LBA>, IEquatable<LBA>
 
     public static LBA operator +(LBA x, LBA y)
     {
-        return new LBA(x.Position + y.Position);
+        return new LBA(x.Value + y.Value);
     }
 
     public static LBA operator -(LBA x, LBA y)
     {
-        return new LBA(x.Position - y.Position);
+        return new LBA(x.Value - y.Value);
     }
 
     public static LBA operator ++(LBA x)
     {
-        return new LBA(x.Position + 1);
+        return new LBA(x.Value + 1);
     }
 
     public static LBA operator --(LBA x)
     {
-        return new LBA(x.Position - 1);
+        return new LBA(x.Value - 1);
     }
 
     public static LBA operator +(LBA x, int y)
     {
-        return new LBA(x.Position + y);
+        return new LBA(x.Value + y);
     }
 
     public static LBA operator -(LBA x, int y)
     {
-        return new LBA(x.Position - y);
+        return new LBA(x.Value - y);
     }
 
     public static implicit operator int(LBA lba)
     {
-        return lba.Position;
+        return lba.Value;
     }
 }

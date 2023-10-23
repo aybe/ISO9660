@@ -8,5 +8,5 @@ public sealed class CueSheet : CueSheetElement
 
     public string? Title { get; set; }
 
-    public List<CueSheetFile> Files { get; set; } = new();
+    public IList<CueSheetFile> Files { get; } = new List<CueSheetFile>();
 }
