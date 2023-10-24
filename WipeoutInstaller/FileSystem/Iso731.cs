@@ -4,7 +4,7 @@ namespace ISO9660.Tests.FileSystem;
 
 public readonly struct Iso731
 {
-    public uint Value { get; }
+    private uint Value { get; }
 
     public Iso731(BinaryReader reader)
     {
@@ -16,13 +16,13 @@ public readonly struct Iso731
         return $"{Value}";
     }
 
-    public static implicit operator int(Iso731 iso731)
-    {
-        return Convert.ToInt32(iso731.Value);
-    }
-
     public int ToInt32()
     {
         return Convert.ToInt32(Value);
+    }
+
+    public static implicit operator uint(Iso731 iso731)
+    {
+        return iso731.Value;
     }
 }

@@ -4,7 +4,7 @@ namespace ISO9660.Tests.FileSystem;
 
 public readonly struct Iso712
 {
-    public sbyte Value { get; }
+    private sbyte Value { get; }
 
     public Iso712(BinaryReader reader)
     {
@@ -14,5 +14,10 @@ public readonly struct Iso712
     public override string ToString()
     {
         return $"{Value}";
+    }
+
+    public static implicit operator sbyte(Iso712 iso712)
+    {
+        return iso712.Value;
     }
 }

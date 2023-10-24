@@ -4,7 +4,7 @@ namespace ISO9660.Tests.FileSystem;
 
 public readonly struct Iso711
 {
-    public byte Value { get; }
+    private byte Value { get; }
 
     public Iso711(BinaryReader reader)
     {
@@ -16,7 +16,7 @@ public readonly struct Iso711
         return $"{Value}";
     }
 
-    public static implicit operator int(Iso711 iso711)
+    public static implicit operator byte(Iso711 iso711)
     {
         return iso711.Value;
     }

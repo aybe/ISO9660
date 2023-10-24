@@ -7,7 +7,7 @@ public sealed class PosixFileAttributes : SystemUseEntry
     public PosixFileAttributes(BinaryReader reader)
         : base(reader)
     {
-        PosixFileMode = (PosixFileMode)new Iso733(reader).Value1;
+        PosixFileMode = (PosixFileMode)new Iso733(reader).ToInt32();
 
         PosixFileLinks = new Iso733(reader);
 

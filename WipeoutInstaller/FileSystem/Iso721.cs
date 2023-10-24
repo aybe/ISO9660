@@ -4,7 +4,7 @@ namespace ISO9660.Tests.FileSystem;
 
 public readonly struct Iso721
 {
-    public ushort Value { get; }
+    private ushort Value { get; }
 
     public Iso721(BinaryReader reader)
     {
@@ -14,5 +14,10 @@ public readonly struct Iso721
     public override string ToString()
     {
         return $"{Value}";
+    }
+
+    public static implicit operator ushort(Iso721 iso721)
+    {
+        return iso721.Value;
     }
 }

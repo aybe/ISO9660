@@ -4,7 +4,7 @@ namespace ISO9660.Tests.FileSystem;
 
 public readonly struct Iso732
 {
-    public uint Value { get; }
+    private uint Value { get; }
 
     public Iso732(BinaryReader reader)
     {
@@ -14,5 +14,10 @@ public readonly struct Iso732
     public override string ToString()
     {
         return $"{Value}";
+    }
+
+    public static implicit operator uint(Iso732 iso732)
+    {
+        return iso732.Value;
     }
 }

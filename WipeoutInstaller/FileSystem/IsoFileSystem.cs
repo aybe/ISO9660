@@ -175,7 +175,7 @@ public sealed class IsoFileSystem : Disposable
 
         var pathTableRead = 0L;
 
-        var pathTableSize = pvd.PathTableSize;
+        var pathTableSize = pvd.PathTableSize.ToInt32();
 
         var track = disc.Tracks.First();
 

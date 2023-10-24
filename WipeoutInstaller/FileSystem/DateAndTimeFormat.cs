@@ -48,7 +48,7 @@ public sealed class DateAndTimeFormat
         var e = int.Parse(MinuteOfTheHour);
         var f = int.Parse(SecondOfTheMinute);
         var g = int.Parse(HundredthsOfASecond);
-        var h = TimeSpan.FromMinutes(15 * OffsetFromGreenwichMeanTime.Value);
+        var h = TimeSpan.FromMinutes(15 * OffsetFromGreenwichMeanTime);
 
         return DateTimeParser.TryParse(a, b, c, d, e, f, g * 10, h, out var result) ? result : DateTimeOffset.UnixEpoch;
     }
