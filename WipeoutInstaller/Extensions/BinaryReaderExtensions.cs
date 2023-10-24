@@ -28,8 +28,15 @@ public static class BinaryReaderExtensions
 
     public static string ReadStringAscii(this BinaryReader reader, int length)
     {
+        if (reader.BaseStream.Length - reader.BaseStream.Position < length)
+        {
+            throw new EndOfStreamException();
+        }
+
         var bytes = reader.ReadBytes(length);
+
         var ascii = Encoding.ASCII.GetString(bytes);
+
         return ascii;
     }
 
