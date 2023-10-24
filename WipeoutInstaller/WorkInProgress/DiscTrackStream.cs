@@ -114,4 +114,9 @@ internal sealed class DiscTrackStream : Stream
     {
         throw new NotSupportedException();
     }
+
+    public override string ToString()
+    {
+        return $"{nameof(SectorNumber)}: {SectorNumber}, {nameof(SectorOffset)}: {SectorOffset}";
+    }
 }
