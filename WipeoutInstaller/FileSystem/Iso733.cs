@@ -2,7 +2,7 @@ using ISO9660.Tests.Extensions;
 
 namespace ISO9660.Tests.FileSystem;
 
-public readonly struct Iso733 : IIsoNumber2<uint>
+public readonly struct Iso733
 {
     public Iso733(BinaryReader reader)
     {

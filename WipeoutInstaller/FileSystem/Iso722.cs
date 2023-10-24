@@ -2,7 +2,7 @@ using ISO9660.Tests.Extensions;
 
 namespace ISO9660.Tests.FileSystem;
 
-public readonly struct Iso722 : IIsoNumber1<ushort>
+public readonly struct Iso722
 {
     public ushort Value { get; }
 
