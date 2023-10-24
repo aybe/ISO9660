@@ -44,4 +44,28 @@ public static class BinaryReaderExtensions
     {
         return reader.BaseStream.Seek(offset, origin);
     }
+
+    public static bool TryPeek<T>(this BinaryReader reader, Func<BinaryReader, T> func, out T result)
+    {
+        result = default!;
+
+        var position = reader.BaseStream.Position;
+
+        try
+        {
+            var value = func(reader);
+
+            result = value;
+
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+        finally
+        {
+            reader.BaseStream.Position = position;
+        }
+    }
 }
