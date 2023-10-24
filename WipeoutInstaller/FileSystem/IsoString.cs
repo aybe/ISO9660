@@ -4,6 +4,9 @@ using ISO9660.Tests.Extensions;
 namespace ISO9660.Tests.FileSystem;
 
 public class IsoString // TODO rename to Iso76
+    // we have to relax checking because there are a lot of retard ISOs out-there, e.g. commie Linux
+    // they are non-compliant by cramming invalid chars as early as possible, e.g. system identifier
+    // seems like they got no clue they have a dedicated shit solely for that: Rock Ridge extensions
 {
     // NOTE: d-characters has no space but as strings are padded we do need it!
 
@@ -64,19 +67,40 @@ public class IsoString // TODO rename to Iso76
             chars.Append(Byte01);
         }
 
-        if (ascii.Any(c => !chars.ToString().Contains(c)))
+        var input = ascii;
+
+        if (!CheckInputChars(input, chars))
+        {
+            input = input.ToUpperInvariant();
+        }
+
+        if (!CheckInputChars(input, chars))
+        {
+            chars.Append("-\0.+");
+        }
+
+        if (!CheckInputChars(input, chars))
         {
             var message = $"The string '{ascii}' ({string.Join(", ", Encoding.ASCII.GetBytes(ascii))}) contains invalid characters" +
                           $"{Environment.NewLine}" +
                           $"The allowed characters are: '{chars}'.";
 
-            Console.WriteLine(message); // throw new InvalidDataException(message); // BUG many test fail then
+            throw new InvalidDataException(message);
         }
 
         Value = ascii;
     }
 
     public string Value { get; }
+
+    private static bool CheckInputChars(string input, StringBuilder chars)
+    {
+        var valid = chars.ToString();
+
+        var check = input.All(valid.Contains);
+
+        return check;
+    }
 
     public override string ToString()
     {
