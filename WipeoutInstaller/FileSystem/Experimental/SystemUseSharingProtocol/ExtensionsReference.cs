@@ -15,11 +15,11 @@ public sealed class ExtensionsReference : SystemUseEntry
 
         ExtensionVersion = reader.ReadIso711();
 
-        ExtensionIdentifier = new IsoString(reader, IdentifierLength, IsoStringFlags.DCharacters); // TODO or D1
+        ExtensionIdentifier = reader.ReadIsoString(IdentifierLength, IsoStringFlags.DCharacters); // TODO or D1
 
-        ExtensionDescriptor = new IsoString(reader, DescriptorLength, IsoStringFlags.ACharacters); // TODO or A1
+        ExtensionDescriptor = reader.ReadIsoString(DescriptorLength, IsoStringFlags.ACharacters); // TODO or A1
 
-        ExtensionSource = new IsoString(reader, SourceLength, IsoStringFlags.ACharacters); // TODO or A1
+        ExtensionSource = reader.ReadIsoString(SourceLength, IsoStringFlags.ACharacters); // TODO or A1
     }
 
     public byte IdentifierLength { get; }
@@ -30,9 +30,9 @@ public sealed class ExtensionsReference : SystemUseEntry
 
     public byte ExtensionVersion { get; }
 
-    public IsoString ExtensionIdentifier { get; }
+    public string ExtensionIdentifier { get; }
 
-    public IsoString ExtensionDescriptor { get; }
+    public string ExtensionDescriptor { get; }
 
-    public IsoString ExtensionSource { get; }
+    public string ExtensionSource { get; }
 }

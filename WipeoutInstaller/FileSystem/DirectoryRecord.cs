@@ -35,7 +35,7 @@ public sealed class DirectoryRecord
 
         LengthOfFileIdentifier = reader.ReadIso711();
 
-        FileIdentifier = new IsoString(reader, LengthOfFileIdentifier,
+        FileIdentifier = reader.ReadIsoString(LengthOfFileIdentifier,
             IsoStringFlags.DCharacters | IsoStringFlags.Separator1 | IsoStringFlags.Separator2 | IsoStringFlags.Byte00 | IsoStringFlags.Byte01);
 
         PaddingField = LengthOfFileIdentifier % 2 is 0
@@ -68,7 +68,7 @@ public sealed class DirectoryRecord
 
     public byte LengthOfFileIdentifier { get; }
 
-    public IsoString FileIdentifier { get; } = null!;
+    public string FileIdentifier { get; } = null!;
 
     public byte? PaddingField { get; }
 

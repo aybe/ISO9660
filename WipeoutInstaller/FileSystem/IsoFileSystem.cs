@@ -144,10 +144,11 @@ public sealed class IsoFileSystem : Disposable
             {
                 if (record.FileFlags.HasFlags(FileFlags.Directory))
                 {
-                    switch (record.FileIdentifier.Value) // ignore . and .. or infinite loop
+                    switch (record.FileIdentifier) // ignore . and .. or infinite loop
                     {
-                        case IsoString.Byte00:
-                        case IsoString.Byte01:
+                        case "\u0000":
+                            continue;
+                        case "\u0001":
                             continue;
                     }
 

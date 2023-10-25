@@ -9,9 +9,9 @@ public sealed class VolumePartitionDescriptor : VolumeDescriptor
     {
         reader.Seek(1);
 
-        SystemIdentifier = new IsoString(reader, 32, IsoStringFlags.ACharacters);
+        SystemIdentifier = reader.ReadIsoString(32, IsoStringFlags.ACharacters);
 
-        VolumePartitionIdentifier = new IsoString(reader, 32, IsoStringFlags.DCharacters);
+        VolumePartitionIdentifier = reader.ReadIsoString(32, IsoStringFlags.DCharacters);
 
         VolumePartitionLocation = reader.ReadIso733();
 
@@ -20,9 +20,9 @@ public sealed class VolumePartitionDescriptor : VolumeDescriptor
         SystemUse = reader.ReadBytes(1960);
     }
 
-    public IsoString SystemIdentifier { get; }
+    public string SystemIdentifier { get; }
 
-    public IsoString VolumePartitionIdentifier { get; }
+    public string VolumePartitionIdentifier { get; }
 
     public uint VolumePartitionLocation { get; }
 

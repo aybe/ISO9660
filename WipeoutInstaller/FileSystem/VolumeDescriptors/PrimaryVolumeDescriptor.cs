@@ -9,9 +9,9 @@ public class PrimaryVolumeDescriptor : VolumeDescriptor
     {
         reader.Seek(1);
 
-        SystemIdentifier = new IsoString(reader, 32, IsoStringFlags.ACharacters);
+        SystemIdentifier = reader.ReadIsoString(32, IsoStringFlags.ACharacters);
 
-        VolumeIdentifier = new IsoString(reader, 32, IsoStringFlags.DCharacters);
+        VolumeIdentifier = reader.ReadIsoString(32, IsoStringFlags.DCharacters);
 
         reader.Seek(8);
 
@@ -37,19 +37,19 @@ public class PrimaryVolumeDescriptor : VolumeDescriptor
 
         DirectoryRecordForRootDirectory = new DirectoryRecord(reader);
 
-        VolumeSetIdentifier = new IsoString(reader, 128, IsoStringFlags.DCharacters);
+        VolumeSetIdentifier = reader.ReadIsoString(128, IsoStringFlags.DCharacters);
 
-        PublisherIdentifier = new IsoString(reader, 128, IsoStringFlags.ACharacters);
+        PublisherIdentifier = reader.ReadIsoString(128, IsoStringFlags.ACharacters);
 
-        DataPreparerIdentifier = new IsoString(reader, 128, IsoStringFlags.ACharacters);
+        DataPreparerIdentifier = reader.ReadIsoString(128, IsoStringFlags.ACharacters);
 
-        ApplicationIdentifier = new IsoString(reader, 128, IsoStringFlags.ACharacters);
+        ApplicationIdentifier = reader.ReadIsoString(128, IsoStringFlags.ACharacters);
 
-        CopyrightFileIdentifier = new IsoString(reader, 37, IsoStringFlags.DCharacters | IsoStringFlags.Separator1 | IsoStringFlags.Separator2);
+        CopyrightFileIdentifier = reader.ReadIsoString(37, IsoStringFlags.DCharacters | IsoStringFlags.Separator1 | IsoStringFlags.Separator2);
 
-        AbstractFileIdentifier = new IsoString(reader, 37, IsoStringFlags.DCharacters | IsoStringFlags.Separator1 | IsoStringFlags.Separator2);
+        AbstractFileIdentifier = reader.ReadIsoString(37, IsoStringFlags.DCharacters | IsoStringFlags.Separator1 | IsoStringFlags.Separator2);
 
-        BibliographicFileIdentifier = new IsoString(reader, 37, IsoStringFlags.DCharacters | IsoStringFlags.Separator1 | IsoStringFlags.Separator2);
+        BibliographicFileIdentifier = reader.ReadIsoString(37, IsoStringFlags.DCharacters | IsoStringFlags.Separator1 | IsoStringFlags.Separator2);
 
         VolumeCreationDateAndTime = new DateAndTimeFormat(reader);
 
@@ -68,9 +68,9 @@ public class PrimaryVolumeDescriptor : VolumeDescriptor
         Reserved2 = reader.ReadBytes(653);
     }
 
-    public IsoString SystemIdentifier { get; }
+    public string SystemIdentifier { get; }
 
-    public IsoString VolumeIdentifier { get; }
+    public string VolumeIdentifier { get; }
 
     public uint VolumeSpaceSize { get; }
 
@@ -92,19 +92,19 @@ public class PrimaryVolumeDescriptor : VolumeDescriptor
 
     public DirectoryRecord DirectoryRecordForRootDirectory { get; }
 
-    public IsoString VolumeSetIdentifier { get; }
+    public string VolumeSetIdentifier { get; }
 
-    public IsoString PublisherIdentifier { get; }
+    public string PublisherIdentifier { get; }
 
-    public IsoString DataPreparerIdentifier { get; }
+    public string DataPreparerIdentifier { get; }
 
-    public IsoString ApplicationIdentifier { get; }
+    public string ApplicationIdentifier { get; }
 
-    public IsoString CopyrightFileIdentifier { get; }
+    public string CopyrightFileIdentifier { get; }
 
-    public IsoString AbstractFileIdentifier { get; }
+    public string AbstractFileIdentifier { get; }
 
-    public IsoString BibliographicFileIdentifier { get; }
+    public string BibliographicFileIdentifier { get; }
 
     public DateAndTimeFormat VolumeCreationDateAndTime { get; }
 
