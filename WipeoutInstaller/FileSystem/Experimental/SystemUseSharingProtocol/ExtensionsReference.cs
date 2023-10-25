@@ -1,17 +1,19 @@
-﻿namespace ISO9660.Tests.FileSystem.Experimental.SystemUseSharingProtocol;
+﻿using ISO9660.Tests.Extensions;
+
+namespace ISO9660.Tests.FileSystem.Experimental.SystemUseSharingProtocol;
 
 public sealed class ExtensionsReference : SystemUseEntry
 {
     public ExtensionsReference(BinaryReader reader)
         : base(reader)
     {
-        IdentifierLength = new Iso711(reader);
+        IdentifierLength = reader.ReadIso711();
 
-        DescriptorLength = new Iso711(reader);
+        DescriptorLength = reader.ReadIso711();
 
-        SourceLength = new Iso711(reader);
+        SourceLength = reader.ReadIso711();
 
-        ExtensionVersion = new Iso711(reader);
+        ExtensionVersion = reader.ReadIso711();
 
         ExtensionIdentifier = new IsoString(reader, IdentifierLength, IsoStringFlags.DCharacters); // TODO or D1
 
@@ -20,13 +22,13 @@ public sealed class ExtensionsReference : SystemUseEntry
         ExtensionSource = new IsoString(reader, SourceLength, IsoStringFlags.ACharacters); // TODO or A1
     }
 
-    public Iso711 IdentifierLength { get; }
+    public byte IdentifierLength { get; }
 
-    public Iso711 DescriptorLength { get; }
+    public byte DescriptorLength { get; }
 
-    public Iso711 SourceLength { get; }
+    public byte SourceLength { get; }
 
-    public Iso711 ExtensionVersion { get; }
+    public byte ExtensionVersion { get; }
 
     public IsoString ExtensionIdentifier { get; }
 

@@ -39,7 +39,7 @@ public sealed class DiscTrackIso : DiscTrack
         Stream.Dispose();
     }
 
-    public override ISector ReadSector(in int index)
+    public override ISector ReadSector(in uint index)
     {
         var size = Sector.Size;
 

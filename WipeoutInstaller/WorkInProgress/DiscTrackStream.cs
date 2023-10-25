@@ -1,6 +1,4 @@
-﻿using ISO9660.Tests.Extensions;
-
-namespace ISO9660.Tests.WorkInProgress;
+﻿namespace ISO9660.Tests.WorkInProgress;
 
 internal sealed class DiscTrackStream : Stream
     // better than exposing track stream which might represent N tracks
@@ -13,7 +11,7 @@ internal sealed class DiscTrackStream : Stream
 
     private int SectorOffset;
 
-    public DiscTrackStream(in DiscTrack track, in int index)
+    public DiscTrackStream(in DiscTrack track, in uint index)
     {
         Track = track;
 
@@ -35,10 +33,8 @@ internal sealed class DiscTrackStream : Stream
         get => SectorNumber * UserDataLength + SectorOffset;
         set
         {
-            var position = value.ToInt32();
-
-            SectorNumber = position / UserDataLength;
-            SectorOffset = position % UserDataLength;
+            SectorNumber = Convert.ToInt32(value / UserDataLength);
+            SectorOffset = Convert.ToInt32(value % UserDataLength);
         }
     }
 
@@ -58,7 +54,7 @@ internal sealed class DiscTrackStream : Stream
         {
             if (input.IsEmpty)
             {
-                input = Track.ReadSector(SectorNumber).GetUserData();
+                input = Track.ReadSector(Convert.ToUInt32(SectorNumber)).GetUserData();
             }
 
             var len = Math.Min(count, input.Length - SectorOffset);

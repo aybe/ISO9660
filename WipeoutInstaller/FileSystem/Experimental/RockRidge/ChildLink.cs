@@ -1,3 +1,4 @@
+using ISO9660.Tests.Extensions;
 using ISO9660.Tests.FileSystem.Experimental.SystemUseSharingProtocol;
 
 namespace ISO9660.Tests.FileSystem.Experimental.RockRidge;
@@ -7,8 +8,8 @@ public sealed class ChildLink : SystemUseEntry
     public ChildLink(BinaryReader reader)
         : base(reader)
     {
-        LocationOfChildDirectory = new Iso733(reader);
+        LocationOfChildDirectory = reader.ReadIso733();
     }
 
-    public Iso733 LocationOfChildDirectory { get; }
+    public uint LocationOfChildDirectory { get; }
 }

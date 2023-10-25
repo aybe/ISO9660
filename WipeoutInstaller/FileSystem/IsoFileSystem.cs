@@ -73,7 +73,7 @@ public sealed class IsoFileSystem : Disposable
 
     private static VolumeDescriptorSet ReadVolumeDescriptors(Disc disc)
     {
-        var sectorIndex = 16;
+        var sectorIndex = 16u;
 
         var descriptors = new VolumeDescriptorSet();
 
@@ -123,7 +123,7 @@ public sealed class IsoFileSystem : Disposable
         var pathTableRecords = ReadPathTableRecords(disc, pvd);
         var directoryRecords = ReadDirectoryRecords(disc, pathTableRecords);
 
-        var dictionary = pathTableRecords.ToDictionary(s => s.LocationOfExtent.ToInt32(), s => s);
+        var dictionary = pathTableRecords.ToDictionary(s => s.LocationOfExtent, s => s);
 
         var pathTable1 = pathTableRecords.First();
         var directory1 = directoryRecords[pathTable1].First();
@@ -175,11 +175,11 @@ public sealed class IsoFileSystem : Disposable
 
         var pathTableRead = 0L;
 
-        var pathTableSize = pvd.PathTableSize.ToInt32();
+        var pathTableSize = pvd.PathTableSize;
 
         var track = disc.Tracks.First();
 
-        using var reader = track.GetBinaryReader(pvd.LocationOfOccurrenceOfTypeLPathTable.ToInt32());
+        using var reader = track.GetBinaryReader(pvd.LocationOfOccurrenceOfTypeLPathTable);
         
         while (pathTableRead < pathTableSize)
         {
@@ -197,7 +197,7 @@ public sealed class IsoFileSystem : Disposable
         return records;
     }
 
-    private static void ReadDirectoryRecords(Disc disc, ICollection<DirectoryRecord> records, int extent)
+    private static void ReadDirectoryRecords(Disc disc, ICollection<DirectoryRecord> records, uint extent)
     {
         using var reader = disc.Tracks.First().GetBinaryReader(extent);
 
@@ -222,11 +222,11 @@ public sealed class IsoFileSystem : Disposable
         {
             var records = dictionary.GetOrAdd(pathTableRecord, () => new List<DirectoryRecord>());
 
-            var extent = pathTableRecord.LocationOfExtent.ToInt32();
+            var extent = pathTableRecord.LocationOfExtent;
 
             ReadDirectoryRecords(disc, records, extent++);
 
-            var length = records[0].DataLength.ToInt32();
+            var length = records[0].DataLength;
 
             var blocks = length / 2048 - 1; // TODO constant
 

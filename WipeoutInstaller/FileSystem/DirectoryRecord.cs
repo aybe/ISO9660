@@ -10,30 +10,30 @@ public sealed class DirectoryRecord
 
         var position = stream.Position;
 
-        LengthOfDirectoryRecord = new Iso711(reader);
+        LengthOfDirectoryRecord = reader.ReadIso711();
 
         if (LengthOfDirectoryRecord == 0)
         {
             return;
         }
 
-        ExtendedAttributeRecordLength = new Iso711(reader);
+        ExtendedAttributeRecordLength = reader.ReadIso711();
 
-        LocationOfExtent = new Iso733(reader);
+        LocationOfExtent = reader.ReadIso733();
 
-        DataLength = new Iso733(reader);
+        DataLength = reader.ReadIso733();
 
         RecordingDateAndTime = new RecordingDateAndTime(reader);
 
         FileFlags = reader.Read<FileFlags>();
 
-        FileUnitSize = new Iso711(reader);
+        FileUnitSize = reader.ReadIso711();
 
-        InterleaveGapSize = new Iso711(reader);
+        InterleaveGapSize = reader.ReadIso711();
 
-        VolumeSequenceNumber = new Iso723(reader);
+        VolumeSequenceNumber = reader.ReadIso723();
 
-        LengthOfFileIdentifier = new Iso711(reader);
+        LengthOfFileIdentifier = reader.ReadIso711();
 
         FileIdentifier = new IsoString(reader, LengthOfFileIdentifier,
             IsoStringFlags.DCharacters | IsoStringFlags.Separator1 | IsoStringFlags.Separator2 | IsoStringFlags.Byte00 | IsoStringFlags.Byte01);
@@ -48,25 +48,25 @@ public sealed class DirectoryRecord
         SystemUse = reader.ReadBytes(suLen);
     }
 
-    public Iso711 LengthOfDirectoryRecord { get; }
+    public byte LengthOfDirectoryRecord { get; }
 
-    public Iso711 ExtendedAttributeRecordLength { get; }
+    public byte ExtendedAttributeRecordLength { get; }
 
-    public Iso733 LocationOfExtent { get; }
+    public uint LocationOfExtent { get; }
 
-    public Iso733 DataLength { get; }
+    public uint DataLength { get; }
 
     public RecordingDateAndTime RecordingDateAndTime { get; }
 
     public FileFlags FileFlags { get; }
 
-    public Iso711 FileUnitSize { get; }
+    public byte FileUnitSize { get; }
 
-    public Iso711 InterleaveGapSize { get; }
+    public byte InterleaveGapSize { get; }
 
-    public Iso723 VolumeSequenceNumber { get; }
+    public ushort VolumeSequenceNumber { get; }
 
-    public Iso711 LengthOfFileIdentifier { get; }
+    public byte LengthOfFileIdentifier { get; }
 
     public IsoString FileIdentifier { get; } = null!;
 

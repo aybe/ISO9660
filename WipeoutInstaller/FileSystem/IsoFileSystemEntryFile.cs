@@ -25,9 +25,9 @@ public sealed partial class IsoFileSystemEntryFile : IsoFileSystemEntry
         Version = version;
     }
 
-    public int Length => Record.DataLength;
+    public uint Length => Record.DataLength;
 
-    public int Position => Record.LocationOfExtent;
+    public uint Position => Record.LocationOfExtent;
 
     public int Version { get; }
 

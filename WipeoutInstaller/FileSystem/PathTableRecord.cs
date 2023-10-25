@@ -1,16 +1,18 @@
+using ISO9660.Tests.Extensions;
+
 namespace ISO9660.Tests.FileSystem;
 
 public sealed class PathTableRecord
 {
     public PathTableRecord(BinaryReader reader)
     {
-        LengthOfDirectoryIdentifier = new Iso711(reader);
+        LengthOfDirectoryIdentifier = reader.ReadIso711();
 
-        ExtendedAttributeRecordLength = new Iso711(reader);
+        ExtendedAttributeRecordLength = reader.ReadIso711();
 
-        LocationOfExtent = new Iso731(reader);
+        LocationOfExtent = reader.ReadIso731();
 
-        ParentDirectoryNumber = new Iso721(reader);
+        ParentDirectoryNumber = reader.ReadIso721();
 
         DirectoryIdentifier = new IsoString(reader, LengthOfDirectoryIdentifier,
             IsoStringFlags.DCharacters | IsoStringFlags.Byte00 | IsoStringFlags.Byte01);
@@ -20,13 +22,13 @@ public sealed class PathTableRecord
             : null;
     }
 
-    public Iso711 LengthOfDirectoryIdentifier { get; }
+    public byte LengthOfDirectoryIdentifier { get; }
 
-    public Iso711 ExtendedAttributeRecordLength { get; }
+    public byte ExtendedAttributeRecordLength { get; }
 
-    public Iso731 LocationOfExtent { get; }
+    public uint LocationOfExtent { get; }
 
-    public Iso721 ParentDirectoryNumber { get; }
+    public ushort ParentDirectoryNumber { get; }
 
     public IsoString DirectoryIdentifier { get; }
 

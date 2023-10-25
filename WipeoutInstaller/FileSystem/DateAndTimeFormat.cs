@@ -20,7 +20,7 @@ public sealed class DateAndTimeFormat
 
         HundredthsOfASecond = reader.ReadStringAscii(2);
 
-        OffsetFromGreenwichMeanTime = new Iso712(reader);
+        OffsetFromGreenwichMeanTime = reader.ReadIso712();
     }
 
     public string Year { get; }
@@ -37,7 +37,7 @@ public sealed class DateAndTimeFormat
 
     public string HundredthsOfASecond { get; }
 
-    public Iso712 OffsetFromGreenwichMeanTime { get; }
+    public sbyte OffsetFromGreenwichMeanTime { get; }
 
     public DateTimeOffset ToDateTimeOffset()
     {

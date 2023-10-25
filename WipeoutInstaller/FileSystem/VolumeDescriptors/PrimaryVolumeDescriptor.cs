@@ -15,25 +15,25 @@ public class PrimaryVolumeDescriptor : VolumeDescriptor
 
         reader.Seek(8);
 
-        VolumeSpaceSize = new Iso733(reader);
+        VolumeSpaceSize = reader.ReadIso733();
 
         reader.Seek(32);
 
-        VolumeSetSize = new Iso723(reader);
+        VolumeSetSize = reader.ReadIso723();
 
-        VolumeSequenceNumber = new Iso723(reader);
+        VolumeSequenceNumber = reader.ReadIso723();
 
-        LogicalBlockSize = new Iso723(reader);
+        LogicalBlockSize = reader.ReadIso723();
 
-        PathTableSize = new Iso733(reader);
+        PathTableSize = reader.ReadIso733();
 
-        LocationOfOccurrenceOfTypeLPathTable = new Iso731(reader);
+        LocationOfOccurrenceOfTypeLPathTable = reader.ReadIso731();
 
-        LocationOfOptionalOccurrenceOfTypeLPathTable = new Iso731(reader);
+        LocationOfOptionalOccurrenceOfTypeLPathTable = reader.ReadIso731();
 
-        LocationOfOccurrenceOfTypeMPathTable = new Iso732(reader);
+        LocationOfOccurrenceOfTypeMPathTable = reader.ReadIso732();
 
-        LocationOfOptionalOccurrenceOfTypeMPathTable = new Iso732(reader);
+        LocationOfOptionalOccurrenceOfTypeMPathTable = reader.ReadIso732();
 
         DirectoryRecordForRootDirectory = new DirectoryRecord(reader);
 
@@ -59,7 +59,7 @@ public class PrimaryVolumeDescriptor : VolumeDescriptor
 
         VolumeEffectiveDateAndTime = new DateAndTimeFormat(reader);
 
-        FileStructureVersion = new Iso711(reader);
+        FileStructureVersion = reader.ReadIso711();
 
         Reserved1 = reader.ReadByte();
 
@@ -72,23 +72,23 @@ public class PrimaryVolumeDescriptor : VolumeDescriptor
 
     public IsoString VolumeIdentifier { get; }
 
-    public Iso733 VolumeSpaceSize { get; }
+    public uint VolumeSpaceSize { get; }
 
-    public Iso723 VolumeSetSize { get; }
+    public ushort VolumeSetSize { get; }
 
-    public Iso723 VolumeSequenceNumber { get; }
+    public ushort VolumeSequenceNumber { get; }
 
-    public Iso723 LogicalBlockSize { get; }
+    public ushort LogicalBlockSize { get; }
 
-    public Iso733 PathTableSize { get; }
+    public uint PathTableSize { get; }
 
-    public Iso731 LocationOfOccurrenceOfTypeLPathTable { get; }
+    public uint LocationOfOccurrenceOfTypeLPathTable { get; }
 
-    public Iso731 LocationOfOptionalOccurrenceOfTypeLPathTable { get; }
+    public uint LocationOfOptionalOccurrenceOfTypeLPathTable { get; }
 
-    public Iso732 LocationOfOccurrenceOfTypeMPathTable { get; }
+    public uint LocationOfOccurrenceOfTypeMPathTable { get; }
 
-    public Iso732 LocationOfOptionalOccurrenceOfTypeMPathTable { get; }
+    public uint LocationOfOptionalOccurrenceOfTypeMPathTable { get; }
 
     public DirectoryRecord DirectoryRecordForRootDirectory { get; }
 
@@ -114,7 +114,7 @@ public class PrimaryVolumeDescriptor : VolumeDescriptor
 
     public DateAndTimeFormat VolumeEffectiveDateAndTime { get; }
 
-    public Iso711 FileStructureVersion { get; }
+    public byte FileStructureVersion { get; }
 
     public byte Reserved1 { get; }
 

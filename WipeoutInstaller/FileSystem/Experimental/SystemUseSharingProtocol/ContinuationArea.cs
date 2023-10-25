@@ -1,20 +1,22 @@
-﻿namespace ISO9660.Tests.FileSystem.Experimental.SystemUseSharingProtocol;
+﻿using ISO9660.Tests.Extensions;
+
+namespace ISO9660.Tests.FileSystem.Experimental.SystemUseSharingProtocol;
 
 public sealed class ContinuationArea : SystemUseEntry
 {
     public ContinuationArea(BinaryReader reader)
         : base(reader)
     {
-        BlockLocationOfContinuationArea = new Iso733(reader);
+        BlockLocationOfContinuationArea = reader.ReadIso733();
 
-        OffsetToStartOfContinuationArea = new Iso733(reader);
+        OffsetToStartOfContinuationArea = reader.ReadIso733();
 
-        LengthOfTheContinuationArea = new Iso733(reader);
+        LengthOfTheContinuationArea = reader.ReadIso733();
     }
 
-    public Iso733 BlockLocationOfContinuationArea { get; }
+    public uint BlockLocationOfContinuationArea { get; }
 
-    public Iso733 OffsetToStartOfContinuationArea { get; }
+    public uint OffsetToStartOfContinuationArea { get; }
 
-    public Iso733 LengthOfTheContinuationArea { get; }
+    public uint LengthOfTheContinuationArea { get; }
 }

@@ -1,4 +1,5 @@
-﻿using ISO9660.Tests.FileSystem.Experimental.SystemUseSharingProtocol;
+﻿using ISO9660.Tests.Extensions;
+using ISO9660.Tests.FileSystem.Experimental.SystemUseSharingProtocol;
 
 namespace ISO9660.Tests.FileSystem.Experimental.RockRidge;
 
@@ -7,24 +8,24 @@ public sealed class PosixFileAttributes : SystemUseEntry
     public PosixFileAttributes(BinaryReader reader)
         : base(reader)
     {
-        PosixFileMode = (PosixFileMode)new Iso733(reader).ToInt32();
+        PosixFileMode = (PosixFileMode)reader.ReadIso733();
 
-        PosixFileLinks = new Iso733(reader);
+        PosixFileLinks = reader.ReadIso733();
 
-        PosixFileUserId = new Iso733(reader);
+        PosixFileUserId = reader.ReadIso733();
 
-        PosixFileGroupId = new Iso733(reader);
+        PosixFileGroupId = reader.ReadIso733();
 
-        PosixFileSerialNumber = new Iso733(reader); // BUG only for Rock Ridge 1.12
+        PosixFileSerialNumber = reader.ReadIso733(); // BUG only for Rock Ridge 1.12
     }
 
     public PosixFileMode PosixFileMode { get; }
 
-    public Iso733 PosixFileLinks { get; }
+    public uint PosixFileLinks { get; }
 
-    public Iso733 PosixFileUserId { get; }
+    public uint PosixFileUserId { get; }
 
-    public Iso733 PosixFileGroupId { get; }
+    public uint PosixFileGroupId { get; }
 
-    public Iso733 PosixFileSerialNumber { get; }
+    public uint PosixFileSerialNumber { get; }
 }

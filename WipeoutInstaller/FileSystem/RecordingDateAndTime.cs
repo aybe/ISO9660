@@ -1,31 +1,33 @@
+using ISO9660.Tests.Extensions;
+
 namespace ISO9660.Tests.FileSystem;
 
 public readonly struct RecordingDateAndTime
 {
     public RecordingDateAndTime(BinaryReader reader)
     {
-        NumberOfYearsSince1900      = new Iso711(reader);
-        MonthOfTheYear              = new Iso711(reader);
-        DayOfTheMonth               = new Iso711(reader);
-        HourOfTheDay                = new Iso711(reader);
-        MinuteOfTheHour             = new Iso711(reader);
-        SecondOfTheMinute           = new Iso711(reader);
-        OffsetFromGreenwichMeanTime = new Iso712(reader);
+        NumberOfYearsSince1900      = reader.ReadIso711();
+        MonthOfTheYear              = reader.ReadIso711();
+        DayOfTheMonth               = reader.ReadIso711();
+        HourOfTheDay                = reader.ReadIso711();
+        MinuteOfTheHour             = reader.ReadIso711();
+        SecondOfTheMinute           = reader.ReadIso711();
+        OffsetFromGreenwichMeanTime = reader.ReadIso712();
     }
 
-    public Iso711 NumberOfYearsSince1900 { get; }
+    public byte NumberOfYearsSince1900 { get; }
 
-    public Iso711 MonthOfTheYear { get; }
+    public byte MonthOfTheYear { get; }
 
-    public Iso711 DayOfTheMonth { get; }
+    public byte DayOfTheMonth { get; }
 
-    public Iso711 HourOfTheDay { get; }
+    public byte HourOfTheDay { get; }
 
-    public Iso711 MinuteOfTheHour { get; }
+    public byte MinuteOfTheHour { get; }
 
-    public Iso711 SecondOfTheMinute { get; }
+    public byte SecondOfTheMinute { get; }
 
-    public Iso712 OffsetFromGreenwichMeanTime { get; }
+    public sbyte OffsetFromGreenwichMeanTime { get; }
 
     public DateTimeOffset ToDateTimeOffset()
     {

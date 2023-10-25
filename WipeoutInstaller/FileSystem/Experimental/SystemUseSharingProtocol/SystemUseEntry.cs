@@ -8,14 +8,14 @@ public abstract class SystemUseEntry
     {
         SignatureWord = reader.ReadStringAscii(2);
 
-        Length = new Iso711(reader);
+        Length = reader.ReadIso711();
 
-        SystemUseEntryVersion = new Iso711(reader);
+        SystemUseEntryVersion = reader.ReadIso711();
     }
 
     public string SignatureWord { get; }
 
-    public Iso711 Length { get; }
+    public byte Length { get; }
 
-    public Iso711 SystemUseEntryVersion { get; }
+    public byte SystemUseEntryVersion { get; }
 }

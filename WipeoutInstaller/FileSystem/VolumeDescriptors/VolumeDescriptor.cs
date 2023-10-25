@@ -8,7 +8,7 @@ public class VolumeDescriptor
     {
         VolumeDescriptorType    = reader.Read<VolumeDescriptorType>(); // 711
         StandardIdentifier      = reader.ReadStringAscii(5);
-        VolumeDescriptorVersion = new Iso711(reader);
+        VolumeDescriptorVersion = reader.ReadIso711();
     }
 
     protected VolumeDescriptor(VolumeDescriptor descriptor)
@@ -22,5 +22,5 @@ public class VolumeDescriptor
 
     public string StandardIdentifier { get; }
 
-    public Iso711 VolumeDescriptorVersion { get; }
+    public byte VolumeDescriptorVersion { get; }
 }

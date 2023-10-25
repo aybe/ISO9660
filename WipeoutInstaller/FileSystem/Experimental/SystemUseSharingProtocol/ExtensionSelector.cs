@@ -1,12 +1,14 @@
-﻿namespace ISO9660.Tests.FileSystem.Experimental.SystemUseSharingProtocol;
+﻿using ISO9660.Tests.Extensions;
+
+namespace ISO9660.Tests.FileSystem.Experimental.SystemUseSharingProtocol;
 
 public sealed class ExtensionSelector : SystemUseEntry
 {
     public ExtensionSelector(BinaryReader reader)
         : base(reader)
     {
-        ExtensionSequence = new Iso711(reader);
+        ExtensionSequence = reader.ReadIso711();
     }
 
-    public Iso711 ExtensionSequence { get; }
+    public byte ExtensionSequence { get; }
 }

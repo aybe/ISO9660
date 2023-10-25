@@ -13,9 +13,9 @@ public sealed class VolumePartitionDescriptor : VolumeDescriptor
 
         VolumePartitionIdentifier = new IsoString(reader, 32, IsoStringFlags.DCharacters);
 
-        VolumePartitionLocation = new Iso733(reader);
+        VolumePartitionLocation = reader.ReadIso733();
 
-        VolumePartitionSize = new Iso733(reader);
+        VolumePartitionSize = reader.ReadIso733();
 
         SystemUse = reader.ReadBytes(1960);
     }
@@ -24,9 +24,9 @@ public sealed class VolumePartitionDescriptor : VolumeDescriptor
 
     public IsoString VolumePartitionIdentifier { get; }
 
-    public Iso733 VolumePartitionLocation { get; }
+    public uint VolumePartitionLocation { get; }
 
-    public Iso733 VolumePartitionSize { get; }
+    public uint VolumePartitionSize { get; }
 
     public byte[] SystemUse { get; }
 }

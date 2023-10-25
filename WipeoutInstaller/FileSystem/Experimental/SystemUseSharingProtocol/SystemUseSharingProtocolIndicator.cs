@@ -1,4 +1,6 @@
-﻿namespace ISO9660.Tests.FileSystem.Experimental.SystemUseSharingProtocol;
+﻿using ISO9660.Tests.Extensions;
+
+namespace ISO9660.Tests.FileSystem.Experimental.SystemUseSharingProtocol;
 
 public sealed class SystemUseSharingProtocolIndicator : SystemUseEntry
 {
@@ -12,10 +14,10 @@ public sealed class SystemUseSharingProtocolIndicator : SystemUseEntry
             throw new InvalidDataException();
         }
 
-        BytesSkipped = new Iso711(reader);
+        BytesSkipped = reader.ReadIso711();
     }
 
     public byte[] CheckBytes { get; }
 
-    public Iso711 BytesSkipped { get; }
+    public byte BytesSkipped { get; }
 }

@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 
 namespace ISO9660.Tests.Extensions;
 
-public static class BinaryReaderExtensions
+public static partial class BinaryReaderExtensions
 {
     [PublicAPI]
     public static Endianness Endianness { get; } = BitConverter.IsLittleEndian ? Endianness.LE : Endianness.BE;
@@ -67,5 +67,76 @@ public static class BinaryReaderExtensions
         {
             reader.BaseStream.Position = position;
         }
+    }
+}
+
+public static partial class BinaryReaderExtensions
+{
+    public static byte ReadIso711(this BinaryReader reader)
+    {
+        var value = reader.Read<byte>();
+
+        return value;
+    }
+
+    public static sbyte ReadIso712(this BinaryReader reader)
+    {
+        var value = reader.Read<sbyte>();
+
+        return value;
+    }
+
+    public static ushort ReadIso721(this BinaryReader reader)
+    {
+        var value = reader.Read<ushort>(Endianness.LE);
+
+        return value;
+    }
+
+    public static ushort ReadIso722(this BinaryReader reader)
+    {
+        var value = reader.Read<ushort>(Endianness.BE);
+
+        return value;
+    }
+
+    public static ushort ReadIso723(this BinaryReader reader)
+    {
+        var value1 = reader.Read<ushort>(Endianness.LE);
+        var value2 = reader.Read<ushort>(Endianness.BE);
+
+        if (value1 != value2)
+        {
+            throw new InvalidDataException();
+        }
+
+        return value1;
+    }
+
+    public static uint ReadIso731(this BinaryReader reader)
+    {
+        var value = reader.Read<uint>(Endianness.LE);
+
+        return value;
+    }
+
+    public static uint ReadIso732(this BinaryReader reader)
+    {
+        var value = reader.Read<uint>(Endianness.BE);
+
+        return value;
+    }
+
+    public static uint ReadIso733(this BinaryReader reader)
+    {
+        var value1 = reader.Read<uint>(Endianness.LE);
+        var value2 = reader.Read<uint>(Endianness.BE);
+
+        if (value1 != value2)
+        {
+            throw new InvalidDataException();
+        }
+
+        return value1;
     }
 }
