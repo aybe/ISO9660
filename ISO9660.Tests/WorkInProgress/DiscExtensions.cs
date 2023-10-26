@@ -21,7 +21,7 @@ public static class DiscExtensions
 
             var span = mode switch
             {
-                DiscReadFileMode.Raw => sector.AsByteSpan(),
+                DiscReadFileMode.Raw => sector.GetData(),
                 DiscReadFileMode.Usr => sector.GetUserData(),
                 _                => throw new ArgumentOutOfRangeException(nameof(mode), mode, null)
             };

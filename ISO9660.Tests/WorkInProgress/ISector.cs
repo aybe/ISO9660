@@ -15,7 +15,7 @@ public interface ISector
 {
     int Size { get; }
 
-    Span<byte> AsByteSpan();
+    Span<byte> GetData();
 
     Span<byte> GetUserData();
 

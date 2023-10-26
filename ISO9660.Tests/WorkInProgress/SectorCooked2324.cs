@@ -13,7 +13,7 @@ public unsafe struct SectorCooked2324 : ISector
 
     public readonly int Size => 2324;
 
-    public Span<byte> AsByteSpan()
+    public Span<byte> GetData()
     {
         return ISector.GetSpan(ref this);
     }

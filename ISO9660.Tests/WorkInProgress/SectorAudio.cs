@@ -13,7 +13,7 @@ public unsafe struct SectorAudio : ISector
 
     public readonly int Size => 2352;
 
-    public Span<byte> AsByteSpan()
+    public Span<byte> GetData()
     {
         return ISector.GetSpan(ref this);
     }
