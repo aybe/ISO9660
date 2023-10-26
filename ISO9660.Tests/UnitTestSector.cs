@@ -11,11 +11,11 @@ public class UnitTestSector : UnitTestBase
     [TestMethod]
     public void TestSizeOf()
     {
-        Assert.AreEqual(ISector.RawSize, Unsafe.SizeOf<SectorAudio>());
-        Assert.AreEqual(ISector.RawSize, Unsafe.SizeOf<SectorMode0>());
-        Assert.AreEqual(ISector.RawSize, Unsafe.SizeOf<SectorMode1>());
-        Assert.AreEqual(ISector.RawSize, Unsafe.SizeOf<SectorMode2Form1>());
-        Assert.AreEqual(ISector.RawSize, Unsafe.SizeOf<SectorMode2Form2>());
-        Assert.AreEqual(ISector.RawSize, Unsafe.SizeOf<SectorMode2FormLess>());
+        Assert.AreEqual(2352, Unsafe.SizeOf<SectorAudio>());
+        Assert.AreEqual(2352, Unsafe.SizeOf<SectorMode0>());
+        Assert.AreEqual(2352, Unsafe.SizeOf<SectorMode1>());
+        Assert.AreEqual(2352, Unsafe.SizeOf<SectorMode2Form1>());
+        Assert.AreEqual(2352, Unsafe.SizeOf<SectorMode2Form2>());
+        Assert.AreEqual(2352, Unsafe.SizeOf<SectorMode2FormLess>());
     }
 }

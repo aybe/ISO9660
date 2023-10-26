@@ -13,9 +13,7 @@ public interface ISector
     // CD Cracking Uncovered Protection Against Unsanctioned CD Copying
     // https://archive.org/details/CDCrackingUncoveredProtectionAgainstUnsanctionedCDCopyingKrisKaspersky
 {
-    public const int RawSize = 2352;
-
-    int Size => RawSize;
+    int Size => 2352;
 
     Span<byte> AsByteSpan();
 
