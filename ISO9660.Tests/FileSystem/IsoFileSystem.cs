@@ -73,7 +73,7 @@ public sealed class IsoFileSystem : Disposable
 
     private static VolumeDescriptorSet ReadVolumeDescriptors(Disc disc)
     {
-        var sectorIndex = 16u;
+        var sectorIndex = 16;
 
         var descriptors = new VolumeDescriptorSet();
 
@@ -180,7 +180,7 @@ public sealed class IsoFileSystem : Disposable
 
         var track = disc.Tracks.First();
 
-        using var reader = track.GetBinaryReader(pvd.LocationOfOccurrenceOfTypeLPathTable);
+        using var reader = track.GetBinaryReader(Convert.ToInt32(pvd.LocationOfOccurrenceOfTypeLPathTable));
         
         while (pathTableRead < pathTableSize)
         {
@@ -200,7 +200,7 @@ public sealed class IsoFileSystem : Disposable
 
     private static void ReadDirectoryRecords(Disc disc, ICollection<DirectoryRecord> records, uint extent)
     {
-        using var reader = disc.Tracks.First().GetBinaryReader(extent);
+        using var reader = disc.Tracks.First().GetBinaryReader(Convert.ToInt32(extent));
 
         while (true)
         {

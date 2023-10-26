@@ -13,7 +13,7 @@ public abstract class DiscTrack : Disposable
 
     public abstract int Position { get; }
 
-    public BinaryReader GetBinaryReader(in uint sector)
+    public BinaryReader GetBinaryReader(in int sector)
     {
         if (sector < Position || sector >= Position + Length)
         {
@@ -25,7 +25,7 @@ public abstract class DiscTrack : Disposable
 
     public abstract ISector Sector { get; }
 
-    public abstract ISector ReadSector(in uint index);
+    public abstract ISector ReadSector(in int index);
 
     public override string ToString()
     {

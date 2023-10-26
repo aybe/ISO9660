@@ -53,7 +53,7 @@ internal sealed class DiscTrackCueBin : DiscTrack
         }
     }
 
-    public override ISector ReadSector(in uint index)
+    public override ISector ReadSector(in int index)
     {
         if (index >= Length)
         {

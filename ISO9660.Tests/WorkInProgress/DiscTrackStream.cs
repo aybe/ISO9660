@@ -11,7 +11,7 @@ internal sealed class DiscTrackStream : Stream
 
     private int SectorOffset;
 
-    public DiscTrackStream(in DiscTrack track, in uint index)
+    public DiscTrackStream(in DiscTrack track, in int index)
     {
         Track = track;
 
@@ -54,7 +54,7 @@ internal sealed class DiscTrackStream : Stream
         {
             if (input.IsEmpty)
             {
-                input = Track.ReadSector(Convert.ToUInt32(SectorNumber)).GetUserData();
+                input = Track.ReadSector(SectorNumber).GetUserData();
             }
 
             var len = Math.Min(count, input.Length - SectorOffset);

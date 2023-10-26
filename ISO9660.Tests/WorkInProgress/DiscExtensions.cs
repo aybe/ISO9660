@@ -13,11 +13,11 @@ public static class DiscExtensions
 
         var length = file.Length;
 
-        var sectors = Convert.ToUInt32(Math.Ceiling((double)length / track.Sector.GetUserDataLength()));
+        var sectors = Convert.ToInt32(Math.Ceiling((double)length / track.Sector.GetUserDataLength()));
 
         for (var i = position; i < position + sectors; i++)
         {
-            var sector = track.ReadSector(i);
+            var sector = track.ReadSector(Convert.ToInt32(i));
 
             var span = mode switch
             {
