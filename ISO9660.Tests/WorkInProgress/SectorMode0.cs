@@ -13,16 +13,6 @@ public unsafe struct SectorMode0 : ISector, ISectorHeader
         return ISector.AsByteSpan(ref this);
     }
 
-    public readonly uint GetEdc()
-    {
-        return 0;
-    }
-
-    public readonly uint GetEdcSum()
-    {
-        return 0;
-    }
-
     public Span<byte> GetUserData()
     {
         return ISector.GetSlice(ref this, ISector.UserDataPositionMode0, ISector.UserDataSizeMode0);

@@ -1,4 +1,3 @@
-using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -64,32 +63,11 @@ public interface ISector
 
     Span<byte> AsByteSpan();
 
-    uint GetEdc();
-
-    uint GetEdcSum();
-
     Span<byte> GetUserData();
 
     int GetUserDataLength();
 
     int GetUserDataPosition();
-
-    public static unsafe uint GetEdcSum<T>(ref T sector, in int start, in int length)
-        where T : struct, ISector
-    // TODO can't we use method below?
-    {
-        var pointer = Unsafe.AsPointer(ref sector);
-
-        var size = Unsafe.SizeOf<T>();
-
-        var span = new Span<byte>(pointer, size);
-
-        var slice = span.Slice(start, length);
-
-        var edc = EdcUtility.Compute(slice);
-
-        return edc;
-    }
 
     public static SectorHeader GetHeader<T>(ref T sector, in int start, in int length)
         where T : struct, ISector
@@ -117,16 +95,6 @@ public interface ISector
         var slice = bytes.Slice(start, length);
 
         return slice;
-    }
-
-    public static uint ReadUInt32LE<T>(ref T sector, int start)
-        where T : struct, ISector
-    {
-        var slice = GetSlice(ref sector, start, sizeof(uint));
-
-        var value = BinaryPrimitives.ReadUInt32LittleEndian(slice);
-
-        return value;
     }
 
     public static ISector Read<T>(Stream stream) where T : struct, ISector

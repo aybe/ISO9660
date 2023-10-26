@@ -17,16 +17,6 @@ public unsafe struct SectorMode2Form2 : ISector, ISectorHeader
         return ISector.AsByteSpan(ref this);
     }
 
-    public uint GetEdc()
-    {
-        return ISector.ReadUInt32LE(ref this, ISector.EdcPositionMode2Form2);
-    }
-
-    public uint GetEdcSum()
-    {
-        return ISector.GetEdcSum(ref this, ISector.SubHeaderPositionMode2Form2, ISector.SubHeaderSizeMode2Form2 + ISector.UserDataSizeMode2Form2);
-    }
-
     public Span<byte> GetUserData()
     {
         return ISector.GetSlice(ref this, ISector.UserDataPositionMode2Form2, ISector.UserDataSizeMode2Form2);

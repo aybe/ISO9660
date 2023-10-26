@@ -15,16 +15,6 @@ public unsafe struct SectorCooked2048 : ISector
         return ISector.AsByteSpan(ref this);
     }
 
-    readonly uint ISector.GetEdc()
-    {
-        return 0;
-    }
-
-    readonly uint ISector.GetEdcSum()
-    {
-        return 0;
-    }
-
     Span<byte> ISector.GetUserData()
     {
         return ISector.GetSlice(ref this, UserDataPosition, UserDataSize);

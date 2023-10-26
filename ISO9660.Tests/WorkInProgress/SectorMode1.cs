@@ -21,16 +21,6 @@ public unsafe struct SectorMode1 : ISector, ISectorHeader
         return ISector.AsByteSpan(ref this);
     }
 
-    public uint GetEdc()
-    {
-        return ISector.ReadUInt32LE(ref this, ISector.EdcPositionMode1);
-    }
-
-    public uint GetEdcSum()
-    {
-        return ISector.GetEdcSum(ref this, ISector.SyncPosition, ISector.SyncSize + ISector.HeaderSize + ISector.UserDataSizeMode1);
-    }
-
     public Span<byte> GetUserData()
     {
         return ISector.GetSlice(ref this, ISector.UserDataPositionMode1, ISector.UserDataSizeMode1);
