@@ -15,7 +15,7 @@ public unsafe struct SectorCooked2336 : ISector
         return ISector.AsByteSpan(ref this);
     }
 
-    Span<byte> ISector.GetUserData()
+    public Span<byte> GetUserData()
     {
         return ISector.GetSlice(ref this, UserDataPosition, UserDataSize);
     }
