@@ -47,12 +47,12 @@ public sealed class DiscTrackIso : DiscTrack
 
         Stream.Position = position;
 
-        var sector = size switch
+        var sector = true switch
         {
-            SectorCooked2048.UserDataSize => ISector.Read<SectorCooked2048>(Stream),
-            SectorCooked2324.UserDataSize => ISector.Read<SectorCooked2324>(Stream),
-            SectorCooked2336.UserDataSize => ISector.Read<SectorCooked2336>(Stream),
-            _                             => throw new NotSupportedException()
+            true when size == new SectorCooked2048().Size => ISector.Read<SectorCooked2048>(Stream),
+            true when size == new SectorCooked2324().Size => ISector.Read<SectorCooked2324>(Stream),
+            true when size == new SectorCooked2336().Size => ISector.Read<SectorCooked2336>(Stream),
+            _                                             => throw new NotSupportedException()
         };
 
         return sector;
