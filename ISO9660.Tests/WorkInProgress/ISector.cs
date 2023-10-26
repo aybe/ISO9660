@@ -3,22 +3,30 @@ using System.Runtime.InteropServices;
 
 namespace ISO9660.Tests.WorkInProgress;
 
+/// <summary>
+///     Base interface for a CD-ROM sector.
+/// </summary>
 public interface ISector
-    // CD-ROM
-    // https://en.wikipedia.org/wiki/CD-ROM
-    // ECMA 130
-    // https://www.ecma-international.org/wp-content/uploads/ECMA-130_2nd_edition_june_1996.pdf 
-    // SYSTEM DESCRIPTION CD-ROM XA, PHILIPS/SONY, May 1991
-    // https://archive.org/details/xa-10-may-1991
-    // CD Cracking Uncovered Protection Against Unsanctioned CD Copying
-    // https://archive.org/details/CDCrackingUncoveredProtectionAgainstUnsanctionedCDCopyingKrisKaspersky
+    // ECMA 130 https://www.ecma-international.org/wp-content/uploads/ECMA-130_2nd_edition_june_1996.pdf 
 {
+    /// <summary>
+    ///     Gets the length in bytes of sector.
+    /// </summary>
     int Size { get; }
 
+    /// <summary>
+    ///     Gets a byte span over the entire sector, i.e. raw.
+    /// </summary>
     Span<byte> GetData();
 
+    /// <summary>
+    ///     Gets a byte span over the user data area, i.e. cooked.
+    /// </summary>
     Span<byte> GetUserData();
 
+    /// <summary>
+    ///     Gets the length in bytes of the user data area.
+    /// </summary>
     int GetUserDataLength();
 
     protected static Span<byte> GetSpan<T>(scoped ref T sector)
@@ -39,6 +47,9 @@ public interface ISector
         return slice;
     }
 
+    /// <summary>
+    ///     Reads a sector of specified type from a stream.
+    /// </summary>
     public static ISector Read<T>(Stream stream) where T : struct, ISector
     {
         var size = Unsafe.SizeOf<T>();
