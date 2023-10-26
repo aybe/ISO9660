@@ -11,8 +11,6 @@ public class UnitTestSector : UnitTestBase
     [TestMethod]
     public void TestSizeOf()
     {
-        Assert.AreEqual(3, Unsafe.SizeOf<SectorAddress>());
-
         Assert.AreEqual(ISector.RawSize, Unsafe.SizeOf<SectorAudio>());
         Assert.AreEqual(ISector.RawSize, Unsafe.SizeOf<SectorMode0>());
         Assert.AreEqual(ISector.RawSize, Unsafe.SizeOf<SectorMode1>());

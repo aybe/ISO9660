@@ -19,7 +19,6 @@ public interface ISector
     public const int SyncPosition = 0;
     public const int SyncSize = 12;
     
-    public const int HeaderPosition = 12;
     public const int HeaderSize = 4;
 
     public const int SubHeaderPositionMode2Form1 = 16;
@@ -32,16 +31,6 @@ public interface ISector
     Span<byte> GetUserData();
 
     int GetUserDataLength();
-
-    public static SectorHeader GetHeader<T>(ref T sector, in int start, in int length)
-        where T : struct, ISector
-    {
-        var slice = GetSlice(ref sector, start, length);
-
-        var header = MemoryMarshal.Read<SectorHeader>(slice);
-
-        return header;
-    }
 
     public static Span<byte> AsByteSpan<T>(scoped ref T sector)
         where T : struct, ISector

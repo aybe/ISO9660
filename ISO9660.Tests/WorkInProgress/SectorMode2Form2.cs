@@ -2,7 +2,7 @@ using JetBrains.Annotations;
 
 namespace ISO9660.Tests.WorkInProgress;
 
-public unsafe struct SectorMode2Form2 : ISector, ISectorHeader
+public unsafe struct SectorMode2Form2 : ISector
 {
     private const int UserDataLength = 2324;
 
@@ -37,6 +37,4 @@ public unsafe struct SectorMode2Form2 : ISector, ISectorHeader
     {
         return UserDataLength;
     }
-
-    SectorHeader ISectorHeader.Header => ISector.GetHeader(ref this, ISector.HeaderPosition, ISector.HeaderSize);
 }
