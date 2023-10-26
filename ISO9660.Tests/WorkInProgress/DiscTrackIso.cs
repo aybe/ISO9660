@@ -13,7 +13,7 @@ public sealed class DiscTrackIso : DiscTrack
 
         Sector = sectors.Single(s => stream.Length % s.GetUserDataLength() == 0);
 
-        Length = Convert.ToInt32(stream.Length / Sector.Size);
+        Length = Convert.ToInt32(stream.Length / Sector.Length);
 
         Stream = stream;
 
@@ -41,18 +41,18 @@ public sealed class DiscTrackIso : DiscTrack
 
     public override ISector ReadSector(in uint index)
     {
-        var size = Sector.Size;
+        var length = Sector.Length;
 
-        var position = index * size;
+        var position = index * length;
 
         Stream.Position = position;
 
         var sector = true switch
         {
-            true when size == new SectorCooked2048().Size => ISector.Read<SectorCooked2048>(Stream),
-            true when size == new SectorCooked2324().Size => ISector.Read<SectorCooked2324>(Stream),
-            true when size == new SectorCooked2336().Size => ISector.Read<SectorCooked2336>(Stream),
-            _                                             => throw new NotSupportedException()
+            true when length == new SectorCooked2048().Length => ISector.Read<SectorCooked2048>(Stream),
+            true when length == new SectorCooked2324().Length => ISector.Read<SectorCooked2324>(Stream),
+            true when length == new SectorCooked2336().Length => ISector.Read<SectorCooked2336>(Stream),
+            _                                                 => throw new NotSupportedException()
         };
 
         return sector;

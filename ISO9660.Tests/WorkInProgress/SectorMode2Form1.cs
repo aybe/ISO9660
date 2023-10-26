@@ -29,7 +29,7 @@ public unsafe struct SectorMode2Form1 : ISector
     [UsedImplicitly]
     public fixed byte QParity[104];
 
-    public readonly int Size => 2352;
+    public readonly int Length => 2352;
 
     public Span<byte> GetData()
     {

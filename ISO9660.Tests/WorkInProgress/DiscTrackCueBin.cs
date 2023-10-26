@@ -19,9 +19,9 @@ internal sealed class DiscTrackCueBin : DiscTrack
 
     public override int Index => Track.Index;
 
-    public override int Length => GetLength(Track, Sector.Size);
+    public override int Length => GetLength(Track, Sector.Length);
 
-    public override int Position => GetPosition(Track, Sector.Size);
+    public override int Position => GetPosition(Track, Sector.Length);
 
     protected override void DisposeManaged()
     {
@@ -60,9 +60,9 @@ internal sealed class DiscTrackCueBin : DiscTrack
             throw new ArgumentOutOfRangeException(nameof(index), index, null);
         }
 
-        var size = Sector.Size;
+        var length = Sector.Length;
 
-        Stream.Position = index * size;
+        Stream.Position = index * length;
 
         var type = Track.Type;
 

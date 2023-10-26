@@ -11,7 +11,7 @@ public unsafe struct SectorAudio : ISector
     [UsedImplicitly]
     public fixed byte UserData[UserDataLength];
 
-    public readonly int Size => 2352;
+    public readonly int Length => 2352;
 
     public Span<byte> GetData()
     {

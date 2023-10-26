@@ -12,7 +12,7 @@ public interface ISector
     /// <summary>
     ///     Gets the length in bytes of sector.
     /// </summary>
-    int Size { get; }
+    int Length { get; }
 
     /// <summary>
     ///     Gets a byte span over the entire sector, i.e. raw.
@@ -32,7 +32,7 @@ public interface ISector
     protected static Span<byte> GetSpan<T>(scoped ref T sector)
         where T : struct, ISector
     {
-        return GetSpan(ref sector, 0, sector.Size);
+        return GetSpan(ref sector, 0, sector.Length);
     }
 
     protected static Span<byte> GetSpan<T>(scoped ref T sector, int start, int length)

@@ -11,7 +11,7 @@ public unsafe struct SectorCooked2336 : ISector
     [UsedImplicitly]
     public fixed byte UserData[UserDataLength];
 
-    public readonly int Size => 2336;
+    public readonly int Length => 2336;
 
     public Span<byte> GetData()
     {
