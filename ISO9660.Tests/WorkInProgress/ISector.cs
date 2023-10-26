@@ -45,20 +45,6 @@ public interface ISector
     public const int SubHeaderSizeMode2Form1 = 8;
     public const int SubHeaderSizeMode2Form2 = 8;
 
-    public const int UserDataPositionAudio = 0;
-    public const int UserDataPositionMode0 = 16;
-    public const int UserDataPositionMode1 = 16;
-    public const int UserDataPositionMode2Form1 = 24;
-    public const int UserDataPositionMode2Form2 = 24;
-    public const int UserDataPositionMode2FormLess = 16;
-    
-    public const int UserDataSizeAudio = 2352;
-    public const int UserDataSizeMode0 = 2336;
-    public const int UserDataSizeMode1 = 2048;
-    public const int UserDataSizeMode2Form1 = 2048;
-    public const int UserDataSizeMode2Form2 = 2324;
-    public const int UserDataSizeMode2FormLess = 2336;
-
     int Size => RawSize;
 
     Span<byte> AsByteSpan();

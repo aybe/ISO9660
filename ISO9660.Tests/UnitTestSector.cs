@@ -77,7 +77,7 @@ public class UnitTestSector : UnitTestBase
 
                     const int form1DataPosition = ISector.SubHeaderPositionMode2Form1;
 
-                    const int form1DataLength = ISector.SubHeaderSizeMode2Form1 + ISector.UserDataSizeMode2Form1;
+                    const int form1DataLength = ISector.SubHeaderSizeMode2Form1 + SectorMode2Form1.UserDataLength;
 
                     var form1Data = span.Slice(form1DataPosition, form1DataLength);
 
@@ -95,7 +95,7 @@ public class UnitTestSector : UnitTestBase
 
                         const int form2DataPosition = ISector.SubHeaderPositionMode2Form2;
 
-                        const int form2DataLength = ISector.SubHeaderSizeMode2Form2 + ISector.UserDataSizeMode2Form2;
+                        const int form2DataLength = ISector.SubHeaderSizeMode2Form2 + SectorMode2Form2.UserDataLength;
 
                         var form2Data = span.Slice(form2DataPosition, form2DataLength);
 

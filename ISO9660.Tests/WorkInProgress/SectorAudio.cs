@@ -1,9 +1,15 @@
+using JetBrains.Annotations;
+
 namespace ISO9660.Tests.WorkInProgress;
 
 public unsafe struct SectorAudio : ISector
 {
-    public fixed byte Data[ISector.UserDataSizeAudio];
+    public const int UserDataLength = 2352;
+
+    public const int UserDataPosition = 0;
+
     [UsedImplicitly]
+    public fixed byte UserData[UserDataLength];
 
     public Span<byte> AsByteSpan()
     {
@@ -12,11 +18,11 @@ public unsafe struct SectorAudio : ISector
 
     public Span<byte> GetUserData()
     {
-        return ISector.GetSlice(ref this, ISector.UserDataPositionAudio, ISector.UserDataSizeAudio);
+        return ISector.GetSlice(ref this, UserDataPosition, UserDataLength);
     }
 
     public readonly int GetUserDataLength()
     {
-        return ISector.UserDataSizeAudio;
+        return UserDataLength;
     }
 }
