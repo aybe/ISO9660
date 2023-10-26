@@ -3,6 +3,7 @@ namespace ISO9660.Tests.WorkInProgress;
 public unsafe struct SectorAudio : ISector
 {
     public fixed byte Data[ISector.UserDataSizeAudio];
+    [UsedImplicitly]
 
     public Span<byte> AsByteSpan()
     {

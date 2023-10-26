@@ -2,11 +2,14 @@ namespace ISO9660.Tests.WorkInProgress;
 
 public unsafe struct SectorMode0 : ISector, ISectorHeader
 {
+    [UsedImplicitly]
     public fixed byte Sync[ISector.SyncSize];
 
+    [UsedImplicitly]
     public fixed byte Header[ISector.HeaderSize];
 
     public fixed byte UserData[ISector.UserDataSizeMode0];
+    [UsedImplicitly]
 
     public Span<byte> AsByteSpan()
     {

@@ -2,18 +2,25 @@ namespace ISO9660.Tests.WorkInProgress;
 
 public unsafe struct SectorMode1 : ISector, ISectorHeader
 {
+    [UsedImplicitly]
     public fixed byte Sync[ISector.SyncSize];
 
+    [UsedImplicitly]
     public fixed byte Header[ISector.HeaderSize];
 
     public fixed byte UserData[ISector.UserDataSizeMode1];
+    [UsedImplicitly]
 
+    [UsedImplicitly]
     public fixed byte Edc[ISector.EdcSize];
 
+    [UsedImplicitly]
     public fixed byte Intermediate[ISector.IntermediateSizeMode1];
 
+    [UsedImplicitly]
     public fixed byte PParity[ISector.PParitySizeMode1];
 
+    [UsedImplicitly]
     public fixed byte QParity[ISector.QParitySizeMode1];
 
     public Span<byte> AsByteSpan()
