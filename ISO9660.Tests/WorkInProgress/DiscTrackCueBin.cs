@@ -55,7 +55,7 @@ internal sealed class DiscTrackCueBin : DiscTrack
 
     public override ISector ReadSector(in uint index)
     {
-        if (index < 0 || index >= Length)
+        if (index >= Length)
         {
             throw new ArgumentOutOfRangeException(nameof(index), index, null);
         }
