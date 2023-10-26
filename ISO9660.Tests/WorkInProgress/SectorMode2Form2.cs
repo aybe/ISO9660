@@ -27,10 +27,5 @@ public unsafe struct SectorMode2Form2 : ISector, ISectorHeader
         return ISector.UserDataSizeMode2Form2;
     }
 
-    public readonly int GetUserDataPosition()
-    {
-        return ISector.UserDataPositionMode2Form2;
-    }
-
     SectorHeader ISectorHeader.Header => ISector.GetHeader(ref this, ISector.HeaderPosition, ISector.HeaderSize);
 }

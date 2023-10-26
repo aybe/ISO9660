@@ -24,9 +24,4 @@ public unsafe struct SectorCooked2324 : ISector
     {
         return UserDataSize;
     }
-
-    public readonly int GetUserDataPosition()
-    {
-        return UserDataPosition;
-    }
 }

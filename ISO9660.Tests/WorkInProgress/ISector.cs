@@ -67,8 +67,6 @@ public interface ISector
 
     int GetUserDataLength();
 
-    int GetUserDataPosition();
-
     public static SectorHeader GetHeader<T>(ref T sector, in int start, in int length)
         where T : struct, ISector
     {

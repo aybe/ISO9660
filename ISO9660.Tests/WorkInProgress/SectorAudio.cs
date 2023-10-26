@@ -18,9 +18,4 @@ public unsafe struct SectorAudio : ISector
     {
         return ISector.UserDataSizeAudio;
     }
-
-    public readonly int GetUserDataPosition()
-    {
-        return ISector.UserDataPositionAudio;
-    }
 }

@@ -23,10 +23,5 @@ public unsafe struct SectorMode0 : ISector, ISectorHeader
         return ISector.UserDataSizeMode0;
     }
 
-    public readonly int GetUserDataPosition()
-    {
-        return ISector.UserDataPositionMode0;
-    }
-
     SectorHeader ISectorHeader.Header => ISector.GetHeader(ref this, ISector.HeaderPosition, ISector.HeaderSize);
 }
