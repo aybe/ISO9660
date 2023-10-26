@@ -15,13 +15,13 @@ public unsafe struct SectorMode2Form2 : ISector, ISectorHeader
     public fixed byte Header[ISector.HeaderSize];
 
     [UsedImplicitly]
-    public fixed byte SubHeader[ISector.SubHeaderSizeMode2Form2];
+    public fixed byte SubHeader[8];
 
     [UsedImplicitly]
     public fixed byte UserData[UserDataLength];
 
     [UsedImplicitly]
-    public fixed byte ReservedOrEdc[ISector.EdcSize];
+    public fixed byte ReservedOrEdc[4];
 
     public Span<byte> AsByteSpan()
     {

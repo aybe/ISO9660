@@ -18,16 +18,16 @@ public unsafe struct SectorMode1 : ISector, ISectorHeader
     public fixed byte UserData[UserDataLength];
 
     [UsedImplicitly]
-    public fixed byte Edc[ISector.EdcSize];
+    public fixed byte Edc[4];
 
     [UsedImplicitly]
-    public fixed byte Intermediate[ISector.IntermediateSizeMode1];
+    public fixed byte Intermediate[8];
 
     [UsedImplicitly]
-    public fixed byte PParity[ISector.PParitySizeMode1];
+    public fixed byte PParity[172];
 
     [UsedImplicitly]
-    public fixed byte QParity[ISector.QParitySizeMode1];
+    public fixed byte QParity[104];
 
     public Span<byte> AsByteSpan()
     {

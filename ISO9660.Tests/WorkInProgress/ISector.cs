@@ -22,20 +22,8 @@ public interface ISector
     public const int HeaderPosition = 12;
     public const int HeaderSize = 4;
 
-    public const int EdcSize = 4;
-
-    public const int IntermediateSizeMode1 = 8;
-
-    public const int PParitySizeMode1 = 172;
-    public const int PParitySizeMode2Form1 = 172;
-    
-    public const int QParitySizeMode1 = 104;
-    public const int QParitySizeMode2Form1 = 104;
-    
     public const int SubHeaderPositionMode2Form1 = 16;
     public const int SubHeaderPositionMode2Form2 = 16;
-    public const int SubHeaderSizeMode2Form1 = 8;
-    public const int SubHeaderSizeMode2Form2 = 8;
 
     int Size => RawSize;
 
