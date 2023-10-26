@@ -13,6 +13,8 @@ public abstract class DiscTrack : Disposable
 
     public abstract int Position { get; }
 
+    public abstract ISector Sector { get; }
+
     public BinaryReader GetBinaryReader(in int sector)
     {
         if (sector < Position || sector >= Position + Length)
@@ -22,8 +24,6 @@ public abstract class DiscTrack : Disposable
 
         return new BinaryReader(new DiscTrackStream(this, sector), Encoding.Default, true);
     }
-
-    public abstract ISector Sector { get; }
 
     public abstract ISector ReadSector(in int index);
 

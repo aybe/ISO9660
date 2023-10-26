@@ -23,7 +23,7 @@ public static class DiscExtensions
             {
                 DiscReadFileMode.Raw => sector.GetData(),
                 DiscReadFileMode.Usr => sector.GetUserData(),
-                _                => throw new ArgumentOutOfRangeException(nameof(mode), mode, null)
+                _                    => throw new ArgumentOutOfRangeException(nameof(mode), mode, null)
             };
 
             var size = mode == DiscReadFileMode.Usr

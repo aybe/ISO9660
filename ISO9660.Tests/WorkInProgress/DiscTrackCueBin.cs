@@ -23,11 +23,6 @@ internal sealed class DiscTrackCueBin : DiscTrack
 
     public override int Position => GetPosition(Track, Sector.Length);
 
-    protected override void DisposeManaged()
-    {
-        Stream.Dispose();
-    }
-
     public override ISector Sector
     {
         get
@@ -51,6 +46,11 @@ internal sealed class DiscTrackCueBin : DiscTrack
 
             return sector;
         }
+    }
+
+    protected override void DisposeManaged()
+    {
+        Stream.Dispose();
     }
 
     public override ISector ReadSector(in int index)

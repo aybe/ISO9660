@@ -181,7 +181,7 @@ public sealed class IsoFileSystem : Disposable
         var track = disc.Tracks.First();
 
         using var reader = track.GetBinaryReader(Convert.ToInt32(pvd.LocationOfOccurrenceOfTypeLPathTable));
-        
+
         while (pathTableRead < pathTableSize)
         {
             var recordPosition = reader.BaseStream.Position; // BUG discrepancy when using 2352, not with 2048
