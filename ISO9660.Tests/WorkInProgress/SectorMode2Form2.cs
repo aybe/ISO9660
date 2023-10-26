@@ -4,9 +4,9 @@ namespace ISO9660.Tests.WorkInProgress;
 
 public unsafe struct SectorMode2Form2 : ISector, ISectorHeader
 {
-    public const int UserDataLength = 2324;
+    private const int UserDataLength = 2324;
 
-    public const int UserDataPosition = 24;
+    private const int UserDataPosition = 24;
 
     [UsedImplicitly]
     public fixed byte Sync[ISector.SyncSize];

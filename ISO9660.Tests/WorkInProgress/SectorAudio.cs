@@ -4,9 +4,9 @@ namespace ISO9660.Tests.WorkInProgress;
 
 public unsafe struct SectorAudio : ISector
 {
-    public const int UserDataLength = 2352;
+    private const int UserDataLength = 2352;
 
-    public const int UserDataPosition = 0;
+    private const int UserDataPosition = 0;
 
     [UsedImplicitly]
     public fixed byte UserData[UserDataLength];
