@@ -13,16 +13,7 @@ public interface ISector
     // CD Cracking Uncovered Protection Against Unsanctioned CD Copying
     // https://archive.org/details/CDCrackingUncoveredProtectionAgainstUnsanctionedCDCopyingKrisKaspersky
 {
-
     public const int RawSize = 2352;
-    
-    public const int SyncPosition = 0;
-    public const int SyncSize = 12;
-    
-    public const int HeaderSize = 4;
-
-    public const int SubHeaderPositionMode2Form1 = 16;
-    public const int SubHeaderPositionMode2Form2 = 16;
 
     int Size => RawSize;
 

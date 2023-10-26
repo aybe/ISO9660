@@ -9,10 +9,10 @@ public unsafe struct SectorMode2FormLess : ISector
     private const int UserDataPosition = 16;
 
     [UsedImplicitly]
-    public fixed byte Sync[ISector.SyncSize];
+    public fixed byte Sync[12];
 
     [UsedImplicitly]
-    public fixed byte Header[ISector.HeaderSize];
+    public fixed byte Header[4];
 
     [UsedImplicitly]
     public fixed byte UserData[UserDataLength];
