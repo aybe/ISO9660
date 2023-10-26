@@ -22,21 +22,13 @@ public interface ISector
     public const int HeaderPosition = 12;
     public const int HeaderSize = 4;
 
-    public const int EdcPositionMode1 = 2064;
-    public const int EdcPositionMode2Form1 = 2072;
-    public const int EdcPositionMode2Form2 = 2348;
     public const int EdcSize = 4;
 
-    public const int IntermediatePositionMode1 = 2068;
     public const int IntermediateSizeMode1 = 8;
 
-    public const int PParityPositionMode1 = 2076;
-    public const int PParityPositionMode2Form1 = 2076;
     public const int PParitySizeMode1 = 172;
     public const int PParitySizeMode2Form1 = 172;
     
-    public const int QParityPositionMode1 = 2076;
-    public const int QParityPositionMode2Form1 = 2248;
     public const int QParitySizeMode1 = 104;
     public const int QParitySizeMode2Form1 = 104;
     
