@@ -4,8 +4,8 @@ namespace ISO9660.Tests.WorkInProgress;
 
 public unsafe struct SectorMode0 : ISector
 {
-    
     private const int UserDataLength = 2336;
+
     private const int UserDataPosition = 16;
 
     [UsedImplicitly]

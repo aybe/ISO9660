@@ -1,12 +1,15 @@
-﻿namespace ISO9660.Tests.WorkInProgress;
+﻿using JetBrains.Annotations;
+
+namespace ISO9660.Tests.WorkInProgress;
 
 public unsafe struct SectorCooked2324 : ISector
 {
-    public const int UserDataPosition = 0;
+    private const int UserDataLength = 2324;
 
-    public const int UserDataSize = 2324;
+    private const int UserDataPosition = 0;
 
-    public fixed byte UserData[UserDataSize];
+    [UsedImplicitly]
+    public fixed byte UserData[UserDataLength];
 
     public readonly int Size => 2324;
 
@@ -17,11 +20,11 @@ public unsafe struct SectorCooked2324 : ISector
 
     public Span<byte> GetUserData()
     {
-        return ISector.GetSlice(ref this, UserDataPosition, UserDataSize);
+        return ISector.GetSlice(ref this, UserDataPosition, UserDataLength);
     }
 
     public readonly int GetUserDataLength()
     {
-        return UserDataSize;
+        return UserDataLength;
     }
 }
