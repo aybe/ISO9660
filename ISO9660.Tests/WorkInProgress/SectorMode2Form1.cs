@@ -29,6 +29,8 @@ public unsafe struct SectorMode2Form1 : ISector
     [UsedImplicitly]
     public fixed byte QParity[104];
 
+    public readonly int Size => 2352;
+
     public Span<byte> AsByteSpan()
     {
         return ISector.AsByteSpan(ref this);

@@ -17,6 +17,8 @@ public unsafe struct SectorMode0 : ISector
     [UsedImplicitly]
     public fixed byte UserData[UserDataLength];
 
+    public readonly int Size => 2352;
+
     public Span<byte> AsByteSpan()
     {
         return ISector.AsByteSpan(ref this);

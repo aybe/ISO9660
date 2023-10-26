@@ -13,7 +13,7 @@ public interface ISector
     // CD Cracking Uncovered Protection Against Unsanctioned CD Copying
     // https://archive.org/details/CDCrackingUncoveredProtectionAgainstUnsanctionedCDCopyingKrisKaspersky
 {
-    int Size => 2352;
+    int Size { get; }
 
     Span<byte> AsByteSpan();
 
