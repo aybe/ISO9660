@@ -21,12 +21,12 @@ public unsafe struct SectorMode2FormLess : ISector
 
     public Span<byte> AsByteSpan()
     {
-        return ISector.AsByteSpan(ref this);
+        return ISector.GetSpan(ref this);
     }
 
     public Span<byte> GetUserData()
     {
-        return ISector.GetSlice(ref this, UserDataPosition, UserDataLength);
+        return ISector.GetSpan(ref this, UserDataPosition, UserDataLength);
     }
 
     public readonly int GetUserDataLength()
