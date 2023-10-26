@@ -19,9 +19,9 @@ internal sealed class DiscTrackCueBin : DiscTrack
 
     public override int Index => Track.Index;
 
-    public override int Length => GetLength(Track);
+    public override int Length => GetLength(Track, Sector.Size);
 
-    public override int Position => GetPosition(Track);
+    public override int Position => GetPosition(Track, Sector.Size);
 
     protected override void DisposeManaged()
     {
@@ -77,9 +77,9 @@ internal sealed class DiscTrackCueBin : DiscTrack
         return sector;
     }
 
-    private static int GetLength(CueSheetTrack track)
+    private static int GetLength(CueSheetTrack track, in int sectorSize)
     {
-        var lengthStream = Convert.ToInt32(new FileInfo(track.File.Name).Length / ISector.RawSize); // BUG fetch correct sector size
+        var lengthStream = Convert.ToInt32(new FileInfo(track.File.Name).Length / sectorSize); // BUG fetch correct sector size
 
         var length = 0;
 
@@ -96,8 +96,8 @@ internal sealed class DiscTrackCueBin : DiscTrack
 
                 var value = node.Value;
 
-                var pos1 = GetPosition(value);
-                var pos2 = next != null ? GetPosition(next.Value) : lengthStream;
+                var pos1 = GetPosition(value, sectorSize);
+                var pos2 = next != null ? GetPosition(next.Value, sectorSize) : lengthStream;
 
                 length = pos2 - pos1;
 
@@ -133,7 +133,7 @@ internal sealed class DiscTrackCueBin : DiscTrack
         return length;
     }
 
-    private static int GetPosition(CueSheetTrack track)
+    private static int GetPosition(CueSheetTrack track, in int sectorSize)
     {
         var files = track.File.Sheet.Files;
 
@@ -161,7 +161,7 @@ internal sealed class DiscTrackCueBin : DiscTrack
                     break;
                 }
 
-                position += Convert.ToInt32(new FileInfo(value.File.Name).Length / ISector.RawSize);
+                position += Convert.ToInt32(new FileInfo(value.File.Name).Length / sectorSize);
             }
         }
 
