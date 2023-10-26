@@ -81,7 +81,7 @@ public abstract class UnitTestIso : UnitTestBase
         {
             var (entry, i) = stack.Pop();
 
-            builder.AppendLine($"{new string('\t', i)}{entry.Name}");
+            builder.AppendLine($"{new string('\t', i)}{entry.FileName}");
 
             if (entry is not IsoFileSystemEntryDirectory directory)
             {

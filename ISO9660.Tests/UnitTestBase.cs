@@ -6,7 +6,7 @@ namespace ISO9660.Tests;
 
 public abstract class UnitTestBase
 {
-    [PublicAPI]
+    [UsedImplicitly]
     public TestContext TestContext { get; set; } = null!;
 
     private ThreadLocal<uint> IndentLevelLocal { get; } = new(() => 0);
@@ -32,7 +32,7 @@ public abstract class UnitTestBase
             TestContext.Write(IndentValueLocal.Value);
         }
 
-        TestContext.WriteLine(value);
+        TestContext.WriteLine(value?.ToString());
     }
 
     protected void WriteLine<T>(Expression<Func<T>> expression) // T avoids Convert(...) expression

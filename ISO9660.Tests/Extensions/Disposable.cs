@@ -1,8 +1,7 @@
-using JetBrains.Annotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ISO9660.Tests.Extensions;
 
-[PublicAPI]
 public abstract class Disposable : IDisposable
 {
     private bool IsDisposed { get; set; }
@@ -30,10 +29,12 @@ public abstract class Disposable : IDisposable
         IsDisposed = true;
     }
 
+    [SuppressMessage("ReSharper", "VirtualMemberNeverOverridden.Global")]
     protected virtual void DisposeManaged()
     {
     }
 
+    [SuppressMessage("ReSharper", "VirtualMemberNeverOverridden.Global")]
     protected virtual void DisposeNative()
     {
     }

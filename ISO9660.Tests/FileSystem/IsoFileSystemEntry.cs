@@ -1,12 +1,10 @@
 using System.Text;
 using System.Text.RegularExpressions;
-using JetBrains.Annotations;
 
 namespace ISO9660.Tests.FileSystem;
 
 public abstract partial class IsoFileSystemEntry
 {
-    [PublicAPI]
     public const char DirectorySeparator = '/';
 
     protected readonly DirectoryRecord Record;
@@ -23,18 +21,6 @@ public abstract partial class IsoFileSystemEntry
 
     public DateTimeOffset Modified => Record.RecordingDateAndTime.ToDateTimeOffset();
 
-    public string Extension
-    {
-        get
-        {
-            var value = NameRegex().Match(Identifier).Value;
-
-            var extension = Path.GetExtension(value);
-
-            return extension;
-        }
-    }
-
     public string FullName
     {
         get
@@ -45,7 +31,7 @@ public abstract partial class IsoFileSystemEntry
 
             while (node != null)
             {
-                builder.Insert(0, DirectorySeparator).Insert(1, node.Name);
+                builder.Insert(0, DirectorySeparator).Insert(1, node.FileName);
 
                 node = node.Parent;
             }
@@ -66,11 +52,11 @@ public abstract partial class IsoFileSystemEntry
         }
     }
 
-    public string Name
+    public string FileName
     {
         get
         {
-            var value = NameRegex().Match(Identifier).Value;
+            var value = FileNameRegex().Match(Identifier).Value;
 
             var name = Path.GetFileName(value);
 
@@ -79,7 +65,7 @@ public abstract partial class IsoFileSystemEntry
     }
 
     [GeneratedRegex("""^.+?(?=;|\r?$)""")]
-    private static partial Regex NameRegex();
+    private static partial Regex FileNameRegex();
 
     public override string ToString()
     {

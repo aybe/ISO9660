@@ -47,7 +47,7 @@ public sealed class IsoFileSystem : Disposable
             var entryName = queue.Peek();
 
             var entryFile = directory.Files
-                .SingleOrDefault(s => string.Equals(s.Name, entryName, StringComparison.Ordinal));
+                .SingleOrDefault(s => string.Equals(s.FileName, entryName, StringComparison.Ordinal));
 
             if (entryFile != null)
             {
@@ -56,7 +56,7 @@ public sealed class IsoFileSystem : Disposable
             }
 
             var entryDirectory = directory.Directories
-                .SingleOrDefault(s => string.Equals(s.Name, entryName, StringComparison.Ordinal));
+                .SingleOrDefault(s => string.Equals(s.FileName, entryName, StringComparison.Ordinal));
 
             if (entryDirectory == null)
             {

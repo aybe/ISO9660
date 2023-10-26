@@ -1,11 +1,8 @@
-﻿using JetBrains.Annotations;
-
-namespace ISO9660.CDRWIN;
+﻿namespace ISO9660.CDRWIN;
 
 [Flags]
 public enum CueSheetTrackFlags
 {
-    [PublicAPI]
     None = 0,
     DigitalCopyPermitted = 1 << 0,
     FourChannelAudio = 1 << 1,
