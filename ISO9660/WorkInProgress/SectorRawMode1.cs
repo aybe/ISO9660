@@ -2,9 +2,9 @@ using JetBrains.Annotations;
 
 namespace ISO9660.WorkInProgress;
 
-public unsafe struct SectorMode0 : ISector
+public unsafe struct SectorRawMode1 : ISector
 {
-    private const int UserDataLength = 2336;
+    private const int UserDataLength = 2048;
 
     private const int UserDataPosition = 16;
 
@@ -16,6 +16,18 @@ public unsafe struct SectorMode0 : ISector
 
     [UsedImplicitly]
     public fixed byte UserData[UserDataLength];
+
+    [UsedImplicitly]
+    public fixed byte Edc[4];
+
+    [UsedImplicitly]
+    public fixed byte Intermediate[8];
+
+    [UsedImplicitly]
+    public fixed byte PParity[172];
+
+    [UsedImplicitly]
+    public fixed byte QParity[104];
 
     public readonly int Length => 2352;
 

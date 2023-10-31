@@ -2,7 +2,7 @@ using JetBrains.Annotations;
 
 namespace ISO9660.WorkInProgress;
 
-public unsafe struct SectorAudio : ISector
+public unsafe struct SectorRawAudio : ISector
 {
     private const int UserDataLength = 2352;
 

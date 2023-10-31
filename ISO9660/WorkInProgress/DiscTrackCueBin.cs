@@ -31,14 +31,14 @@ public sealed class DiscTrackCueBin : DiscTrack
 
             ISector sector = type switch
             {
-                CueSheetTrackType.Audio             => new SectorAudio(),
+                CueSheetTrackType.Audio             => new SectorRawAudio(),
                 CueSheetTrackType.Karaoke           => throw new NotSupportedException(type.ToString()),
                 CueSheetTrackType.Mode1Cooked       => new SectorCooked2048(),
-                CueSheetTrackType.Mode1Raw          => new SectorMode1(),
+                CueSheetTrackType.Mode1Raw          => new SectorRawMode1(),
                 CueSheetTrackType.Mode2Form1Cooked  => new SectorCooked2324(),
                 CueSheetTrackType.Mode2Form2Cooked  => new SectorCooked2336(),
                 CueSheetTrackType.Mode2Mixed        => throw new NotSupportedException(type.ToString()),
-                CueSheetTrackType.Mode2Raw          => new SectorMode2Form1(),
+                CueSheetTrackType.Mode2Raw          => new SectorRawMode2Form1(),
                 CueSheetTrackType.InteractiveCooked => throw new NotSupportedException(type.ToString()),
                 CueSheetTrackType.InteractiveRaw    => throw new NotSupportedException(type.ToString()),
                 _                                   => throw new NotSupportedException(type.ToString())
@@ -69,8 +69,8 @@ public sealed class DiscTrackCueBin : DiscTrack
         var sector = type switch // TODO implement other track types
         {
             CueSheetTrackType.Mode1Cooked => ISector.Read<SectorCooked2048>(Stream),
-            CueSheetTrackType.Mode1Raw    => ISector.Read<SectorMode1>(Stream),
-            CueSheetTrackType.Mode2Raw    => ISector.Read<SectorMode2Form1>(Stream),
+            CueSheetTrackType.Mode1Raw    => ISector.Read<SectorRawMode1>(Stream),
+            CueSheetTrackType.Mode2Raw    => ISector.Read<SectorRawMode2Form1>(Stream),
             _                             => throw new NotSupportedException($"Track mode not supported: {type}.")
         };
 
