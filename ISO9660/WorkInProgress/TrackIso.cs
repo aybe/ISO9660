@@ -1,8 +1,8 @@
 ﻿namespace ISO9660.WorkInProgress;
 
-public sealed class DiscTrackIso : DiscTrack
+public sealed class TrackIso : Track
 {
-    public DiscTrackIso(Stream stream, int index, int position)
+    public TrackIso(Stream stream, int index, int position)
     {
         ISector[] sectors =
         {

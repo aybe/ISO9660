@@ -4,7 +4,7 @@ namespace ISO9660.WorkInProgress;
 
 public sealed class Disc : Disposable
 {
-    public IList<DiscTrack> Tracks { get; } = new List<DiscTrack>();
+    public IList<Track> Tracks { get; } = new List<Track>();
 
     protected override void DisposeManaged()
     {

@@ -46,7 +46,7 @@ public abstract class UnitTestIso : UnitTestBase
             {
                 foreach (var track in file.Tracks)
                 {
-                    disc.Tracks.Add(new DiscTrackCueBin(track));
+                    disc.Tracks.Add(new TrackCue(track));
                 }
             }
 
@@ -60,7 +60,7 @@ public abstract class UnitTestIso : UnitTestBase
 
         var stream = File.OpenRead(path);
 
-        var track = new DiscTrackIso(stream, 1, 0);
+        var track = new TrackIso(stream, 1, 0);
 
         var disc = new Disc();
 

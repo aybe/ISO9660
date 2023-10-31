@@ -3,7 +3,7 @@ using ISO9660.Extensions;
 
 namespace ISO9660.WorkInProgress;
 
-public abstract class DiscTrack : Disposable
+public abstract class Track : Disposable
 {
     public abstract bool Audio { get; }
 
@@ -22,7 +22,7 @@ public abstract class DiscTrack : Disposable
             throw new ArgumentOutOfRangeException(nameof(sector), sector, null);
         }
 
-        return new BinaryReader(new DiscTrackStream(this, sector), Encoding.Default, true);
+        return new BinaryReader(new TrackStream(this, sector), Encoding.Default, true);
     }
 
     public abstract ISector ReadSector(in int index);

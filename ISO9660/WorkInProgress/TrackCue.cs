@@ -2,11 +2,11 @@
 
 namespace ISO9660.WorkInProgress;
 
-public sealed class DiscTrackCueBin : DiscTrack
+public sealed class TrackCue : Track
 {
     private const int PreGapSize = 150; // TODO move
 
-    public DiscTrackCueBin(CueSheetTrack track)
+    public TrackCue(CueSheetTrack track)
     {
         Stream = File.OpenRead((Track = track).File.Name);
     }

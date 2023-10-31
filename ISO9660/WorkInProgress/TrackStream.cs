@@ -1,9 +1,9 @@
 ﻿namespace ISO9660.WorkInProgress;
 
-internal sealed class DiscTrackStream : Stream
+internal sealed class TrackStream : Stream
     // better than exposing track stream which might represent N tracks
 {
-    private readonly DiscTrack Track;
+    private readonly Track Track;
 
     private readonly int UserDataLength;
 
@@ -11,7 +11,7 @@ internal sealed class DiscTrackStream : Stream
 
     private int SectorOffset;
 
-    public DiscTrackStream(in DiscTrack track, in int index)
+    public TrackStream(in Track track, in int index)
     {
         Track = track;
 
