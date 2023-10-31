@@ -1,5 +1,4 @@
 ﻿using System.Linq.Expressions;
-using ISO9660.Tests.Extensions;
 using JetBrains.Annotations;
 
 namespace ISO9660.Tests;

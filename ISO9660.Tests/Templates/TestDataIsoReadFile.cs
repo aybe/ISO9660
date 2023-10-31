@@ -1,4 +1,4 @@
-﻿using ISO9660.Tests.WorkInProgress;
+﻿using ISO9660.WorkInProgress;
 
 namespace ISO9660.Tests.Templates;
 
