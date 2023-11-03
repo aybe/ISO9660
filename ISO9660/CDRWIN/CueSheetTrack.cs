@@ -1,6 +1,4 @@
-﻿using ISO9660.Common;
-
-namespace ISO9660.CDRWIN;
+﻿namespace ISO9660.CDRWIN;
 
 public sealed class CueSheetTrack : CueSheetElement
 {

@@ -1,4 +1,4 @@
-namespace ISO9660.Common;
+namespace ISO9660.CDRWIN;
 
 public readonly struct LBA : IComparable<LBA>, IEquatable<LBA>
 {

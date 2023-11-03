@@ -2,7 +2,6 @@
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
-using ISO9660.Common;
 
 // ReSharper disable CommentTypo
 // ReSharper disable StringLiteralTypo
