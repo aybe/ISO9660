@@ -368,9 +368,5 @@ FodyWeavers.xsd
 ################################################################################
 
 *.cd
-CDROMTools
-CDROMToolsDemo
-CDROMToolsDocumentation
-TinyTree
 ISO9660.Tests/Templates/*.json
 /TODO.TXT
