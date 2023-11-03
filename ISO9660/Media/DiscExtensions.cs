@@ -1,6 +1,6 @@
 ﻿using ISO9660.FileSystem;
 
-namespace ISO9660.WorkInProgress;
+namespace ISO9660.Media;
 
 public static class DiscExtensions
 {

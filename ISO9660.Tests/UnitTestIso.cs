@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using ISO9660.CDRWIN;
 using ISO9660.FileSystem;
-using ISO9660.WorkInProgress;
+using ISO9660.Media;
 
 namespace ISO9660.Tests;
 

@@ -1,17 +1,17 @@
 ﻿using JetBrains.Annotations;
 
-namespace ISO9660.WorkInProgress;
+namespace ISO9660.Media;
 
-public unsafe struct SectorCooked2336 : ISector
+public unsafe struct SectorCooked2048 : ISector
 {
-    private const int UserDataLength = 2336;
+    private const int UserDataLength = 2048;
 
     private const int UserDataPosition = 0;
 
     [UsedImplicitly]
     public fixed byte UserData[UserDataLength];
 
-    public readonly int Length => 2336;
+    public readonly int Length => 2048;
 
     public Span<byte> GetData()
     {

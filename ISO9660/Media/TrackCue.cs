@@ -1,6 +1,6 @@
 ﻿using ISO9660.CDRWIN;
 
-namespace ISO9660.WorkInProgress;
+namespace ISO9660.Media;
 
 public sealed class TrackCue : Track
 {

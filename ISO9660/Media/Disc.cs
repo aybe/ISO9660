@@ -1,6 +1,6 @@
 ﻿using ISO9660.Extensions;
 
-namespace ISO9660.WorkInProgress;
+namespace ISO9660.Media;
 
 public sealed class Disc : Disposable
 {

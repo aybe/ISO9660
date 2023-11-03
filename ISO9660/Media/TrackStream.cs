@@ -1,4 +1,4 @@
-﻿namespace ISO9660.WorkInProgress;
+﻿namespace ISO9660.Media;
 
 internal sealed class TrackStream : Stream
     // better than exposing track stream which might represent N tracks

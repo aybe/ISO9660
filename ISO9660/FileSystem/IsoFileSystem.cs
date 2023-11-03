@@ -1,7 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using ISO9660.Extensions;
 using ISO9660.FileSystem.VolumeDescriptors;
-using ISO9660.WorkInProgress;
+using ISO9660.Media;
 
 namespace ISO9660.FileSystem;
 

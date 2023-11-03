@@ -1,7 +1,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace ISO9660.WorkInProgress;
+namespace ISO9660.Media;
 
 /// <summary>
 ///     Base interface for a CD-ROM sector.
