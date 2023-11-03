@@ -2,9 +2,9 @@ using ISO9660.Extensions;
 
 namespace ISO9660.FileSystem;
 
-public sealed class DateAndTimeFormat
+public sealed class VolumeDescriptorDateTime
 {
-    public DateAndTimeFormat(BinaryReader reader)
+    public VolumeDescriptorDateTime(BinaryReader reader)
     {
         Year = reader.ReadStringAscii(4);
 

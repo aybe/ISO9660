@@ -51,13 +51,13 @@ public sealed class VolumeDescriptorPrimary : VolumeDescriptor
 
         BibliographicFileIdentifier = reader.ReadIsoString(37, IsoStringFlags.DCharacters | IsoStringFlags.Separator1 | IsoStringFlags.Separator2);
 
-        VolumeCreationDateAndTime = new DateAndTimeFormat(reader);
+        VolumeCreationDateAndTime = new VolumeDescriptorDateTime(reader);
 
-        VolumeModificationDateAndTime = new DateAndTimeFormat(reader);
+        VolumeModificationDateAndTime = new VolumeDescriptorDateTime(reader);
 
-        VolumeExpirationDateAndTime = new DateAndTimeFormat(reader);
+        VolumeExpirationDateAndTime = new VolumeDescriptorDateTime(reader);
 
-        VolumeEffectiveDateAndTime = new DateAndTimeFormat(reader);
+        VolumeEffectiveDateAndTime = new VolumeDescriptorDateTime(reader);
 
         FileStructureVersion = reader.ReadIso711();
 
@@ -106,13 +106,13 @@ public sealed class VolumeDescriptorPrimary : VolumeDescriptor
 
     public string BibliographicFileIdentifier { get; }
 
-    public DateAndTimeFormat VolumeCreationDateAndTime { get; }
+    public VolumeDescriptorDateTime VolumeCreationDateAndTime { get; }
 
-    public DateAndTimeFormat VolumeModificationDateAndTime { get; }
+    public VolumeDescriptorDateTime VolumeModificationDateAndTime { get; }
 
-    public DateAndTimeFormat VolumeExpirationDateAndTime { get; }
+    public VolumeDescriptorDateTime VolumeExpirationDateAndTime { get; }
 
-    public DateAndTimeFormat VolumeEffectiveDateAndTime { get; }
+    public VolumeDescriptorDateTime VolumeEffectiveDateAndTime { get; }
 
     public byte FileStructureVersion { get; }
 
