@@ -25,7 +25,7 @@ public sealed class DirectoryRecord
 
         RecordingDateAndTime = new RecordingDateAndTime(reader);
 
-        FileFlags = reader.Read<FileFlags>();
+        FileFlags = reader.Read<DirectoryRecordFileFlags>();
 
         FileUnitSize = reader.ReadIso711();
 
@@ -58,7 +58,7 @@ public sealed class DirectoryRecord
 
     public RecordingDateAndTime RecordingDateAndTime { get; }
 
-    public FileFlags FileFlags { get; }
+    public DirectoryRecordFileFlags FileFlags { get; }
 
     public byte FileUnitSize { get; }
 

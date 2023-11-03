@@ -1,7 +1,7 @@
 namespace ISO9660.FileSystem;
 
 [Flags]
-public enum FileFlags : byte
+public enum DirectoryRecordFileFlags : byte
 {
     None = 0,
     Existence = 1 << 0,
