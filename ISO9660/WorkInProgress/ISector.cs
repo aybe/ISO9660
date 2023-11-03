@@ -29,13 +29,7 @@ public interface ISector
     /// </summary>
     int GetUserDataLength();
 
-    protected static Span<byte> GetSpan<T>(scoped ref T sector)
-        where T : struct, ISector
-    {
-        return GetSpan(ref sector, 0, sector.Length);
-    }
-
-    protected static Span<byte> GetSpan<T>(scoped ref T sector, int start, int length)
+    public static Span<byte> GetSpan<T>(scoped ref T sector, int start, int length)
         where T : struct, ISector
     {
         var span = MemoryMarshal.CreateSpan(ref sector, 1);

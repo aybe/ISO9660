@@ -15,7 +15,7 @@ public unsafe struct SectorRawAudio : ISector
 
     public Span<byte> GetData()
     {
-        return ISector.GetSpan(ref this);
+        return ISector.GetSpan(ref this, 0, Length);
     }
 
     public Span<byte> GetUserData()
