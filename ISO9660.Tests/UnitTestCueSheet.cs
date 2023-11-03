@@ -8,7 +8,7 @@ public class UnitTestCueSheet : UnitTestBase
 {
     public static IEnumerable<object[]> TestCueSheetListInit()
     {
-        var files = TestData.GetCsvTestData<TestDataCueSheet>(@"Templates\TestDataCueSheet.csv");
+        var files = TestData.GetJsonTestData<TestDataCueSheet>(@"Templates\TestDataCueSheet.json");
 
         foreach (var file in files)
         {

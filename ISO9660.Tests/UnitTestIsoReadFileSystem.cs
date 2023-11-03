@@ -146,7 +146,7 @@ public sealed class UnitTestIsoReadFileSystem : UnitTestIso
 
     public static IEnumerable<object[]> TestIsoReadFileInit()
     {
-        var files = TestData.GetCsvTestData<TestDataIsoReadFileSystem>(@"Templates\TestDataIsoReadFileSystem.csv");
+        var files = TestData.GetJsonTestData<TestDataIsoReadFileSystem>(@"Templates\TestDataIsoReadFileSystem.json");
 
         foreach (var file in files)
         {

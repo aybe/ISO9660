@@ -10,7 +10,7 @@ public sealed class UnitTestIsoReadFile : UnitTestIso
 {
     public static IEnumerable<object[]> TestIsoReadFileInit()
     {
-        var files = TestData.GetCsvTestData<TestDataIsoReadFile>(@"Templates\TestDataIsoReadFile.csv");
+        var files = TestData.GetJsonTestData<TestDataIsoReadFile>(@"Templates\TestDataIsoReadFile.json");
 
         foreach (var file in files)
         {

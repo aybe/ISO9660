@@ -8,7 +8,7 @@ public sealed class UnitTestIsoFindFile : UnitTestIso
 {
     public static IEnumerable<object[]> TestIsoFindFileInit()
     {
-        var files = TestData.GetCsvTestData<TestDataIsoFindFile>(@"Templates\TestDataIsoFindFile.csv");
+        var files = TestData.GetJsonTestData<TestDataIsoFindFile>(@"Templates\TestDataIsoFindFile.json");
 
         foreach (var file in files)
         {

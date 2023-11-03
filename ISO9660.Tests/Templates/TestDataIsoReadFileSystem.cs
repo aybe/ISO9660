@@ -1,3 +1,7 @@
-﻿namespace ISO9660.Tests.Templates;
+﻿#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+namespace ISO9660.Tests.Templates;
 
-public record TestDataIsoReadFileSystem(string Path) : TestData;
+public sealed class TestDataIsoReadFileSystem : TestData
+{
+    public string Path { get; set; }
+}

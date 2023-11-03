@@ -1,7 +1,5 @@
-﻿using System.Globalization;
-using CsvHelper;
-using CsvHelper.Configuration;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
+using Newtonsoft.Json;
 
 namespace ISO9660.Tests.Templates;
 
@@ -13,24 +11,17 @@ namespace ISO9660.Tests.Templates;
 ///         Otherwise, the tests are consolidated in Live Unit Testing window.
 ///     </para>
 /// </remarks>
-[UsedImplicitly(ImplicitUseTargetFlags.WithInheritors)]
-public abstract record TestData
+[UsedImplicitly(ImplicitUseTargetFlags.WithInheritors | ImplicitUseTargetFlags.WithMembers)]
+public abstract class TestData
 {
-    public static T[] GetCsvTestData<T>(string path) where T : TestData
+    public static T[] GetJsonTestData<T>(string path) where T : TestData
     {
         path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
 
-        var configuration = new CsvConfiguration(CultureInfo.InvariantCulture)
-        {
-            AllowComments = true, BadDataFound = null, IgnoreBlankLines = true, TrimOptions = TrimOptions.Trim
-        };
+        var json = File.ReadAllText(path);
 
-        using var reader = new CsvReader(new StreamReader(File.OpenRead(path)), configuration);
+        var data = JsonConvert.DeserializeObject<T[]>(json);
 
-        var records = reader.GetRecords<T>();
-
-        var array = records.ToArray();
-
-        return array;
+        return data!;
     }
 }
