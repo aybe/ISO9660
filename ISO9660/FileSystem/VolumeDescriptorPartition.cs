@@ -1,10 +1,10 @@
 ﻿using ISO9660.Extensions;
 
-namespace ISO9660.FileSystem.VolumeDescriptors;
+namespace ISO9660.FileSystem;
 
-public sealed class VolumePartitionDescriptor : VolumeDescriptor
+public sealed class VolumeDescriptorPartition : VolumeDescriptor
 {
-    public VolumePartitionDescriptor(VolumeDescriptor descriptor, BinaryReader reader)
+    public VolumeDescriptorPartition(VolumeDescriptor descriptor, BinaryReader reader)
         : base(descriptor)
     {
         reader.Seek(1);

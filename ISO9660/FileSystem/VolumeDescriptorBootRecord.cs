@@ -1,10 +1,8 @@
-using ISO9660.Extensions;
+namespace ISO9660.FileSystem;
 
-namespace ISO9660.FileSystem.VolumeDescriptors;
-
-public sealed class BootRecord : VolumeDescriptor
+public sealed class VolumeDescriptorBootRecord : VolumeDescriptor
 {
-    public BootRecord(VolumeDescriptor descriptor, BinaryReader reader)
+    public VolumeDescriptorBootRecord(VolumeDescriptor descriptor, BinaryReader reader)
         : base(descriptor)
     {
         BootSystemIdentifier = reader.ReadIsoString(32, IsoStringFlags.ACharacters);

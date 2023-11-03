@@ -1,23 +1,23 @@
 using ISO9660.Extensions;
 
-namespace ISO9660.FileSystem.VolumeDescriptors;
+namespace ISO9660.FileSystem;
 
-public sealed class SupplementaryVolumeDescriptor : VolumeDescriptor
+public sealed class VolumeDescriptorPrimary : VolumeDescriptor
 {
-    public SupplementaryVolumeDescriptor(VolumeDescriptor descriptor, BinaryReader reader)
+    public VolumeDescriptorPrimary(VolumeDescriptor descriptor, BinaryReader reader)
         : base(descriptor)
     {
-        VolumeFlags = reader.ReadByte();
+        reader.Seek(1);
 
-        SystemIdentifier = reader.ReadIsoString(32, IsoStringFlags.ACharacters); // TODO A1
+        SystemIdentifier = reader.ReadIsoString(32, IsoStringFlags.ACharacters);
 
-        VolumeIdentifier = reader.ReadIsoString(32, IsoStringFlags.DCharacters); // TODO D1
+        VolumeIdentifier = reader.ReadIsoString(32, IsoStringFlags.DCharacters);
 
         reader.Seek(8);
 
         VolumeSpaceSize = reader.ReadIso733();
 
-        EscapeSequences = reader.ReadBytes(32); // TODO escape sequences
+        reader.Seek(32);
 
         VolumeSetSize = reader.ReadIso723();
 
@@ -37,19 +37,19 @@ public sealed class SupplementaryVolumeDescriptor : VolumeDescriptor
 
         DirectoryRecordForRootDirectory = new DirectoryRecord(reader);
 
-        VolumeSetIdentifier = reader.ReadIsoString(128, IsoStringFlags.DCharacters); // TODO D1
+        VolumeSetIdentifier = reader.ReadIsoString(128, IsoStringFlags.DCharacters);
 
-        PublisherIdentifier = reader.ReadIsoString(128, IsoStringFlags.ACharacters); // TODO A1
+        PublisherIdentifier = reader.ReadIsoString(128, IsoStringFlags.ACharacters);
 
-        DataPreparerIdentifier = reader.ReadIsoString(128, IsoStringFlags.ACharacters); // TODO A1
+        DataPreparerIdentifier = reader.ReadIsoString(128, IsoStringFlags.ACharacters);
 
-        ApplicationIdentifier = reader.ReadIsoString(128, IsoStringFlags.ACharacters); // TODO A1
+        ApplicationIdentifier = reader.ReadIsoString(128, IsoStringFlags.ACharacters);
 
-        CopyrightFileIdentifier = reader.ReadIsoString(37, IsoStringFlags.DCharacters | IsoStringFlags.Separator1 | IsoStringFlags.Separator2); // TODO D1
+        CopyrightFileIdentifier = reader.ReadIsoString(37, IsoStringFlags.DCharacters | IsoStringFlags.Separator1 | IsoStringFlags.Separator2);
 
-        AbstractFileIdentifier = reader.ReadIsoString(37, IsoStringFlags.DCharacters | IsoStringFlags.Separator1 | IsoStringFlags.Separator2); // TODO D1
+        AbstractFileIdentifier = reader.ReadIsoString(37, IsoStringFlags.DCharacters | IsoStringFlags.Separator1 | IsoStringFlags.Separator2);
 
-        BibliographicFileIdentifier = reader.ReadIsoString(37, IsoStringFlags.DCharacters | IsoStringFlags.Separator1 | IsoStringFlags.Separator2); // TODO D1
+        BibliographicFileIdentifier = reader.ReadIsoString(37, IsoStringFlags.DCharacters | IsoStringFlags.Separator1 | IsoStringFlags.Separator2);
 
         VolumeCreationDateAndTime = new DateAndTimeFormat(reader);
 
@@ -68,15 +68,11 @@ public sealed class SupplementaryVolumeDescriptor : VolumeDescriptor
         Reserved2 = reader.ReadBytes(653);
     }
 
-    public byte VolumeFlags { get; }
-
     public string SystemIdentifier { get; }
 
     public string VolumeIdentifier { get; }
 
     public uint VolumeSpaceSize { get; }
-
-    public byte[] EscapeSequences { get; }
 
     public ushort VolumeSetSize { get; }
 

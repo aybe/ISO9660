@@ -1,6 +1,6 @@
 using ISO9660.Extensions;
 
-namespace ISO9660.FileSystem.VolumeDescriptors;
+namespace ISO9660.FileSystem;
 
 public class VolumeDescriptor
 {

@@ -1,6 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 using ISO9660.Extensions;
-using ISO9660.FileSystem.VolumeDescriptors;
 using ISO9660.Media;
 
 namespace ISO9660.FileSystem;
@@ -21,7 +20,7 @@ public sealed class IsoFileSystem : Disposable
     {
         var descriptorSet = ReadVolumeDescriptors(disc);
 
-        var rootDirectory = ReadRootDirectory(disc, descriptorSet.PrimaryVolumeDescriptor);
+        var rootDirectory = ReadRootDirectory(disc, descriptorSet.VolumeDescriptorPrimary);
 
         var isoFileSystem = new IsoFileSystem(descriptorSet, rootDirectory);
 
@@ -97,10 +96,10 @@ public sealed class IsoFileSystem : Disposable
 
             descriptor = descriptor.VolumeDescriptorType switch
             {
-                VolumeDescriptorType.BootRecord                    => new BootRecord(descriptor, reader),
-                VolumeDescriptorType.PrimaryVolumeDescriptor       => new PrimaryVolumeDescriptor(descriptor, reader),
-                VolumeDescriptorType.SupplementaryVolumeDescriptor => new SupplementaryVolumeDescriptor(descriptor, reader),
-                VolumeDescriptorType.VolumePartitionDescriptor     => new VolumePartitionDescriptor(descriptor, reader),
+                VolumeDescriptorType.BootRecord                    => new VolumeDescriptorBootRecord(descriptor, reader),
+                VolumeDescriptorType.PrimaryVolumeDescriptor       => new VolumeDescriptorPrimary(descriptor, reader),
+                VolumeDescriptorType.SupplementaryVolumeDescriptor => new VolumeDescriptorSupplementary(descriptor, reader),
+                VolumeDescriptorType.VolumePartitionDescriptor     => new VolumeDescriptorPartition(descriptor, reader),
                 VolumeDescriptorType.VolumeDescriptorSetTerminator => new VolumeDescriptorSetTerminator(descriptor, reader),
                 _                                                  => throw new NotSupportedException(descriptor.VolumeDescriptorType.ToString())
             };
@@ -118,7 +117,7 @@ public sealed class IsoFileSystem : Disposable
         return descriptors;
     }
 
-    private static IsoFileSystemEntryDirectory ReadRootDirectory(Disc disc, PrimaryVolumeDescriptor pvd)
+    private static IsoFileSystemEntryDirectory ReadRootDirectory(Disc disc, VolumeDescriptorPrimary pvd)
     {
         var pathTableRecords = ReadPathTableRecords(disc, pvd);
         var directoryRecords = ReadDirectoryRecords(disc, pathTableRecords);
@@ -170,7 +169,7 @@ public sealed class IsoFileSystem : Disposable
         return firstDirectory;
     }
 
-    private static IList<PathTableRecord> ReadPathTableRecords(Disc disc, PrimaryVolumeDescriptor pvd)
+    private static IList<PathTableRecord> ReadPathTableRecords(Disc disc, VolumeDescriptorPrimary pvd)
     {
         var records = new List<PathTableRecord>();
 
