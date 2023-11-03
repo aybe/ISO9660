@@ -2,9 +2,9 @@ using ISO9660.Extensions;
 
 namespace ISO9660.FileSystem;
 
-public readonly struct RecordingDateAndTime
+public readonly struct DirectoryRecordDateTime
 {
-    public RecordingDateAndTime(BinaryReader reader)
+    public DirectoryRecordDateTime(BinaryReader reader)
     {
         NumberOfYearsSince1900      = reader.ReadIso711();
         MonthOfTheYear              = reader.ReadIso711();

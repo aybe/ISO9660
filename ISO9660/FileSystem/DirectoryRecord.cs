@@ -23,7 +23,7 @@ public sealed class DirectoryRecord
 
         DataLength = reader.ReadIso733();
 
-        RecordingDateAndTime = new RecordingDateAndTime(reader);
+        RecordingDateAndTime = new DirectoryRecordDateTime(reader);
 
         FileFlags = reader.Read<DirectoryRecordFileFlags>();
 
@@ -56,7 +56,7 @@ public sealed class DirectoryRecord
 
     public uint DataLength { get; }
 
-    public RecordingDateAndTime RecordingDateAndTime { get; }
+    public DirectoryRecordDateTime RecordingDateAndTime { get; }
 
     public DirectoryRecordFileFlags FileFlags { get; }
 
