@@ -14,13 +14,13 @@ public sealed class UnitTestIsoReadFile : UnitTestIso
 
         foreach (var file in files)
         {
-            yield return new object[] { file.Source, file.Target, file.Sha256, file.Mode };
+            yield return new object[] { file.Source, file.Target, file.Sha256, file.Cooked };
         }
     }
 
     [TestMethod]
     [DynamicData(nameof(TestIsoReadFileInit), DynamicDataSourceType.Method)]
-    public void TestIsoReadFile(string source, string target, string sha256, DiscReadFileMode mode)
+    public void TestIsoReadFile(string source, string target, string sha256, bool cooked)
     {
         using var disc = LoadDiscFromCue(source);
 
@@ -34,7 +34,14 @@ public sealed class UnitTestIsoReadFile : UnitTestIso
 
         using var stream = new MemoryStream();
 
-        disc.ReadFile(result, mode, stream);
+        if (cooked)
+        {
+            disc.ReadFileUser(result, stream);
+        }
+        else
+        {
+            disc.ReadFileRaw(result, stream);
+        }
 
         stream.Position = 0;
 

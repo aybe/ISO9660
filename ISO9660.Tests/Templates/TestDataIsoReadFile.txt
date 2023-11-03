@@ -7,6 +7,6 @@ Target:
 Sha256:
     string
     SHA-256 hash of the target file being tested.
-Mode:
-    DiscReadFileMode
-    What mode the target file should be extracted as.
+Cooked:
+    bool
+    Whether to extract file as user data or as raw data.

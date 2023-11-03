@@ -11,5 +11,5 @@ public sealed class TestDataIsoReadFile : TestData
 
     public string Sha256 { get; set; }
 
-    public DiscReadFileMode Mode { get; set; }
+    public bool Cooked { get; set; }
 }
