@@ -20,18 +20,12 @@ public class UnitTestCueSheet : UnitTestBase
     [DynamicData(nameof(TestCueSheetListInit), DynamicDataSourceType.Method)]
     public void TestCueSheet(string path)
     {
-        if (File.Exists(path))
-        {
-            ParseCueSheet(path);
-        }
-        else
+        if (!File.Exists(path))
         {
             Assert.Inconclusive($"File not found: {path}");
+            return;
         }
-    }
 
-    private void ParseCueSheet(string path)
-    {
         var sheet = CueSheetParser.Parse(path);
 
         foreach (var file in sheet.Files)

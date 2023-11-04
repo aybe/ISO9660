@@ -6,7 +6,7 @@ using ISO9660.Tests.Templates;
 namespace ISO9660.Tests;
 
 [TestClass]
-public sealed class UnitTestIsoReadFile : UnitTestIso
+public sealed class UnitTestIsoReadFile : UnitTestBase
 {
     public static IEnumerable<object[]> TestIsoReadFileInit()
     {
@@ -22,7 +22,7 @@ public sealed class UnitTestIsoReadFile : UnitTestIso
     [DynamicData(nameof(TestIsoReadFileInit), DynamicDataSourceType.Method)]
     public void TestIsoReadFile(string source, string target, string sha256, bool cooked)
     {
-        using var disc = LoadDiscFromCue(source);
+        using var disc = Disc.FromCue(source);
 
         var ifs = IsoFileSystem.Read(disc);
 

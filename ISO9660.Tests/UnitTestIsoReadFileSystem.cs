@@ -1,12 +1,14 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using ISO9660.FileSystem;
+using ISO9660.Media;
 using ISO9660.Tests.Templates;
 
 namespace ISO9660.Tests;
 
 [TestClass]
 [SuppressMessage("ReSharper", "StringLiteralTypo")]
-public sealed class UnitTestIsoReadFileSystem : UnitTestIso
+public sealed class UnitTestIsoReadFileSystem : UnitTestBase
 {
     public static IEnumerable<object[]> TestIsoReadFileInit()
     {
@@ -22,50 +24,45 @@ public sealed class UnitTestIsoReadFileSystem : UnitTestIso
     [DynamicData(nameof(TestIsoReadFileInit), DynamicDataSourceType.Method)]
     public void TestIsoReadFileSystem(string path)
     {
-        var extension = Path.GetExtension(path);
+        var extension = Path.GetExtension(path).ToLowerInvariant();
 
-        using var disc = true switch
+        using var disc = extension switch
         {
-            true when string.Equals(extension, ".cue", StringComparison.OrdinalIgnoreCase) => LoadDiscFromCue(path),
-            true when string.Equals(extension, ".iso", StringComparison.OrdinalIgnoreCase) => LoadDiscFromIso(path),
-            _                                                                              => throw new NotSupportedException(path)
+            ".cue" => Disc.FromCue(path),
+            ".iso" => Disc.FromIso(path),
+            _      => throw new NotSupportedException(path)
         };
 
-        WriteLine("Tracks:");
+        var fs = IsoFileSystem.Read(disc);
 
-        foreach (var track in disc.Tracks)
+        var builder = new StringBuilder();
+
+        var stack = new Stack<(IsoFileSystemEntry Entry, int Depth)>();
+
+        stack.Push((fs.RootDirectory, 0));
+
+        while (stack.Count > 0)
         {
-            using var indent1 = Indent(1);
+            var (entry, i) = stack.Pop();
 
-            WriteLine(track);
+            builder.AppendLine($"{new string('\t', i)}{entry.FileName}");
+
+            if (entry is not IsoFileSystemEntryDirectory directory)
+            {
+                continue;
+            }
+
+            foreach (var item in directory.Directories.AsEnumerable().Reverse())
+            {
+                stack.Push((item, i + 1));
+            }
+
+            foreach (var item in directory.Files.AsEnumerable().Reverse())
+            {
+                stack.Push((item, i + 1));
+            }
         }
 
-        WriteLine("Tracks positions:");
-
-        foreach (var track in disc.Tracks)
-        {
-            using var indent1 = Indent(1);
-
-            var actual = track.Position;
-
-            WriteLine(actual);
-        }
-
-        WriteLine("Tracks lengths:");
-
-        foreach (var track in disc.Tracks)
-        {
-            using var indent1 = Indent(1);
-
-            var actual = track.Length;
-
-            WriteLine(actual);
-        }
-
-        var isoFileSystem = IsoFileSystem.Read(disc);
-
-        var value = GetTextTree(isoFileSystem.RootDirectory);
-
-        WriteLine(value);
+        WriteLine(builder.ToString());
     }
 }

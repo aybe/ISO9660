@@ -1,10 +1,11 @@
 ﻿using ISO9660.FileSystem;
+using ISO9660.Media;
 using ISO9660.Tests.Templates;
 
 namespace ISO9660.Tests;
 
 [TestClass]
-public sealed class UnitTestIsoFindFile : UnitTestIso
+public sealed class UnitTestIsoFindFile : UnitTestBase
 {
     public static IEnumerable<object[]> TestIsoFindFileInit()
     {
@@ -20,7 +21,7 @@ public sealed class UnitTestIsoFindFile : UnitTestIso
     [DynamicData(nameof(TestIsoFindFileInit), DynamicDataSourceType.Method)]
     public void TestIsoFindFile(string source, string target, bool exists)
     {
-        using var disc = LoadDiscFromCue(source);
+        using var disc = Disc.FromCue(source);
 
         var ifs = IsoFileSystem.Read(disc);
 
