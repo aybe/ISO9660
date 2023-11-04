@@ -13,18 +13,20 @@ namespace Whatever.Extensions
 
         public static T Read<T>(this BinaryReader reader, Endianness? endianness = null) where T : unmanaged
         {
-            var count = Marshal.SizeOf<T>();
+            var type = typeof(T);
 
-            var bytes = reader.ReadBytes(count);
+            var size = type.IsEnum ? Marshal.SizeOf(type.GetEnumUnderlyingType()) : Marshal.SizeOf<T>();
+
+            var data = reader.ReadBytes(size);
 
             if ((endianness ?? Endianness) != Endianness)
             {
-                bytes.AsSpan().Reverse();
+                data.AsSpan().Reverse();
             }
 
-            var value = MemoryMarshal.Read<T>(bytes);
+            var read = MemoryMarshal.Read<T>(data);
 
-            return value;
+            return read;
         }
 
         public static string ReadStringAscii(this BinaryReader reader, int length)
