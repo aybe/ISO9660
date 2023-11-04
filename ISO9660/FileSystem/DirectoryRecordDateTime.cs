@@ -1,5 +1,3 @@
-using ISO9660.Extensions;
-
 namespace ISO9660.FileSystem;
 
 public readonly struct DirectoryRecordDateTime

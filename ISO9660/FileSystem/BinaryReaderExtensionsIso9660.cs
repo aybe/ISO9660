@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
-using ISO9660.Extensions;
+using Whatever.Extensions;
 
 namespace ISO9660.FileSystem;
 

@@ -11,4 +11,8 @@
 		<PackageReference Include="JetBrains.Annotations" Version="2023.2.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\Whatever.Extensions\Whatever.Extensions.csproj" />
+	</ItemGroup>
+
 </Project>
