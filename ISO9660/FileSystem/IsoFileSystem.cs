@@ -141,7 +141,7 @@ public sealed class IsoFileSystem : Disposable
 
             foreach (var record in list)
             {
-                if (record.FileFlags.HasFlags(DirectoryRecordFileFlags.Directory))
+                if (record.FileFlags.HasFlags(DirectoryRecordFlags.Directory))
                 {
                     switch (record.FileIdentifier) // ignore . and .. or infinite loop
                     {

@@ -4,7 +4,7 @@ using Whatever.Extensions;
 
 namespace ISO9660.FileSystem;
 
-public static class BinaryReaderExtensionsIso9660
+public static class BinaryReaderExtensions
 {
     public static byte ReadIso711(this BinaryReader reader)
     {
