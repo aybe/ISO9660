@@ -48,28 +48,7 @@ public sealed class TrackCue : Track
 
     public override ISector ReadSector(in int index)
     {
-        if (index >= Length)
-        {
-            throw new ArgumentOutOfRangeException(nameof(index), index, null);
-        }
-
-        Stream.Position = index * Sector.Length;
-
-        var sector = Sector switch
-        {
-            SectorCooked2048       => ISector.Read<SectorCooked2048>(Stream),
-            SectorCooked2324       => ISector.Read<SectorCooked2324>(Stream),
-            SectorCooked2336       => ISector.Read<SectorCooked2336>(Stream),
-            SectorRawAudio         => ISector.Read<SectorRawAudio>(Stream),
-            SectorRawMode0         => ISector.Read<SectorRawMode0>(Stream),
-            SectorRawMode1         => ISector.Read<SectorRawMode1>(Stream),
-            SectorRawMode2Form1    => ISector.Read<SectorRawMode2Form1>(Stream),
-            SectorRawMode2Form2    => ISector.Read<SectorRawMode2Form2>(Stream),
-            SectorRawMode2FormLess => ISector.Read<SectorRawMode2FormLess>(Stream),
-            _                      => throw new NotSupportedException(Sector.GetType().Name)
-        };
-
-        return sector;
+        return ReadSector(index, Stream);
     }
 
     private static int GetLength(CueSheetTrack track, in int sectorSize)

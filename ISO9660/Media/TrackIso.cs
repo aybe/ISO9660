@@ -43,16 +43,6 @@ public sealed class TrackIso : Track
 
     public override ISector ReadSector(in int index)
     {
-        Stream.Position = index * Sector.Length;
-
-        var sector = Sector switch
-        {
-            SectorCooked2048 => ISector.Read<SectorCooked2048>(Stream),
-            SectorCooked2324 => ISector.Read<SectorCooked2324>(Stream),
-            SectorCooked2336 => ISector.Read<SectorCooked2336>(Stream),
-            _                => throw new InvalidDataException()
-        };
-
-        return sector;
+        return ReadSector(index, Stream);
     }
 }
