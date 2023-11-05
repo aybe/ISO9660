@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
-using ISO9660.FileSystem;
-using ISO9660.Media;
+using ISO9660.Logical;
+using ISO9660.Physical;
 using ISO9660.Tests.Templates;
 
 namespace ISO9660.Tests;

@@ -1,4 +1,4 @@
-﻿using ISO9660.CDRWIN;
+﻿using ISO9660.GoldenHawk;
 using ISO9660.Tests.Templates;
 
 namespace ISO9660.Tests;
