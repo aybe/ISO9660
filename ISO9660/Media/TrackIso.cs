@@ -1,4 +1,6 @@
-﻿namespace ISO9660.Media;
+﻿using Whatever.Extensions;
+
+namespace ISO9660.Media;
 
 public sealed class TrackIso : Track
 {
@@ -13,7 +15,7 @@ public sealed class TrackIso : Track
 
         Sector = sectors.Single(s => stream.Length % s.GetUserDataLength() == 0);
 
-        Length = Convert.ToInt32(stream.Length / Sector.Length);
+        Length = (stream.Length / Sector.Length).ToInt32();
 
         Stream = stream;
 
@@ -41,18 +43,14 @@ public sealed class TrackIso : Track
 
     public override ISector ReadSector(in int index)
     {
-        var length = Sector.Length;
+        Stream.Position = index * Sector.Length;
 
-        var position = index * length;
-
-        Stream.Position = position;
-
-        var sector = true switch
+        var sector = Sector switch
         {
-            true when length == new SectorCooked2048().Length => ISector.Read<SectorCooked2048>(Stream),
-            true when length == new SectorCooked2324().Length => ISector.Read<SectorCooked2324>(Stream),
-            true when length == new SectorCooked2336().Length => ISector.Read<SectorCooked2336>(Stream),
-            _                                                 => throw new NotSupportedException()
+            SectorCooked2048 => ISector.Read<SectorCooked2048>(Stream),
+            SectorCooked2324 => ISector.Read<SectorCooked2324>(Stream),
+            SectorCooked2336 => ISector.Read<SectorCooked2336>(Stream),
+            _                => throw new InvalidDataException()
         };
 
         return sector;
