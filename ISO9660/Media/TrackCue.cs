@@ -1,14 +1,30 @@
 ﻿using ISO9660.CDRWIN;
+using Whatever.Extensions;
 
 namespace ISO9660.Media;
 
 public sealed class TrackCue : Track
 {
-    private const int PreGapSize = 150; // TODO move
+    private const int PreGapSize = 150;
 
     public TrackCue(CueSheetTrack track)
     {
         Stream = File.OpenRead((Track = track).File.Name);
+
+        Sector = track.Type switch
+        {
+            CueSheetTrackType.Audio             => new SectorRawAudio(),
+            CueSheetTrackType.Karaoke           => throw new NotSupportedException(track.Type.ToString()),
+            CueSheetTrackType.Mode1Cooked       => new SectorCooked2048(),
+            CueSheetTrackType.Mode1Raw          => new SectorRawMode1(),
+            CueSheetTrackType.Mode2Form1Cooked  => new SectorCooked2324(),
+            CueSheetTrackType.Mode2Form2Cooked  => new SectorCooked2336(),
+            CueSheetTrackType.Mode2Mixed        => throw new NotSupportedException(track.Type.ToString()),
+            CueSheetTrackType.Mode2Raw          => new SectorRawMode2Form1(),
+            CueSheetTrackType.InteractiveCooked => throw new NotSupportedException(track.Type.ToString()),
+            CueSheetTrackType.InteractiveRaw    => throw new NotSupportedException(track.Type.ToString()),
+            _                                   => throw new NotSupportedException(track.Type.ToString())
+        };
     }
 
     private Stream Stream { get; }
@@ -23,30 +39,7 @@ public sealed class TrackCue : Track
 
     public override int Position => GetPosition(Track, Sector.Length);
 
-    public override ISector Sector
-    {
-        get
-        {
-            var type = Track.Type;
-
-            ISector sector = type switch
-            {
-                CueSheetTrackType.Audio             => new SectorRawAudio(),
-                CueSheetTrackType.Karaoke           => throw new NotSupportedException(type.ToString()),
-                CueSheetTrackType.Mode1Cooked       => new SectorCooked2048(),
-                CueSheetTrackType.Mode1Raw          => new SectorRawMode1(),
-                CueSheetTrackType.Mode2Form1Cooked  => new SectorCooked2324(),
-                CueSheetTrackType.Mode2Form2Cooked  => new SectorCooked2336(),
-                CueSheetTrackType.Mode2Mixed        => throw new NotSupportedException(type.ToString()),
-                CueSheetTrackType.Mode2Raw          => new SectorRawMode2Form1(),
-                CueSheetTrackType.InteractiveCooked => throw new NotSupportedException(type.ToString()),
-                CueSheetTrackType.InteractiveRaw    => throw new NotSupportedException(type.ToString()),
-                _                                   => throw new NotSupportedException(type.ToString())
-            };
-
-            return sector;
-        }
-    }
+    public override ISector Sector { get; }
 
     protected override void DisposeManaged()
     {
@@ -60,18 +53,20 @@ public sealed class TrackCue : Track
             throw new ArgumentOutOfRangeException(nameof(index), index, null);
         }
 
-        var length = Sector.Length;
+        Stream.Position = index * Sector.Length;
 
-        Stream.Position = index * length;
-
-        var type = Track.Type;
-
-        var sector = type switch // TODO implement other track types
+        var sector = Sector switch
         {
-            CueSheetTrackType.Mode1Cooked => ISector.Read<SectorCooked2048>(Stream),
-            CueSheetTrackType.Mode1Raw    => ISector.Read<SectorRawMode1>(Stream),
-            CueSheetTrackType.Mode2Raw    => ISector.Read<SectorRawMode2Form1>(Stream),
-            _                             => throw new NotSupportedException($"Track mode not supported: {type}.")
+            SectorCooked2048       => ISector.Read<SectorCooked2048>(Stream),
+            SectorCooked2324       => ISector.Read<SectorCooked2324>(Stream),
+            SectorCooked2336       => ISector.Read<SectorCooked2336>(Stream),
+            SectorRawAudio         => ISector.Read<SectorRawAudio>(Stream),
+            SectorRawMode0         => ISector.Read<SectorRawMode0>(Stream),
+            SectorRawMode1         => ISector.Read<SectorRawMode1>(Stream),
+            SectorRawMode2Form1    => ISector.Read<SectorRawMode2Form1>(Stream),
+            SectorRawMode2Form2    => ISector.Read<SectorRawMode2Form2>(Stream),
+            SectorRawMode2FormLess => ISector.Read<SectorRawMode2FormLess>(Stream),
+            _                      => throw new NotSupportedException(Sector.GetType().Name)
         };
 
         return sector;
@@ -79,7 +74,7 @@ public sealed class TrackCue : Track
 
     private static int GetLength(CueSheetTrack track, in int sectorSize)
     {
-        var lengthStream = Convert.ToInt32(new FileInfo(track.File.Name).Length / sectorSize); // BUG fetch correct sector size
+        var lengthStream = (new FileInfo(track.File.Name).Length / sectorSize).ToInt32();
 
         var length = 0;
 
@@ -161,7 +156,7 @@ public sealed class TrackCue : Track
                     break;
                 }
 
-                position += Convert.ToInt32(new FileInfo(value.File.Name).Length / sectorSize);
+                position += (new FileInfo(value.File.Name).Length / sectorSize).ToInt32();
             }
         }
 
