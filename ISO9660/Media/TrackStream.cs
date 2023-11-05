@@ -1,4 +1,6 @@
-﻿namespace ISO9660.Media;
+﻿using Whatever.Extensions;
+
+namespace ISO9660.Media;
 
 internal sealed class TrackStream : Stream
     // better than exposing track stream which might represent N tracks
@@ -17,24 +19,26 @@ internal sealed class TrackStream : Stream
 
         UserDataLength = Track.Sector.GetUserDataLength();
 
+        Length = (Track.Length - Track.Position) * UserDataLength;
+
         Position = index * UserDataLength;
     }
 
-    public override bool CanRead => true;
+    public override bool CanRead { get; } = true;
 
-    public override bool CanSeek => false;
+    public override bool CanSeek { get; } = false;
 
-    public override bool CanWrite => false;
+    public override bool CanWrite { get; } = false;
 
-    public override long Length => (Track.Length - Track.Position) * UserDataLength;
+    public override long Length { get; }
 
     public override long Position
     {
         get => SectorNumber * UserDataLength + SectorOffset;
         set
         {
-            SectorNumber = Convert.ToInt32(value / UserDataLength);
-            SectorOffset = Convert.ToInt32(value % UserDataLength);
+            SectorNumber = (value / UserDataLength).ToInt32();
+            SectorOffset = (value % UserDataLength).ToInt32();
         }
     }
 
