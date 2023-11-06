@@ -1,4 +1,5 @@
 ﻿using System.CommandLine;
+using System.Diagnostics.CodeAnalysis;
 using ISO9660.Logical;
 using ISO9660.Physical;
 
@@ -53,42 +54,99 @@ internal static class Program
         return code;
     }
 
-    private static async Task Handle(string source, string target, bool cooked, string output)
+    private static async Task<Result> Handle(string source, string target, bool cooked, string output)
     {
         if (File.Exists(source) == false)
         {
-            throw new InvalidOperationException("Source file does not exist.");
+            Console.WriteLine("Source image file could not be found.");
+            return Result.InvalidSource;
         }
 
-        var type = Path.GetExtension(source).ToLowerInvariant();
-
-        using var disc = type switch
+        if (TryOpenDisc(source, out var result) == false)
         {
-            ".cue" => Disc.FromCue(source),
-            ".iso" => Disc.FromIso(source),
-            _      => throw new InvalidOperationException("Source file type not supported.")
-        };
+            Console.WriteLine("Source image file is not supported.");
+            return Result.InvalidSourceFormat;
+        }
 
-        var ifs = IsoFileSystem.Read(disc);
+        using var disc = result;
+
+        IsoFileSystem ifs;
+
+        try
+        {
+            ifs = IsoFileSystem.Read(disc);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("File system could not be read from source image.");
+            Console.WriteLine(e);
+            return Result.InvalidSystem;
+        }
 
         if (ifs.TryFindFile(target, out var file) == false)
         {
-            throw new InvalidOperationException("Target file not found in source image.");
+            Console.WriteLine("Target file could not be found in source image.");
+            return Result.InvalidTarget;
         }
 
-        Directory.CreateDirectory(output);
+        try
+        {
+            Directory.CreateDirectory(output);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Output directory is not a valid path.");
+            Console.WriteLine(e);
+            return Result.InvalidOutput;
+        }
 
-        var path = Path.Combine(output, file.FileName);
+        var path = Path.GetFullPath(Path.Combine(output, file.FileName));
 
         await using var stream = File.Create(path);
 
-        if (cooked)
+        try
         {
-            disc.ReadFileUser(file, stream);
+            if (cooked)
+            {
+                disc.ReadFileUser(file, stream);
+            }
+            else
+            {
+                disc.ReadFileRaw(file, stream);
+            }
         }
-        else
+        catch (Exception e)
         {
-            disc.ReadFileRaw(file, stream);
+            Console.WriteLine("Target file could not be read from source image.");
+            Console.WriteLine(e);
+            return Result.ReadingFailed;
         }
+
+        return Result.Success;
+    }
+
+    private static bool TryOpenDisc(string source, [MaybeNullWhen(false)] out Disc result)
+    {
+        var type = Path.GetExtension(source).ToLowerInvariant();
+
+        result = type switch
+        {
+            ".cue" => Disc.FromCue(source),
+            ".iso" => Disc.FromIso(source),
+            _      => null
+        };
+
+        return result != null;
+    }
+
+    private enum Result
+    {
+        Success = 0,
+        InvalidSource = 1,
+        InvalidSourceFormat = 2,
+        InvalidSystem = 3,
+        InvalidTarget = 4,
+        InvalidOutput = 5,
+        ReadingFailed = 6
     }
 }
