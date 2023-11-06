@@ -19,9 +19,9 @@ public sealed class UnitTestIsoFindFile : UnitTestBase
 
     [TestMethod]
     [DynamicData(nameof(TestIsoFindFileInit), DynamicDataSourceType.Method)]
-    public void TestIsoFindFile(string source, string target, bool exists)
+    public async Task TestIsoFindFile(string source, string target, bool exists)
     {
-        using var disc = Disc.FromCue(source);
+        await using var disc = Disc.FromCue(source);
 
         var ifs = IsoFileSystem.Read(disc);
 

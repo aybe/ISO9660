@@ -41,6 +41,11 @@ public sealed class TrackCue : Track
 
     public override ISector Sector { get; }
 
+    protected override async ValueTask DisposeAsyncCore()
+    {
+        await Stream.DisposeAsync();
+    }
+
     protected override void DisposeManaged()
     {
         Stream.Dispose();

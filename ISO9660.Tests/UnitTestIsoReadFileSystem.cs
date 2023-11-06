@@ -22,11 +22,11 @@ public sealed class UnitTestIsoReadFileSystem : UnitTestBase
 
     [TestMethod]
     [DynamicData(nameof(TestIsoReadFileInit), DynamicDataSourceType.Method)]
-    public void TestIsoReadFileSystem(string path)
+    public async Task TestIsoReadFileSystem(string path)
     {
         var extension = Path.GetExtension(path).ToLowerInvariant();
 
-        using var disc = extension switch
+        await using var disc = extension switch
         {
             ".cue" => Disc.FromCue(path),
             ".iso" => Disc.FromIso(path),

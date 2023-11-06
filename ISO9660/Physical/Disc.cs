@@ -3,9 +3,17 @@ using Whatever.Extensions;
 
 namespace ISO9660.Physical;
 
-public sealed partial class Disc : Disposable
+public sealed partial class Disc : DisposableAsync
 {
     public IList<Track> Tracks { get; } = new List<Track>();
+
+    protected override async ValueTask DisposeAsyncCore()
+    {
+        foreach (var track in Tracks)
+        {
+            await track.DisposeAsync();
+        }
+    }
 
     protected override void DisposeManaged()
     {

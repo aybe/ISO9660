@@ -3,7 +3,7 @@ using Whatever.Extensions;
 
 namespace ISO9660.Physical;
 
-public abstract class Track : Disposable
+public abstract class Track : DisposableAsync
 {
     public abstract bool Audio { get; }
 

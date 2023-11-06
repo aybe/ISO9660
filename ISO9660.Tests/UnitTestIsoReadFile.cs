@@ -20,9 +20,9 @@ public sealed class UnitTestIsoReadFile : UnitTestBase
 
     [TestMethod]
     [DynamicData(nameof(TestIsoReadFileInit), DynamicDataSourceType.Method)]
-    public void TestIsoReadFile(string source, string target, string sha256, bool cooked)
+    public async Task TestIsoReadFile(string source, string target, string sha256, bool cooked)
     {
-        using var disc = Disc.FromCue(source);
+        await using var disc = Disc.FromCue(source);
 
         var ifs = IsoFileSystem.Read(disc);
 
@@ -45,7 +45,7 @@ public sealed class UnitTestIsoReadFile : UnitTestBase
 
         stream.Position = 0;
 
-        var hashData = SHA256.HashData(stream);
+        var hashData = await SHA256.HashDataAsync(stream);
 
         var hashText = string.Concat(hashData.Select(s => s.ToString("x2")));
 
