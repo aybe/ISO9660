@@ -4,17 +4,17 @@ namespace ISO9660.Physical;
 
 public static class DiscExtensions
 {
-    public static void ReadFileRaw(this Disc disc, IsoFileSystemEntryFile file, Stream stream)
+    public static async Task ReadFileRawAsync(this Disc disc, IsoFileSystemEntryFile file, Stream stream)
     {
-        ReadFile(disc, file, stream, ReadFileRaw);
+        await ReadFileAsync(disc, file, stream, ReadFileRaw);
     }
 
-    public static void ReadFileUser(this Disc disc, IsoFileSystemEntryFile file, Stream stream)
+    public static async Task ReadFileUserAsync(this Disc disc, IsoFileSystemEntryFile file, Stream stream)
     {
-        ReadFile(disc, file, stream, ReadFileUser);
+        await ReadFileAsync(disc, file, stream, ReadFileUser);
     }
 
-    private static void ReadFile(Disc disc, IsoFileSystemEntryFile file, Stream stream, ReadFileHandler handler)
+    private static async Task ReadFileAsync(Disc disc, IsoFileSystemEntryFile file, Stream stream, ReadFileHandler handler)
     {
         var position = (int)file.Position;
 
@@ -25,11 +25,11 @@ public static class DiscExtensions
 
         for (var i = position; i < position + sectors; i++)
         {
-            var sector = track.ReadSector(i);
+            var sector = await track.ReadSectorAsync(i);
 
-            var span = handler(file, stream, sector);
+            var buffer = handler(file, stream, sector).ToArray();
 
-            stream.Write(span);
+            await stream.WriteAsync(buffer);
         }
     }
 

@@ -108,11 +108,11 @@ internal static class Program
         {
             if (cooked)
             {
-                disc.ReadFileUser(file, stream);
+                disc.ReadFileUserAsync(file, stream);
             }
             else
             {
-                disc.ReadFileRaw(file, stream);
+                disc.ReadFileRawAsync(file, stream);
             }
         }
         catch (Exception e)

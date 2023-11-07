@@ -36,11 +36,11 @@ public sealed class UnitTestIsoReadFile : UnitTestBase
 
         if (cooked)
         {
-            disc.ReadFileUser(result, stream);
+            await disc.ReadFileUserAsync(result, stream);
         }
         else
         {
-            disc.ReadFileRaw(result, stream);
+            await disc.ReadFileRawAsync(result, stream);
         }
 
         stream.Position = 0;
