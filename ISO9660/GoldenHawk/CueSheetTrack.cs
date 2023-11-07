@@ -21,7 +21,7 @@ public sealed class CueSheetTrack : CueSheetElement
 
     public IList<CueSheetTrackIndex> Indices { get; } = new List<CueSheetTrackIndex>();
 
-    public CueSheetTrackFlags Flags { get; set; }
+    public CueSheetTrackFlags Flags { get; set; } = CueSheetTrackFlags.None;
 
     public string? Title { get; set; }
 

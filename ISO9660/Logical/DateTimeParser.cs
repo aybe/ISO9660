@@ -2,45 +2,45 @@ namespace ISO9660.Logical;
 
 public static class DateTimeParser
 {
-    public static bool TryParse(in int year, in int month, in int day, in int hour, in int minute, in int second, int millisecond, in TimeSpan offset,
-        out DateTimeOffset result)
+    public static bool TryParse(
+        in int year, in int month, in int day, in int hour, in int minute, in int second, int millisecond, in TimeSpan offset, out DateTimeOffset result)
     {
         result = default;
 
         var min = DateTimeOffset.MinValue;
         var max = DateTimeOffset.MaxValue;
 
-        if (!IsInRange(year, min.Year, max.Year))
+        if (!IsBetween(year, min.Year, max.Year))
         {
             return false;
         }
 
-        if (!IsInRange(month, min.Month, max.Month))
+        if (!IsBetween(month, min.Month, max.Month))
         {
             return false;
         }
 
-        if (!IsInRange(day, min.Day, max.Day))
+        if (!IsBetween(day, min.Day, max.Day))
         {
             return false;
         }
 
-        if (!IsInRange(hour, min.Hour, max.Hour))
+        if (!IsBetween(hour, min.Hour, max.Hour))
         {
             return false;
         }
 
-        if (!IsInRange(minute, min.Minute, max.Minute))
+        if (!IsBetween(minute, min.Minute, max.Minute))
         {
             return false;
         }
 
-        if (!IsInRange(second, min.Second, max.Second))
+        if (!IsBetween(second, min.Second, max.Second))
         {
             return false;
         }
 
-        if (!IsInRange(millisecond, min.Millisecond, max.Millisecond))
+        if (!IsBetween(millisecond, min.Millisecond, max.Millisecond))
         {
             return false;
         }
@@ -50,7 +50,7 @@ public static class DateTimeParser
         return true;
     }
 
-    private static bool IsInRange<T>(T value, T min, T max) where T : IComparable<T>
+    private static bool IsBetween<T>(T value, T min, T max) where T : IComparable<T>
     {
         return value.CompareTo(min) >= 0 && value.CompareTo(max) <= 0;
     }

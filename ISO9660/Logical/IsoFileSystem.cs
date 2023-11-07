@@ -20,7 +20,7 @@ public sealed class IsoFileSystem : Disposable
     {
         var descriptorSet = ReadVolumeDescriptors(disc);
 
-        var rootDirectory = ReadRootDirectory(disc, descriptorSet.VolumeDescriptorPrimary);
+        var rootDirectory = ReadRootDirectory(disc, descriptorSet.PrimaryVolumeDescriptor);
 
         var isoFileSystem = new IsoFileSystem(descriptorSet, rootDirectory);
 
@@ -183,7 +183,7 @@ public sealed class IsoFileSystem : Disposable
 
         while (pathTableRead < pathTableSize)
         {
-            var recordPosition = reader.BaseStream.Position; // BUG discrepancy when using 2352, not with 2048
+            var recordPosition = reader.BaseStream.Position;
 
             var record = new PathTableRecord(reader);
 
@@ -228,7 +228,7 @@ public sealed class IsoFileSystem : Disposable
 
             var length = records[0].DataLength;
 
-            var blocks = length / 2048 - 1; // TODO constant
+            var blocks = length / 2048 - 1;
 
             for (var i = 0; i < blocks; i++)
             {
