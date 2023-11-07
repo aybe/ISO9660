@@ -320,6 +320,15 @@ public static partial class CueSheetParser
             return;
         }
 
+        if (context.TryPeek<CueSheetFile>(out var file))
+        {
+            ThrowIfNotNull(context, file.Title);
+
+            file.Title = title;
+
+            return;
+        }
+
         if (context.TryPeek<CueSheet>(out var sheet))
         {
             ThrowIfNotNull(context, sheet.Title);
@@ -329,7 +338,7 @@ public static partial class CueSheetParser
             return;
         }
 
-        const string message = "Failed to find parent track or sheet for title";
+        const string message = "Failed to find parent track/file/sheet for title";
 
         throw new InvalidOperationException(message);
     }
