@@ -56,4 +56,19 @@ public interface ISector
 
         return read;
     }
+
+    /// <summary>
+    ///     Reads a sector of specified type from a stream.
+    /// </summary>
+    public static async Task<ISector> ReadAsync<T>(Stream stream)
+        where T : struct, ISector
+    {
+        var buffer = new byte[Unsafe.SizeOf<T>()];
+
+        await stream.ReadExactlyAsync(buffer);
+
+        var sector = MemoryMarshal.Read<T>(buffer);
+
+        return sector;
+    }
 }
