@@ -56,6 +56,11 @@ public sealed class TrackCue : Track
         return ReadSector(index, Stream);
     }
 
+    public override Task<ISector> ReadSectorAsync(in int index)
+    {
+        return ReadSectorAsync(index, Stream);
+    }
+
     private static int GetLength(CueSheetTrack track, in int sectorSize)
     {
         var lengthStream = (new FileInfo(track.File.Name).Length / sectorSize).ToInt32();

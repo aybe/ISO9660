@@ -50,4 +50,9 @@ public sealed class TrackIso : Track
     {
         return ReadSector(index, Stream);
     }
+
+    public override Task<ISector> ReadSectorAsync(in int index)
+    {
+        return ReadSectorAsync(index, Stream);
+    }
 }

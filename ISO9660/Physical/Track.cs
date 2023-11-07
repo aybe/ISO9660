@@ -27,6 +27,8 @@ public abstract class Track : DisposableAsync
 
     public abstract ISector ReadSector(in int index);
 
+    public abstract Task<ISector> ReadSectorAsync(in int index);
+
     protected ISector ReadSector(in int index, in Stream stream)
     {
         if (index < Position || index >= Length)
@@ -47,6 +49,32 @@ public abstract class Track : DisposableAsync
             SectorRawMode2Form1    => ISector.Read<SectorRawMode2Form1>(stream),
             SectorRawMode2Form2    => ISector.Read<SectorRawMode2Form2>(stream),
             SectorRawMode2FormLess => ISector.Read<SectorRawMode2FormLess>(stream),
+            _                      => throw new NotSupportedException(Sector.GetType().Name)
+        };
+
+        return sector;
+    }
+
+    protected Task<ISector> ReadSectorAsync(in int index, in Stream stream)
+    {
+        if (index < Position || index >= Length)
+        {
+            throw new ArgumentOutOfRangeException(nameof(index), index, null);
+        }
+
+        stream.Position = index * Sector.Length;
+
+        var sector = Sector switch
+        {
+            SectorCooked2048       => ISector.ReadAsync<SectorCooked2048>(stream),
+            SectorCooked2324       => ISector.ReadAsync<SectorCooked2324>(stream),
+            SectorCooked2336       => ISector.ReadAsync<SectorCooked2336>(stream),
+            SectorRawAudio         => ISector.ReadAsync<SectorRawAudio>(stream),
+            SectorRawMode0         => ISector.ReadAsync<SectorRawMode0>(stream),
+            SectorRawMode1         => ISector.ReadAsync<SectorRawMode1>(stream),
+            SectorRawMode2Form1    => ISector.ReadAsync<SectorRawMode2Form1>(stream),
+            SectorRawMode2Form2    => ISector.ReadAsync<SectorRawMode2Form2>(stream),
+            SectorRawMode2FormLess => ISector.ReadAsync<SectorRawMode2FormLess>(stream),
             _                      => throw new NotSupportedException(Sector.GetType().Name)
         };
 
