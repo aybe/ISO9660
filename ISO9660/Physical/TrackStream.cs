@@ -3,7 +3,7 @@
 namespace ISO9660.Physical;
 
 internal sealed class TrackStream : Stream
-    // better than exposing track stream which might represent N tracks
+    // this approach is better than a track exposing its stream, which might in turn represent N tracks
 {
     private readonly Track Track;
 
@@ -47,6 +47,7 @@ internal sealed class TrackStream : Stream
     }
 
     public override int Read(byte[] bytes, int index, int count)
+        // thus far the only consumer of this type is BinaryReader, i.e. no point in implementing ReadAsync
     {
         ValidateBufferArguments(bytes, index, count);
 
