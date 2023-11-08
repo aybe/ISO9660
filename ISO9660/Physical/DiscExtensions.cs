@@ -1,4 +1,5 @@
 ﻿using ISO9660.Logical;
+using Whatever.Extensions;
 
 namespace ISO9660.Physical;
 
@@ -23,17 +24,19 @@ public static class DiscExtensions
 
         var sectors = (int)Math.Ceiling((double)file.Length / track.Sector.GetUserDataLength());
 
+        using var manager = new SpanMemoryManager<byte>();
+
         for (var i = position; i < position + sectors; i++)
         {
             var sector = await track.ReadSectorAsync(i);
 
-            var buffer = handler(file, stream, sector).ToArray();
+            handler(file, stream, sector, manager);
 
-            await stream.WriteAsync(buffer);
+            await stream.WriteAsync(manager.Memory);
         }
     }
 
-    private static Span<byte> ReadFileRaw(IsoFileSystemEntryFile file, Stream stream, ISector sector)
+    private static void ReadFileRaw(IsoFileSystemEntryFile file, Stream stream, ISector sector, SpanMemoryManager<byte> manager)
     {
         var data = sector.GetData();
 
@@ -41,10 +44,10 @@ public static class DiscExtensions
 
         var span = data[..size];
 
-        return span;
+        manager.SetSpan(span);
     }
 
-    private static Span<byte> ReadFileUser(IsoFileSystemEntryFile file, Stream stream, ISector sector)
+    private static void ReadFileUser(IsoFileSystemEntryFile file, Stream stream, ISector sector, SpanMemoryManager<byte> manager)
     {
         var data = sector.GetUserData();
 
@@ -52,8 +55,8 @@ public static class DiscExtensions
 
         var span = data[..size];
 
-        return span;
+        manager.SetSpan(span);
     }
 
-    private delegate Span<byte> ReadFileHandler(IsoFileSystemEntryFile file, Stream stream, ISector sector);
+    private delegate void ReadFileHandler(IsoFileSystemEntryFile file, Stream stream, ISector sector, SpanMemoryManager<byte> manager);
 }
