@@ -1,6 +1,6 @@
 namespace ISO9660.Logical;
 
-public readonly struct DirectoryRecordDateTime
+public sealed class DirectoryRecordDateTime
 {
     public DirectoryRecordDateTime(Stream stream)
     {
