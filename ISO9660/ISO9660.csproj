@@ -8,11 +8,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="JetBrains.Annotations" Version="2023.2.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Whatever.Extensions\Whatever.Extensions.csproj" />
+		<PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
 	</ItemGroup>
 
 </Project>
