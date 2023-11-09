@@ -4,11 +4,11 @@ namespace ISO9660.Logical;
 
 public class VolumeDescriptor
 {
-    internal VolumeDescriptor(BinaryReader reader)
+    internal VolumeDescriptor(Stream stream)
     {
-        VolumeDescriptorType    = reader.Read<VolumeDescriptorType>(); // 711
-        StandardIdentifier      = reader.ReadStringAscii(5);
-        VolumeDescriptorVersion = reader.ReadIso711();
+        VolumeDescriptorType    = stream.Read<VolumeDescriptorType>(); // 711
+        StandardIdentifier      = stream.ReadStringAscii(5);
+        VolumeDescriptorVersion = stream.ReadIso711();
     }
 
     protected VolumeDescriptor(VolumeDescriptor descriptor)

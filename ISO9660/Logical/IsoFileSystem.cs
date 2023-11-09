@@ -80,9 +80,9 @@ public sealed class IsoFileSystem : Disposable
         {
             // NOTE here we don't need a 'stream of sectors' as opposed to PTRs which can overlap sectors
 
-            using var reader = disc.Tracks.First().GetBinaryReader(sectorIndex);
+            using var stream = disc.Tracks.First().GetStream(sectorIndex);
 
-            var descriptor = new VolumeDescriptor(reader);
+            var descriptor = new VolumeDescriptor(stream);
 
             if (Enum.IsDefined(descriptor.VolumeDescriptorType) == false)
             {
@@ -96,11 +96,11 @@ public sealed class IsoFileSystem : Disposable
 
             descriptor = descriptor.VolumeDescriptorType switch
             {
-                VolumeDescriptorType.BootRecord                    => new VolumeDescriptorBootRecord(descriptor, reader),
-                VolumeDescriptorType.PrimaryVolumeDescriptor       => new VolumeDescriptorPrimary(descriptor, reader),
-                VolumeDescriptorType.SupplementaryVolumeDescriptor => new VolumeDescriptorSupplementary(descriptor, reader),
-                VolumeDescriptorType.VolumePartitionDescriptor     => new VolumeDescriptorPartition(descriptor, reader),
-                VolumeDescriptorType.VolumeDescriptorSetTerminator => new VolumeDescriptorSetTerminator(descriptor, reader),
+                VolumeDescriptorType.BootRecord                    => new VolumeDescriptorBootRecord(descriptor, stream),
+                VolumeDescriptorType.PrimaryVolumeDescriptor       => new VolumeDescriptorPrimary(descriptor, stream),
+                VolumeDescriptorType.SupplementaryVolumeDescriptor => new VolumeDescriptorSupplementary(descriptor, stream),
+                VolumeDescriptorType.VolumePartitionDescriptor     => new VolumeDescriptorPartition(descriptor, stream),
+                VolumeDescriptorType.VolumeDescriptorSetTerminator => new VolumeDescriptorSetTerminator(descriptor, stream),
                 _                                                  => throw new NotSupportedException(descriptor.VolumeDescriptorType.ToString())
             };
 
@@ -179,15 +179,15 @@ public sealed class IsoFileSystem : Disposable
 
         var track = disc.Tracks.First();
 
-        using var reader = track.GetBinaryReader(Convert.ToInt32(pvd.LocationOfOccurrenceOfTypeLPathTable));
+        using var stream = track.GetStream(Convert.ToInt32(pvd.LocationOfOccurrenceOfTypeLPathTable));
 
         while (pathTableRead < pathTableSize)
         {
-            var recordPosition = reader.BaseStream.Position;
+            var recordPosition = stream.Position;
 
-            var record = new PathTableRecord(reader);
+            var record = new PathTableRecord(stream);
 
-            var recordLength = reader.BaseStream.Position - recordPosition;
+            var recordLength = stream.Position - recordPosition;
 
             pathTableRead += recordLength;
 
@@ -199,11 +199,11 @@ public sealed class IsoFileSystem : Disposable
 
     private static void ReadDirectoryRecords(Disc disc, ICollection<DirectoryRecord> records, uint extent)
     {
-        using var reader = disc.Tracks.First().GetBinaryReader(Convert.ToInt32(extent));
+        using var stream = disc.Tracks.First().GetStream(Convert.ToInt32(extent));
 
         while (true)
         {
-            var record = new DirectoryRecord(reader);
+            var record = new DirectoryRecord(stream);
 
             if (record.LengthOfDirectoryRecord == 0)
             {

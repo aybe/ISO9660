@@ -1,22 +1,24 @@
+using Whatever.Extensions;
+
 namespace ISO9660.Logical;
 
 public sealed class PathTableRecord
 {
-    public PathTableRecord(BinaryReader reader)
+    public PathTableRecord(Stream stream)
     {
-        LengthOfDirectoryIdentifier = reader.ReadIso711();
+        LengthOfDirectoryIdentifier = stream.ReadIso711();
 
-        ExtendedAttributeRecordLength = reader.ReadIso711();
+        ExtendedAttributeRecordLength = stream.ReadIso711();
 
-        LocationOfExtent = reader.ReadIso731();
+        LocationOfExtent = stream.ReadIso731();
 
-        ParentDirectoryNumber = reader.ReadIso721();
+        ParentDirectoryNumber = stream.ReadIso721();
 
-        DirectoryIdentifier = reader.ReadIsoString(LengthOfDirectoryIdentifier,
+        DirectoryIdentifier = stream.ReadIsoString(LengthOfDirectoryIdentifier,
             IsoStringFlags.DCharacters | IsoStringFlags.Byte00 | IsoStringFlags.Byte01);
 
         PaddingField = LengthOfDirectoryIdentifier % 2 is not 0
-            ? reader.ReadByte()
+            ? stream.ReadByte().ToByte()
             : null;
     }
 

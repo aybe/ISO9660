@@ -4,20 +4,20 @@ namespace ISO9660.Logical;
 
 public sealed class VolumeDescriptorPartition : VolumeDescriptor
 {
-    public VolumeDescriptorPartition(VolumeDescriptor descriptor, BinaryReader reader)
+    public VolumeDescriptorPartition(VolumeDescriptor descriptor, Stream stream)
         : base(descriptor)
     {
-        reader.Seek(1);
+        stream.Seek(1, SeekOrigin.Current);
 
-        SystemIdentifier = reader.ReadIsoString(32, IsoStringFlags.ACharacters);
+        SystemIdentifier = stream.ReadIsoString(32, IsoStringFlags.ACharacters);
 
-        VolumePartitionIdentifier = reader.ReadIsoString(32, IsoStringFlags.DCharacters);
+        VolumePartitionIdentifier = stream.ReadIsoString(32, IsoStringFlags.DCharacters);
 
-        VolumePartitionLocation = reader.ReadIso733();
+        VolumePartitionLocation = stream.ReadIso733();
 
-        VolumePartitionSize = reader.ReadIso733();
+        VolumePartitionSize = stream.ReadIso733();
 
-        SystemUse = reader.ReadBytes(1960);
+        SystemUse = stream.ReadExactly(1960);
     }
 
     public string SystemIdentifier { get; }

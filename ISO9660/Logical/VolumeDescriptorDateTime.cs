@@ -4,23 +4,23 @@ namespace ISO9660.Logical;
 
 public sealed class VolumeDescriptorDateTime
 {
-    public VolumeDescriptorDateTime(BinaryReader reader)
+    public VolumeDescriptorDateTime(Stream stream)
     {
-        Year = reader.ReadStringAscii(4);
+        Year = stream.ReadStringAscii(4);
 
-        MonthOfTheYear = reader.ReadStringAscii(2);
+        MonthOfTheYear = stream.ReadStringAscii(2);
 
-        DayOfTheMonth = reader.ReadStringAscii(2);
+        DayOfTheMonth = stream.ReadStringAscii(2);
 
-        HourOfTheDay = reader.ReadStringAscii(2);
+        HourOfTheDay = stream.ReadStringAscii(2);
 
-        MinuteOfTheHour = reader.ReadStringAscii(2);
+        MinuteOfTheHour = stream.ReadStringAscii(2);
 
-        SecondOfTheMinute = reader.ReadStringAscii(2);
+        SecondOfTheMinute = stream.ReadStringAscii(2);
 
-        HundredthsOfASecond = reader.ReadStringAscii(2);
+        HundredthsOfASecond = stream.ReadStringAscii(2);
 
-        OffsetFromGreenwichMeanTime = reader.ReadIso712();
+        OffsetFromGreenwichMeanTime = stream.ReadIso712();
     }
 
     public string Year { get; }

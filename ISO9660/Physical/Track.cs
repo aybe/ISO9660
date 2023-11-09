@@ -1,5 +1,4 @@
-﻿using System.Text;
-using Whatever.Extensions;
+﻿using Whatever.Extensions;
 
 namespace ISO9660.Physical;
 
@@ -15,14 +14,14 @@ public abstract class Track : DisposableAsync
 
     public abstract ISector Sector { get; }
 
-    public BinaryReader GetBinaryReader(in int sector)
+    public Stream GetStream(in int sector)
     {
         if (sector < Position || sector >= Position + Length)
         {
             throw new ArgumentOutOfRangeException(nameof(sector), sector, null);
         }
 
-        return new BinaryReader(new TrackStream(this, sector), Encoding.Default, true);
+        return new TrackStream(this, sector);
     }
 
     public abstract ISector ReadSector(in int index);

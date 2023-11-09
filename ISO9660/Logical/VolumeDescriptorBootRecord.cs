@@ -1,13 +1,15 @@
+using Whatever.Extensions;
+
 namespace ISO9660.Logical;
 
 public sealed class VolumeDescriptorBootRecord : VolumeDescriptor
 {
-    public VolumeDescriptorBootRecord(VolumeDescriptor descriptor, BinaryReader reader)
+    public VolumeDescriptorBootRecord(VolumeDescriptor descriptor, Stream stream)
         : base(descriptor)
     {
-        BootSystemIdentifier = reader.ReadIsoString(32, IsoStringFlags.ACharacters);
-        BootIdentifier       = reader.ReadIsoString(32, IsoStringFlags.ACharacters);
-        BootSystemUse        = reader.ReadBytes(1977);
+        BootSystemIdentifier = stream.ReadIsoString(32, IsoStringFlags.ACharacters);
+        BootIdentifier       = stream.ReadIsoString(32, IsoStringFlags.ACharacters);
+        BootSystemUse        = stream.ReadExactly(1977);
     }
 
     public string BootSystemIdentifier { get; }

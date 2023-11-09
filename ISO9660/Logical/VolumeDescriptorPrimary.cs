@@ -4,68 +4,68 @@ namespace ISO9660.Logical;
 
 public sealed class VolumeDescriptorPrimary : VolumeDescriptor
 {
-    public VolumeDescriptorPrimary(VolumeDescriptor descriptor, BinaryReader reader)
+    public VolumeDescriptorPrimary(VolumeDescriptor descriptor, Stream stream)
         : base(descriptor)
     {
-        reader.Seek(1);
+        stream.Seek(1, SeekOrigin.Current);
 
-        SystemIdentifier = reader.ReadIsoString(32, IsoStringFlags.ACharacters);
+        SystemIdentifier = stream.ReadIsoString(32, IsoStringFlags.ACharacters);
 
-        VolumeIdentifier = reader.ReadIsoString(32, IsoStringFlags.DCharacters);
+        VolumeIdentifier = stream.ReadIsoString(32, IsoStringFlags.DCharacters);
 
-        reader.Seek(8);
+        stream.Seek(8, SeekOrigin.Current);
 
-        VolumeSpaceSize = reader.ReadIso733();
+        VolumeSpaceSize = stream.ReadIso733();
 
-        reader.Seek(32);
+        stream.Seek(32, SeekOrigin.Current);
 
-        VolumeSetSize = reader.ReadIso723();
+        VolumeSetSize = stream.ReadIso723();
 
-        VolumeSequenceNumber = reader.ReadIso723();
+        VolumeSequenceNumber = stream.ReadIso723();
 
-        LogicalBlockSize = reader.ReadIso723();
+        LogicalBlockSize = stream.ReadIso723();
 
-        PathTableSize = reader.ReadIso733();
+        PathTableSize = stream.ReadIso733();
 
-        LocationOfOccurrenceOfTypeLPathTable = reader.ReadIso731();
+        LocationOfOccurrenceOfTypeLPathTable = stream.ReadIso731();
 
-        LocationOfOptionalOccurrenceOfTypeLPathTable = reader.ReadIso731();
+        LocationOfOptionalOccurrenceOfTypeLPathTable = stream.ReadIso731();
 
-        LocationOfOccurrenceOfTypeMPathTable = reader.ReadIso732();
+        LocationOfOccurrenceOfTypeMPathTable = stream.ReadIso732();
 
-        LocationOfOptionalOccurrenceOfTypeMPathTable = reader.ReadIso732();
+        LocationOfOptionalOccurrenceOfTypeMPathTable = stream.ReadIso732();
 
-        DirectoryRecordForRootDirectory = new DirectoryRecord(reader);
+        DirectoryRecordForRootDirectory = new DirectoryRecord(stream);
 
-        VolumeSetIdentifier = reader.ReadIsoString(128, IsoStringFlags.DCharacters);
+        VolumeSetIdentifier = stream.ReadIsoString(128, IsoStringFlags.DCharacters);
 
-        PublisherIdentifier = reader.ReadIsoString(128, IsoStringFlags.ACharacters);
+        PublisherIdentifier = stream.ReadIsoString(128, IsoStringFlags.ACharacters);
 
-        DataPreparerIdentifier = reader.ReadIsoString(128, IsoStringFlags.ACharacters);
+        DataPreparerIdentifier = stream.ReadIsoString(128, IsoStringFlags.ACharacters);
 
-        ApplicationIdentifier = reader.ReadIsoString(128, IsoStringFlags.ACharacters);
+        ApplicationIdentifier = stream.ReadIsoString(128, IsoStringFlags.ACharacters);
 
-        CopyrightFileIdentifier = reader.ReadIsoString(37, IsoStringFlags.DCharacters | IsoStringFlags.Separator1 | IsoStringFlags.Separator2);
+        CopyrightFileIdentifier = stream.ReadIsoString(37, IsoStringFlags.DCharacters | IsoStringFlags.Separator1 | IsoStringFlags.Separator2);
 
-        AbstractFileIdentifier = reader.ReadIsoString(37, IsoStringFlags.DCharacters | IsoStringFlags.Separator1 | IsoStringFlags.Separator2);
+        AbstractFileIdentifier = stream.ReadIsoString(37, IsoStringFlags.DCharacters | IsoStringFlags.Separator1 | IsoStringFlags.Separator2);
 
-        BibliographicFileIdentifier = reader.ReadIsoString(37, IsoStringFlags.DCharacters | IsoStringFlags.Separator1 | IsoStringFlags.Separator2);
+        BibliographicFileIdentifier = stream.ReadIsoString(37, IsoStringFlags.DCharacters | IsoStringFlags.Separator1 | IsoStringFlags.Separator2);
 
-        VolumeCreationDateAndTime = new VolumeDescriptorDateTime(reader);
+        VolumeCreationDateAndTime = new VolumeDescriptorDateTime(stream);
 
-        VolumeModificationDateAndTime = new VolumeDescriptorDateTime(reader);
+        VolumeModificationDateAndTime = new VolumeDescriptorDateTime(stream);
 
-        VolumeExpirationDateAndTime = new VolumeDescriptorDateTime(reader);
+        VolumeExpirationDateAndTime = new VolumeDescriptorDateTime(stream);
 
-        VolumeEffectiveDateAndTime = new VolumeDescriptorDateTime(reader);
+        VolumeEffectiveDateAndTime = new VolumeDescriptorDateTime(stream);
 
-        FileStructureVersion = reader.ReadIso711();
+        FileStructureVersion = stream.ReadIso711();
 
-        Reserved1 = reader.ReadByte();
+        Reserved1 = stream.ReadByte().ToByte();
 
-        ApplicationUse = reader.ReadBytes(512);
+        ApplicationUse = stream.ReadExactly(512);
 
-        Reserved2 = reader.ReadBytes(653);
+        Reserved2 = stream.ReadExactly(653);
     }
 
     public string SystemIdentifier { get; }

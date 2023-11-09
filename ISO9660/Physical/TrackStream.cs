@@ -47,7 +47,6 @@ internal sealed class TrackStream : Stream
     }
 
     public override int Read(byte[] bytes, int index, int count)
-        // thus far the only consumer of this type is BinaryReader, i.e. no point in implementing ReadAsync
     {
         ValidateBufferArguments(bytes, index, count);
 

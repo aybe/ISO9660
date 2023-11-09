@@ -4,48 +4,46 @@ namespace ISO9660.Logical;
 
 public sealed class DirectoryRecord
 {
-    public DirectoryRecord(BinaryReader reader)
+    public DirectoryRecord(Stream stream)
     {
-        var stream = reader.BaseStream;
-
         var position = stream.Position;
 
-        LengthOfDirectoryRecord = reader.ReadIso711();
+        LengthOfDirectoryRecord = stream.ReadIso711();
 
         if (LengthOfDirectoryRecord == 0)
         {
             return;
         }
 
-        ExtendedAttributeRecordLength = reader.ReadIso711();
+        ExtendedAttributeRecordLength = stream.ReadIso711();
 
-        LocationOfExtent = reader.ReadIso733();
+        LocationOfExtent = stream.ReadIso733();
 
-        DataLength = reader.ReadIso733();
+        DataLength = stream.ReadIso733();
 
-        RecordingDateAndTime = new DirectoryRecordDateTime(reader);
+        RecordingDateAndTime = new DirectoryRecordDateTime(stream);
 
-        FileFlags = reader.Read<DirectoryRecordFlags>();
+        FileFlags = stream.Read<DirectoryRecordFlags>();
 
-        FileUnitSize = reader.ReadIso711();
+        FileUnitSize = stream.ReadIso711();
 
-        InterleaveGapSize = reader.ReadIso711();
+        InterleaveGapSize = stream.ReadIso711();
 
-        VolumeSequenceNumber = reader.ReadIso723();
+        VolumeSequenceNumber = stream.ReadIso723();
 
-        LengthOfFileIdentifier = reader.ReadIso711();
+        LengthOfFileIdentifier = stream.ReadIso711();
 
-        FileIdentifier = reader.ReadIsoString(LengthOfFileIdentifier,
+        FileIdentifier = stream.ReadIsoString(LengthOfFileIdentifier,
             IsoStringFlags.DCharacters | IsoStringFlags.Separator1 | IsoStringFlags.Separator2 | IsoStringFlags.Byte00 | IsoStringFlags.Byte01);
 
         PaddingField = LengthOfFileIdentifier % 2 is 0
-            ? reader.ReadByte()
+            ? stream.ReadByte().ToByte()
             : null;
 
         var drLen = stream.Position - position;
         var suLen = (int)(LengthOfDirectoryRecord - drLen);
 
-        SystemUse = reader.ReadBytes(suLen);
+        SystemUse = stream.ReadExactly(suLen);
     }
 
     public byte LengthOfDirectoryRecord { get; }

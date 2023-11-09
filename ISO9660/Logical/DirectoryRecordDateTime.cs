@@ -2,15 +2,15 @@ namespace ISO9660.Logical;
 
 public readonly struct DirectoryRecordDateTime
 {
-    public DirectoryRecordDateTime(BinaryReader reader)
+    public DirectoryRecordDateTime(Stream stream)
     {
-        NumberOfYearsSince1900      = reader.ReadIso711();
-        MonthOfTheYear              = reader.ReadIso711();
-        DayOfTheMonth               = reader.ReadIso711();
-        HourOfTheDay                = reader.ReadIso711();
-        MinuteOfTheHour             = reader.ReadIso711();
-        SecondOfTheMinute           = reader.ReadIso711();
-        OffsetFromGreenwichMeanTime = reader.ReadIso712();
+        NumberOfYearsSince1900      = stream.ReadIso711();
+        MonthOfTheYear              = stream.ReadIso711();
+        DayOfTheMonth               = stream.ReadIso711();
+        HourOfTheDay                = stream.ReadIso711();
+        MinuteOfTheHour             = stream.ReadIso711();
+        SecondOfTheMinute           = stream.ReadIso711();
+        OffsetFromGreenwichMeanTime = stream.ReadIso712();
     }
 
     public byte NumberOfYearsSince1900 { get; }
