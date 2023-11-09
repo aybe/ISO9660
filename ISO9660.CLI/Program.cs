@@ -68,7 +68,7 @@ internal static class Program
             return Result.InvalidSourceFormat;
         }
 
-        using var disc = result;
+        await using var disc = result;
 
         IsoFileSystem ifs;
 
@@ -108,11 +108,11 @@ internal static class Program
         {
             if (cooked)
             {
-                disc.ReadFileUserAsync(file, stream);
+                await disc.ReadFileUserAsync(file, stream);
             }
             else
             {
-                disc.ReadFileRawAsync(file, stream);
+                await disc.ReadFileRawAsync(file, stream);
             }
         }
         catch (Exception e)
