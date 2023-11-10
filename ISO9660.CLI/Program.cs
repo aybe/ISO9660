@@ -2,102 +2,131 @@
 using System.Diagnostics.CodeAnalysis;
 using ISO9660.Logical;
 using ISO9660.Physical;
+using Whatever.Extensions;
 
 namespace ISO9660.CLI;
 
 internal static class Program
 {
-    public static int Main(string[] args)
+    public static async Task<int> Main(string[] args)
     {
-        var source = new Option<string>(
-            "--source",
-            "Source image, either .cue or .iso file.")
+        var source = new Argument<string>(
+            "source",
+            "ISO-9660 image to read from, either .cue or .iso file.");
+
+        var target = new Argument<string>(
+            "target",
+            "File to read in source image, e.g. /SYSTEM.CNF.");
+
+        var output = new Argument<string>(
+            "output",
+            "Directory where to write the target file to.");
+
+        var cooked = new Argument<bool>(
+            "cooked",
+            "Extract file as user data (true), or in raw mode (false).");
+
+        var list = new Command("list", "File list mode.")
         {
-            IsRequired = true
+            source
         };
 
-        var target = new Option<string>(
-            "--target",
-            "Target file to read, e.g. /SYSTEM.CNF.")
+        list.SetHandler(List, source);
+
+        var read = new Command("read", "File read mode.")
         {
-            IsRequired = true
+            source, target, output, cooked
         };
 
-        var cooked = new Option<bool>(
-            "--cooked",
-            "Extract as user data or in raw mode.")
+        read.SetHandler(Read, source, target, output, cooked);
+
+        var root = new RootCommand("ISO-9660 file system reader.")
         {
-            IsRequired = true
+            list, read
         };
 
-        var output = new Option<string>(
-            "--output",
-            "Output directory to write file to.")
-        {
-            IsRequired = true
-        };
-
-        var command = new RootCommand(
-            "Extracts a file from an ISO-9660 file system.");
-
-        command.AddOption(source);
-        command.AddOption(target);
-        command.AddOption(cooked);
-        command.AddOption(output);
-
-        command.SetHandler(Handle, source, target, cooked, output);
-
-        var task = command.InvokeAsync(args);
-
-        var code = task.Result;
+        var code = await root.InvokeAsync(args).ConfigureAwait(false);
 
         return code;
     }
 
-    private static async Task<Result> Handle(string source, string target, bool cooked, string output)
+    private static ErrorCode Error(ErrorCode error)
     {
-        if (File.Exists(source) == false)
+        var message = error switch
         {
-            Console.WriteLine("Source image file could not be found.");
-            return Result.InvalidSource;
+            ErrorCode.Success       => "The operation completed successfully.",
+            ErrorCode.InvalidSource => "Source image file could not be found.",
+            ErrorCode.InvalidFormat => "Source image file format is not valid.",
+            ErrorCode.InvalidSystem => "Source image file system could not be read.",
+            ErrorCode.InvalidTarget => "Target file could not be found in source image.",
+            ErrorCode.InvalidOutput => "Output directory is not a valid path.",
+            ErrorCode.Failed        => "Failed to read file from image.",
+            _                       => throw new ArgumentOutOfRangeException(nameof(error), error, null)
+        };
+
+        if (error is not ErrorCode.Success)
+        {
+            Console.WriteLine(message);
         }
 
-        if (TryOpenDisc(source, out var result) == false)
+        return error;
+    }
+
+    private static async Task<ErrorCode> List(string source)
+    {
+        using var workspace = Workspace.TryOpen(source);
+
+        if (workspace.Error is not ErrorCode.Success)
         {
-            Console.WriteLine("Source image file is not supported.");
-            return Result.InvalidSourceFormat;
+            return Error(workspace.Error);
         }
 
-        await using var disc = result;
-
-        IsoFileSystem ifs;
-
-        try
+        await Task.Run(() =>
         {
-            ifs = IsoFileSystem.Read(disc);
+            var stack = new Stack<IsoFileSystemEntryDirectory>();
+
+            stack.Push(workspace.System!.RootDirectory);
+
+            while (stack.Count > 0)
+            {
+                var pop = stack.Pop();
+
+                foreach (var file in pop.Files)
+                {
+                    Console.WriteLine(file.FullName);
+                }
+
+                foreach (var item in pop.Directories.AsEnumerable().Reverse())
+                {
+                    stack.Push(item);
+                }
+            }
+        });
+
+        return Error(ErrorCode.Success);
+    }
+
+    private static async Task<ErrorCode> Read(string source, string target, string output, bool cooked)
+    {
+        using var workspace = Workspace.TryOpen(source);
+
+        if (workspace.Error is not ErrorCode.Success)
+        {
+            return Error(workspace.Error);
         }
-        catch (Exception e)
-        {
-            Console.WriteLine("File system could not be read from source image.");
-            Console.WriteLine(e);
-            return Result.InvalidSystem;
-        }
 
-        if (ifs.TryFindFile(target, out var file) == false)
+        if (workspace.System!.TryFindFile(target, out var file) == false)
         {
-            Console.WriteLine("Target file could not be found in source image.");
-            return Result.InvalidTarget;
+            return Error(ErrorCode.InvalidTarget);
         }
 
         try
         {
             Directory.CreateDirectory(output);
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            Console.WriteLine("Output directory is not a valid path.");
-            Console.WriteLine(e);
-            return Result.InvalidOutput;
+            return Error(ErrorCode.InvalidOutput);
         }
 
         var path = Path.GetFullPath(Path.Combine(output, file.FileName));
@@ -106,6 +135,8 @@ internal static class Program
 
         try
         {
+            var disc = workspace.Disc!;
+
             if (cooked)
             {
                 await disc.ReadFileUserAsync(file, stream);
@@ -115,17 +146,69 @@ internal static class Program
                 await disc.ReadFileRawAsync(file, stream);
             }
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            Console.WriteLine("Target file could not be read from source image.");
-            Console.WriteLine(e);
-            return Result.ReadingFailed;
+            return Error(ErrorCode.Failed);
         }
 
-        return Result.Success;
+        return Error(ErrorCode.Success);
+    }
+}
+
+internal sealed class Workspace : Disposable
+{
+    private Workspace()
+    {
     }
 
-    private static bool TryOpenDisc(string source, [MaybeNullWhen(false)] out Disc result)
+    public Disc? Disc { get; private set; }
+
+    public IsoFileSystem? System { get; private set; }
+
+    public ErrorCode Error { get; private set; }
+
+    protected override void DisposeManaged()
+    {
+        System?.Dispose();
+
+        Disc?.Dispose();
+    }
+
+    public static Workspace TryOpen(string path)
+    {
+        var workspace = new Workspace();
+
+        if (!File.Exists(path))
+        {
+            workspace.Error = ErrorCode.InvalidSource;
+
+            return workspace;
+        }
+
+        if (!TryOpenDisc(path, out var disc))
+        {
+            workspace.Error = ErrorCode.InvalidFormat;
+
+            return workspace;
+        }
+
+        workspace.Disc = disc;
+
+        if (!TryReadDisc(disc, out var ifs))
+        {
+            workspace.Error = ErrorCode.InvalidSystem;
+
+            return workspace;
+        }
+
+        workspace.System = ifs;
+
+        workspace.Error = ErrorCode.Success;
+
+        return workspace;
+    }
+
+    private static bool TryOpenDisc(string source, [NotNullWhen(true)] out Disc? result)
     {
         var type = Path.GetExtension(source).ToLowerInvariant();
 
@@ -139,14 +222,28 @@ internal static class Program
         return result != null;
     }
 
-    private enum Result
+    private static bool TryReadDisc(Disc disc, [NotNullWhen(true)] out IsoFileSystem? result)
     {
-        Success = 0,
-        InvalidSource = 1,
-        InvalidSourceFormat = 2,
-        InvalidSystem = 3,
-        InvalidTarget = 4,
-        InvalidOutput = 5,
-        ReadingFailed = 6
+        try
+        {
+            result = IsoFileSystem.Read(disc);
+        }
+        catch (Exception)
+        {
+            result = default;
+        }
+
+        return result != null;
     }
+}
+
+internal enum ErrorCode
+{
+    Success = 0,
+    InvalidSource = 2,
+    InvalidFormat = 3,
+    InvalidSystem = 4,
+    InvalidTarget = 5,
+    InvalidOutput = 6,
+    Failed = 7
 }
