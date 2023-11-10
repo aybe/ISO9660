@@ -1,5 +1,7 @@
 ﻿using System.CommandLine;
-using System.Diagnostics.CodeAnalysis;
+using System.CommandLine.Builder;
+using System.CommandLine.Invocation;
+using System.CommandLine.Parsing;
 using ISO9660.Logical;
 using ISO9660.Physical;
 using Whatever.Extensions;
@@ -45,41 +47,26 @@ internal static class Program
             list, read
         };
 
-        var code = await root.InvokeAsync(args).ConfigureAwait(false);
+        var parser = new CommandLineBuilder(root)
+            .UseDefaults()
+            .UseExceptionHandler(OnException, 1)
+            .Build();
 
-        return code;
+        var result = await parser.InvokeAsync(args).ConfigureAwait(false);
+
+        return result;
     }
 
-    private static ErrorCode Error(ErrorCode error)
+    private static void OnException(Exception exception, InvocationContext context)
     {
-        var message = error switch
-        {
-            ErrorCode.Success       => "The operation completed successfully.",
-            ErrorCode.InvalidSource => "Source image file could not be found.",
-            ErrorCode.InvalidFormat => "Source image file format is not valid.",
-            ErrorCode.InvalidSystem => "Source image file system could not be read.",
-            ErrorCode.InvalidTarget => "Target file could not be found in source image.",
-            ErrorCode.InvalidOutput => "Output directory is not a valid path.",
-            ErrorCode.Failed        => "Failed to read file from image.",
-            _                       => throw new ArgumentOutOfRangeException(nameof(error), error, null)
-        };
+        var inner = exception.InnerException;
 
-        if (error is not ErrorCode.Success)
-        {
-            Console.WriteLine(message);
-        }
-
-        return error;
+        Console.WriteLine($"{exception.Message}{(inner == null ? string.Empty : $" ({inner.Message})")}");
     }
 
-    private static async Task<ErrorCode> List(string source)
+    private static async Task List(string source)
     {
         using var workspace = Workspace.TryOpen(source);
-
-        if (workspace.Error is not ErrorCode.Success)
-        {
-            return Error(workspace.Error);
-        }
 
         await Task.Run(() =>
         {
@@ -102,31 +89,24 @@ internal static class Program
                 }
             }
         });
-
-        return Error(ErrorCode.Success);
     }
 
-    private static async Task<ErrorCode> Read(string source, string target, string output, bool cooked)
+    private static async Task Read(string source, string target, string output, bool cooked)
     {
         using var workspace = Workspace.TryOpen(source);
 
-        if (workspace.Error is not ErrorCode.Success)
+        if (!workspace.System!.TryFindFile(target, out var file))
         {
-            return Error(workspace.Error);
-        }
-
-        if (workspace.System!.TryFindFile(target, out var file) == false)
-        {
-            return Error(ErrorCode.InvalidTarget);
+            throw new InvalidOperationException($"File could not be found in file system: '{target}'.");
         }
 
         try
         {
             Directory.CreateDirectory(output);
         }
-        catch (Exception)
+        catch (Exception e)
         {
-            return Error(ErrorCode.InvalidOutput);
+            throw new InvalidOperationException($"Directory could not be created: '{output}'.", e);
         }
 
         var path = Path.GetFullPath(Path.Combine(output, file.FileName));
@@ -146,12 +126,10 @@ internal static class Program
                 await disc.ReadFileRawAsync(file, stream);
             }
         }
-        catch (Exception)
+        catch (Exception e)
         {
-            return Error(ErrorCode.Failed);
+            throw new InvalidOperationException($"File could not be read from file system: '{target}'.", e);
         }
-
-        return Error(ErrorCode.Success);
     }
 }
 
@@ -164,8 +142,6 @@ internal sealed class Workspace : Disposable
     public Disc? Disc { get; private set; }
 
     public IsoFileSystem? System { get; private set; }
-
-    public ErrorCode Error { get; private set; }
 
     protected override void DisposeManaged()
     {
@@ -180,70 +156,34 @@ internal sealed class Workspace : Disposable
 
         if (!File.Exists(path))
         {
-            workspace.Error = ErrorCode.InvalidSource;
-
-            return workspace;
+            throw new InvalidOperationException($"Image file could not be found: '{path}'.");
         }
 
-        if (!TryOpenDisc(path, out var disc))
+        var extension = Path.GetExtension(path).ToLowerInvariant();
+
+        try
         {
-            workspace.Error = ErrorCode.InvalidFormat;
-
-            return workspace;
+            workspace.Disc = extension switch
+            {
+                ".cue" => Disc.FromCue(path),
+                ".iso" => Disc.FromIso(path),
+                _      => throw new NotSupportedException($"Image file type is not supported: '{extension}'.")
+            };
         }
-
-        workspace.Disc = disc;
-
-        if (!TryReadDisc(disc, out var ifs))
+        catch (Exception e)
         {
-            workspace.Error = ErrorCode.InvalidSystem;
-
-            return workspace;
+            throw new InvalidOperationException("Disc could not be read from image file.", e);
         }
 
-        workspace.System = ifs;
-
-        workspace.Error = ErrorCode.Success;
+        try
+        {
+            workspace.System = IsoFileSystem.Read(workspace.Disc);
+        }
+        catch (Exception e)
+        {
+            throw new InvalidOperationException("File system could not be read from disc.", e);
+        }
 
         return workspace;
     }
-
-    private static bool TryOpenDisc(string source, [NotNullWhen(true)] out Disc? result)
-    {
-        var type = Path.GetExtension(source).ToLowerInvariant();
-
-        result = type switch
-        {
-            ".cue" => Disc.FromCue(source),
-            ".iso" => Disc.FromIso(source),
-            _      => null
-        };
-
-        return result != null;
-    }
-
-    private static bool TryReadDisc(Disc disc, [NotNullWhen(true)] out IsoFileSystem? result)
-    {
-        try
-        {
-            result = IsoFileSystem.Read(disc);
-        }
-        catch (Exception)
-        {
-            result = default;
-        }
-
-        return result != null;
-    }
-}
-
-internal enum ErrorCode
-{
-    Success = 0,
-    InvalidSource = 2,
-    InvalidFormat = 3,
-    InvalidSystem = 4,
-    InvalidTarget = 5,
-    InvalidOutput = 6,
-    Failed = 7
 }
