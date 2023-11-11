@@ -117,13 +117,15 @@ internal static class Program
         {
             var disc = workspace.Disc!;
 
+            IProgress<double> progress = new Progress<double>(value => Console.WriteLine($"{value:P}"));
+
             if (cooked)
             {
-                await disc.ReadFileUserAsync(file, stream);
+                await disc.ReadFileUserAsync(file, stream, progress);
             }
             else
             {
-                await disc.ReadFileRawAsync(file, stream);
+                await disc.ReadFileRawAsync(file, stream, progress);
             }
         }
         catch (Exception e)

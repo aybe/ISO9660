@@ -5,17 +5,17 @@ namespace ISO9660.Physical;
 
 public static class DiscExtensions
 {
-    public static async Task ReadFileRawAsync(this Disc disc, IsoFileSystemEntryFile file, Stream stream)
+    public static async Task ReadFileRawAsync(this Disc disc, IsoFileSystemEntryFile file, Stream stream, IProgress<double>? progress = null)
     {
-        await ReadFileAsync(disc, file, stream, ReadFileRaw);
+        await ReadFileAsync(disc, file, stream, ReadFileRaw, progress);
     }
 
-    public static async Task ReadFileUserAsync(this Disc disc, IsoFileSystemEntryFile file, Stream stream)
+    public static async Task ReadFileUserAsync(this Disc disc, IsoFileSystemEntryFile file, Stream stream, IProgress<double>? progress = null)
     {
-        await ReadFileAsync(disc, file, stream, ReadFileUser);
+        await ReadFileAsync(disc, file, stream, ReadFileUser, progress);
     }
 
-    private static async Task ReadFileAsync(Disc disc, IsoFileSystemEntryFile file, Stream stream, ReadFileHandler handler)
+    private static async Task ReadFileAsync(Disc disc, IsoFileSystemEntryFile file, Stream stream, ReadFileHandler handler, IProgress<double>? progress)
     {
         var position = (int)file.Position;
 
@@ -26,13 +26,15 @@ public static class DiscExtensions
 
         using var manager = new SpanMemoryManager<byte>();
 
-        for (var i = position; i < position + sectors; i++)
+        for (var i = 0; i < sectors; i++)
         {
-            var sector = await track.ReadSectorAsync(i);
+            var sector = await track.ReadSectorAsync(i + position);
 
             handler(file, stream, sector, manager);
 
             await stream.WriteAsync(manager.Memory);
+
+            progress?.Report(1.0d / sectors * (i + 1));
         }
     }
 
