@@ -9,7 +9,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
-		<PackageReference Include="Whatever.Extensions" Version="0.1.0-alpha.25" />
+		<PackageReference Include="Whatever.Extensions" Version="0.1.0-alpha.32" />
 	</ItemGroup>
 
 </Project>

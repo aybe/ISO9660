@@ -2,6 +2,7 @@
 using System.CommandLine.Builder;
 using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
+using System.Diagnostics.CodeAnalysis;
 using ISO9660.Logical;
 using ISO9660.Physical;
 using Whatever.Extensions;
@@ -10,6 +11,8 @@ namespace ISO9660.CLI;
 
 internal static class Program
 {
+    private static readonly TextProgressBar ProgressBar = new();
+
     public static async Task<int> Main(string[] args)
     {
         var source = new Argument<string>(
@@ -117,7 +120,7 @@ internal static class Program
         {
             var disc = workspace.Disc!;
 
-            IProgress<double> progress = new Progress<double>(value => Console.WriteLine($"{value:P}"));
+            var progress = new SparseProgress<double>(OnProgressGetter, OnProgressSetter, OnProgressChanged);
 
             if (cooked)
             {
@@ -132,6 +135,25 @@ internal static class Program
         {
             throw new InvalidOperationException($"File could not be read from file system: '{target}'.", e);
         }
+    }
+
+    private static double OnProgressGetter(ref double s)
+    {
+        return s;
+    }
+
+    [SuppressMessage("ReSharper", "RedundantAssignment")]
+    private static void OnProgressSetter(ref double s, double t)
+    {
+        s = t;
+    }
+
+    private static void OnProgressChanged(double value)
+    {
+        ProgressBar.Clear();
+        ProgressBar.Update(value);
+        Console.CursorLeft = 0;
+        Console.Write(ProgressBar);
     }
 }
 
