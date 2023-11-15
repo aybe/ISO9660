@@ -54,7 +54,7 @@ public sealed class DirectoryRecord
 
     public uint DataLength { get; }
 
-    public DirectoryRecordDateTime RecordingDateAndTime { get; }
+    public DirectoryRecordDateTime RecordingDateAndTime { get; } = null!;
 
     public DirectoryRecordFlags FileFlags { get; }
 
