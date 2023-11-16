@@ -1,4 +1,5 @@
-﻿using ISO9660.GoldenHawk;
+﻿using System.Diagnostics.CodeAnalysis;
+using ISO9660.GoldenHawk;
 using Whatever.Extensions;
 
 namespace ISO9660.Physical;
@@ -11,7 +12,7 @@ public sealed partial class Disc : DisposableAsync
     {
         foreach (var track in Tracks)
         {
-            await track.DisposeAsync();
+            await track.DisposeAsync().ConfigureAwait(false);
         }
     }
 
@@ -35,6 +36,7 @@ public sealed partial class Disc
         return cueSheet;
     }
 
+    [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
     public static Disc FromCueSheet(CueSheet sheet)
     {
         var disc = new Disc();
@@ -50,6 +52,7 @@ public sealed partial class Disc
         return disc;
     }
 
+    [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
     public static Disc FromIso(string path)
     {
         var stream = File.OpenRead(path);

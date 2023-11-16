@@ -7,12 +7,12 @@ public static class DiscExtensions
 {
     public static async Task ReadFileRawAsync(this Disc disc, IsoFileSystemEntryFile file, Stream stream, IProgress<double>? progress = null)
     {
-        await ReadFileAsync(disc, file, stream, ReadFileRaw, progress);
+        await ReadFileAsync(disc, file, stream, ReadFileRaw, progress).ConfigureAwait(false);
     }
 
     public static async Task ReadFileUserAsync(this Disc disc, IsoFileSystemEntryFile file, Stream stream, IProgress<double>? progress = null)
     {
-        await ReadFileAsync(disc, file, stream, ReadFileUser, progress);
+        await ReadFileAsync(disc, file, stream, ReadFileUser, progress).ConfigureAwait(false);
     }
 
     private static async Task ReadFileAsync(Disc disc, IsoFileSystemEntryFile file, Stream stream, ReadFileHandler handler, IProgress<double>? progress)
@@ -28,11 +28,11 @@ public static class DiscExtensions
 
         for (var i = 0; i < sectors; i++)
         {
-            var sector = await track.ReadSectorAsync(i + position);
+            var sector = await track.ReadSectorAsync(i + position).ConfigureAwait(false);
 
             handler(file, stream, sector, manager);
 
-            await stream.WriteAsync(manager.Memory);
+            await stream.WriteAsync(manager.Memory).ConfigureAwait(false);
 
             progress?.Report(1.0d / sectors * (i + 1));
         }

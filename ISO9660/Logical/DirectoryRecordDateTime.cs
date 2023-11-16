@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace ISO9660.Logical;
 
 public sealed class DirectoryRecordDateTime
@@ -42,6 +44,6 @@ public sealed class DirectoryRecordDateTime
 
     public override string ToString()
     {
-        return ToDateTimeOffset().ToString();
+        return ToDateTimeOffset().ToString(CultureInfo.InvariantCulture);
     }
 }

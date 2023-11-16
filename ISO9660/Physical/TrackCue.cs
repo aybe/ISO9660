@@ -43,7 +43,7 @@ public sealed class TrackCue : Track
 
     protected override async ValueTask DisposeAsyncCore()
     {
-        await Stream.DisposeAsync();
+        await Stream.DisposeAsync().ConfigureAwait(false);
     }
 
     protected override void DisposeManaged()

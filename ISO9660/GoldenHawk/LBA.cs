@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace ISO9660.GoldenHawk;
 
 public readonly struct LBA : IComparable<LBA>, IEquatable<LBA>
@@ -55,7 +57,7 @@ public readonly struct LBA : IComparable<LBA>, IEquatable<LBA>
 
     public override string ToString()
     {
-        return Position.ToString();
+        return Position.ToString(CultureInfo.InvariantCulture);
     }
 
     public static bool operator ==(LBA x, LBA y)

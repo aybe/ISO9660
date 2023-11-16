@@ -1,4 +1,5 @@
-﻿using Whatever.Extensions;
+﻿using System.Diagnostics.CodeAnalysis;
+using Whatever.Extensions;
 
 namespace ISO9660.Physical;
 
@@ -26,7 +27,8 @@ public sealed class TrackIso : Track
 
     private Stream Stream { get; }
 
-    public override bool Audio { get; } = false;
+    [SuppressMessage("ReSharper", "UnassignedGetOnlyAutoProperty")]
+    public override bool Audio { get; }
 
     public override int Index { get; }
 
@@ -38,7 +40,7 @@ public sealed class TrackIso : Track
 
     protected override async ValueTask DisposeAsyncCore()
     {
-        await Stream.DisposeAsync();
+        await Stream.DisposeAsync().ConfigureAwait(false);
     }
 
     protected override void DisposeManaged()

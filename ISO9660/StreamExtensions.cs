@@ -5,7 +5,7 @@ using Whatever.Extensions;
 
 namespace ISO9660;
 
-public static partial class StreamExtensions
+public static class StreamExtensions
 {
     public static byte ReadIso711(this Stream stream)
     {

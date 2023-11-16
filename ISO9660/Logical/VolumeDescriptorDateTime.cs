@@ -1,3 +1,4 @@
+using System.Globalization;
 using Whatever.Extensions;
 
 namespace ISO9660.Logical;
@@ -41,13 +42,13 @@ public sealed class VolumeDescriptorDateTime
 
     public DateTimeOffset ToDateTimeOffset()
     {
-        var a = int.Parse(Year);
-        var b = int.Parse(MonthOfTheYear);
-        var c = int.Parse(DayOfTheMonth);
-        var d = int.Parse(HourOfTheDay);
-        var e = int.Parse(MinuteOfTheHour);
-        var f = int.Parse(SecondOfTheMinute);
-        var g = int.Parse(HundredthsOfASecond);
+        var a = int.Parse(Year, CultureInfo.InvariantCulture);
+        var b = int.Parse(MonthOfTheYear, CultureInfo.InvariantCulture);
+        var c = int.Parse(DayOfTheMonth, CultureInfo.InvariantCulture);
+        var d = int.Parse(HourOfTheDay, CultureInfo.InvariantCulture);
+        var e = int.Parse(MinuteOfTheHour, CultureInfo.InvariantCulture);
+        var f = int.Parse(SecondOfTheMinute, CultureInfo.InvariantCulture);
+        var g = int.Parse(HundredthsOfASecond, CultureInfo.InvariantCulture);
         var h = TimeSpan.FromMinutes(15 * OffsetFromGreenwichMeanTime);
 
         return DateTimeParser.TryParse(a, b, c, d, e, f, g * 10, h, out var result) ? result : DateTimeOffset.UnixEpoch;
@@ -55,6 +56,6 @@ public sealed class VolumeDescriptorDateTime
 
     public override string ToString()
     {
-        return ToDateTimeOffset().ToString();
+        return ToDateTimeOffset().ToString(CultureInfo.InvariantCulture);
     }
 }

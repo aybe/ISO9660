@@ -7,7 +7,7 @@ public sealed class IsoFileSystemEntryDirectory : IsoFileSystemEntry
     {
     }
 
-    public List<IsoFileSystemEntryDirectory> Directories { get; } = new();
+    public IList<IsoFileSystemEntryDirectory> Directories { get; } = new List<IsoFileSystemEntryDirectory>();
 
-    public List<IsoFileSystemEntryFile> Files { get; } = new();
+    public IList<IsoFileSystemEntryFile> Files { get; } = new List<IsoFileSystemEntryFile>();
 }

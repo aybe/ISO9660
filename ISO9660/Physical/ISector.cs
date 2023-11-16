@@ -65,7 +65,7 @@ public interface ISector
     {
         var buffer = new byte[Unsafe.SizeOf<T>()];
 
-        await stream.ReadExactlyAsync(buffer);
+        await stream.ReadExactlyAsync(buffer).ConfigureAwait(false);
 
         var sector = MemoryMarshal.Read<T>(buffer);
 

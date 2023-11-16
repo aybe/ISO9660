@@ -1,5 +1,5 @@
 
-[*]
+[*.cs]
 
 # ReSharper properties
 resharper_blank_lines_around_single_line_auto_property=1
@@ -11,5 +11,29 @@ resharper_place_accessorholder_attribute_on_same_line=false
 resharper_place_field_attribute_on_same_line=false
 
 
-# IDE0079: Remove unnecessary suppression
-dotnet_diagnostic.ide0079.severity=none
+dotnet_remove_unnecessary_suppression_exclusions=category:ReSharper
+
+
+# CA1028: Enum Storage should be Int32
+dotnet_diagnostic.CA1028.severity=silent
+
+# CA1051: Do not declare visible instance fields
+dotnet_diagnostic.CA1051.severity=silent
+
+# CA1062: Validate arguments of public methods
+dotnet_diagnostic.CA1062.severity=silent
+
+# CA1700: Do not name enum values 'Reserved'
+dotnet_diagnostic.CA1700.severity=silent
+
+# CA1711: Identifiers should not have incorrect suffix
+dotnet_diagnostic.CA1711.severity=silent
+
+# CA1815: Override equals and operator equals on value types
+dotnet_diagnostic.CA1815.severity = silent
+
+# CA1819: Properties should not return arrays
+dotnet_diagnostic.CA1819.severity=silent
+
+# CA2225: Operator overloads have named alternates
+dotnet_diagnostic.CA2225.severity=silent
