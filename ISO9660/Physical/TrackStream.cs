@@ -57,7 +57,7 @@ internal sealed class TrackStream : Stream
 
         var input = Span<byte>.Empty;
 
-        while (count > 0 && SectorNumber < Track.Length)
+        while (count > 0 && SectorNumber < Track.Position + Track.Length)
         {
             if (input.IsEmpty)
             {
