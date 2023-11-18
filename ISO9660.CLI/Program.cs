@@ -116,8 +116,7 @@ internal static partial class Program
     {
         using var workspace = Workspace.TryOpen(source);
 
-        var sys = workspace.System ??
-                  throw new InvalidOperationException(Messages.FileSystemCouldNotBeRead);
+        var sys = workspace.GetSystem();
 
         var stack = new Stack<IsoFileSystemEntryDirectory>();
 
@@ -235,8 +234,7 @@ internal static partial class Program
         var disc = workspace.Disc ??
                    throw new InvalidOperationException(Messages.DiscCouldNotBeRead);
 
-        var sys = workspace.System
-                  ?? throw new InvalidOperationException(Messages.FileSystemCouldNotBeRead);
+        var sys = workspace.GetSystem();
 
         if (sys.TryFindFile(target, out var file) == false)
         {

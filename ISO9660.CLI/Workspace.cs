@@ -12,7 +12,7 @@ internal sealed class Workspace : Disposable
 
     public Disc? Disc { get; private set; }
 
-    public IsoFileSystem? System { get; private set; }
+    private IsoFileSystem? System { get; set; }
 
     protected override void DisposeManaged()
     {
@@ -56,5 +56,11 @@ internal sealed class Workspace : Disposable
         }
 
         return workspace;
+    }
+
+    public IsoFileSystem GetSystem()
+    {
+        return System ?? 
+               throw new InvalidOperationException("File system could not be read.");
     }
 }
