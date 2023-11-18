@@ -275,20 +275,23 @@ internal static partial class Program
 
         var percent = 0.0d;
 
-        await using var src = track.GetStream(track.Position);
-        await using var dst = File.Create(Path.Combine(output, Path.ChangeExtension($"Track {number}", track.Audio ? "wav" : "bin")));
+        await using var stream = File.Create(Path.Combine(output, Path.ChangeExtension($"Track {number}", track.Audio ? "wav" : "bin")));
 
-        var buffer = new byte[65536];
+        var sectorLength = track.Sector.Length;
 
-        var len = (int)Math.Ceiling((double)src.Length / buffer.Length);
+        var trackLength = track.Length;
 
-        for (var i = 0; i < len; i++)
+        using var buffer = new SharedBuffer<byte>(sectorLength);
+
+        for (var i = 0; i < trackLength; i++)
         {
-            var read = await src.ReadAsync(buffer);
+            var sector = await track.ReadSectorAsync(track.Position + i);
 
-            await dst.WriteAsync(buffer.AsMemory(0, read));
+            sector.GetData().CopyTo(buffer.AsSpan());
 
-            Progress.Update(ref percent, i, len);
+            await stream.WriteAsync(buffer.AsMemory(0, sectorLength));
+
+            Progress.Update(ref percent, i, trackLength);
 
             Progress.Report(percent);
         }
