@@ -269,7 +269,7 @@ internal static partial class Program
         var disc = workspace.GetDisc();
 
         var track = disc.Tracks.FirstOrDefault(s => s.Index == number) ??
-                    throw new InvalidOperationException(Messages.TrackNumberIsInvalid);
+                    throw new InvalidOperationException("Track number is invalid.");
 
         CreateDirectory(output);
 
