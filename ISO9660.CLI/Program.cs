@@ -144,8 +144,7 @@ internal static partial class Program
     {
         using var workspace = Workspace.TryOpen(source);
 
-        var disc = workspace.Disc ??
-                   throw new InvalidOperationException(Messages.DiscCouldNotBeRead);
+        var disc = workspace.GetDisc();
 
         foreach (var track in disc.Tracks)
         {
@@ -231,8 +230,7 @@ internal static partial class Program
     {
         using var workspace = Workspace.TryOpen(source);
 
-        var disc = workspace.Disc ??
-                   throw new InvalidOperationException(Messages.DiscCouldNotBeRead);
+        var disc = workspace.GetDisc();
 
         var sys = workspace.GetSystem();
 
@@ -268,8 +266,7 @@ internal static partial class Program
     {
         using var workspace = Workspace.TryOpen(source);
 
-        var disc = workspace.Disc ??
-                   throw new InvalidOperationException(Messages.DiscCouldNotBeRead);
+        var disc = workspace.GetDisc();
 
         var track = disc.Tracks.FirstOrDefault(s => s.Index == number) ??
                     throw new InvalidOperationException(Messages.TrackNumberIsInvalid);

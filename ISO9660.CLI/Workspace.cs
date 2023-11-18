@@ -10,7 +10,7 @@ internal sealed class Workspace : Disposable
     {
     }
 
-    public Disc? Disc { get; private set; }
+    private Disc? Disc { get; set; }
 
     private IsoFileSystem? System { get; set; }
 
@@ -56,6 +56,12 @@ internal sealed class Workspace : Disposable
         }
 
         return workspace;
+    }
+
+    public Disc GetDisc()
+    {
+        return Disc ?? 
+               throw new InvalidOperationException("Disc could not be read.");
     }
 
     public IsoFileSystem GetSystem()
