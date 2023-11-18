@@ -14,14 +14,6 @@ internal static class Program
         "source",
         "Source image, .cue or .iso file.");
 
-    private static SparseProgress<double> Progress { get; } =
-        new(OnProgressGetter, OnProgressSetter, OnProgressChanged)
-        {
-            Digits = 2, Synchronous = true
-        };
-
-    private static TextProgressBar ProgressBar { get; } = new();
-
     public static async Task<int> Main(string[] args)
     {
         var root = new RootCommand("CD-ROM image reader.")
@@ -288,6 +280,14 @@ internal static class Program
     #endregion
 
     #region Progress
+
+    private static SparseProgress<double> Progress { get; } =
+        new(OnProgressGetter, OnProgressSetter, OnProgressChanged)
+        {
+            Digits = 2, Synchronous = true
+        };
+
+    private static TextProgressBar ProgressBar { get; } = new();
 
     private static double OnProgressGetter(ref double s)
     {
