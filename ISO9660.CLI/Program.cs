@@ -286,7 +286,7 @@ internal static partial class Program
         {
             var read = await src.ReadAsync(buffer);
 
-            await dst.WriteAsync(buffer, 0, read);
+            await dst.WriteAsync(buffer.AsMemory(0, read));
 
             Progress.Update(ref percent, i, len);
 
