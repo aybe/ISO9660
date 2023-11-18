@@ -52,18 +52,6 @@ internal static class Program
         }
     }
 
-    private static class Messages
-    {
-        public static string DiscCouldNotBeRead { get; } =
-            "Disc could not be read.";
-
-        public static string FileSystemCouldNotBeRead { get; } =
-            "File system could not be read.";
-
-        public static string TrackNumberIsInvalid { get; } =
-            "Track number is invalid.";
-    }
-
     #region List
 
     private static Command BuildList()
