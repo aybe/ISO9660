@@ -6,13 +6,15 @@ namespace ISO9660.CLI;
 
 internal sealed class Workspace : Disposable
 {
-    private Workspace()
+    private Workspace(Disc? disc, IsoFileSystem? system)
     {
+        Disc   = disc;
+        System = system;
     }
 
-    private Disc? Disc { get; set; }
+    private Disc? Disc { get; }
 
-    private IsoFileSystem? System { get; set; }
+    private IsoFileSystem? System { get; }
 
     protected override void DisposeManaged()
     {
@@ -23,8 +25,6 @@ internal sealed class Workspace : Disposable
 
     public static Workspace TryOpen(string path)
     {
-        var workspace = new Workspace();
-
         if (!File.Exists(path))
         {
             throw new InvalidOperationException($"Image file could not be found: '{path}'.");
@@ -32,9 +32,11 @@ internal sealed class Workspace : Disposable
 
         var extension = Path.GetExtension(path).ToLowerInvariant();
 
+        Disc disc;
+
         try
         {
-            workspace.Disc = extension switch
+            disc = extension switch
             {
                 ".cue" => Disc.FromCue(path),
                 ".iso" => Disc.FromIso(path),
@@ -46,16 +48,18 @@ internal sealed class Workspace : Disposable
             throw new InvalidOperationException("Disc could not be read from image file.", e);
         }
 
+        IsoFileSystem system;
+
         try
         {
-            workspace.System = IsoFileSystem.Read(workspace.Disc);
+            system = IsoFileSystem.Read(disc);
         }
         catch (Exception e)
         {
             throw new InvalidOperationException("File system could not be read from disc.", e);
         }
 
-        return workspace;
+        return new Workspace(disc, system);
     }
 
     public Disc GetDisc()
