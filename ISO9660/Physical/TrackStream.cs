@@ -20,7 +20,7 @@ internal sealed class TrackStream : Stream
 
         UserDataLength = Track.Sector.GetUserDataLength();
 
-        Length = (Track.Length - Track.Position) * UserDataLength;
+        Length = Track.Length * UserDataLength;
 
         Position = index * UserDataLength;
     }
