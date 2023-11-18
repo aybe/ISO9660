@@ -43,9 +43,10 @@ internal static partial class Program
             throw new InvalidOperationException($"Directory could not be created: '{path}'.", e);
         }
     }
+}
 
-    #region Read
-
+internal static partial class Program
+{
     private static Command BuildRead()
     {
         var command = new Command("read", "Read mode.")
@@ -107,10 +108,6 @@ internal static partial class Program
 
         return command;
     }
-
-    #endregion
-
-    #region Read
 
     private static async Task StartReadSystem(string source, string target, string output, bool cooked)
     {
@@ -182,8 +179,6 @@ internal static partial class Program
             Progress.Report(percent);
         }
     }
-
-    #endregion
 }
 
 internal static partial class Program
