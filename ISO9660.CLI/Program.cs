@@ -8,7 +8,7 @@ using Whatever.Extensions;
 
 namespace ISO9660.CLI;
 
-internal static class Program
+internal static partial class Program
 {
     private static readonly Argument<string> Source = new(
         "source",
@@ -278,9 +278,10 @@ internal static class Program
     }
 
     #endregion
+}
 
-    #region Progress
-
+internal static partial class Program
+{
     private static SparseProgress<double> Progress { get; } =
         new(OnProgressGetter, OnProgressSetter, OnProgressChanged)
         {
@@ -307,6 +308,4 @@ internal static class Program
         Console.CursorLeft = 0;
         Console.Write(ProgressBar);
     }
-
-    #endregion
 }
