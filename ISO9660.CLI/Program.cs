@@ -14,6 +14,14 @@ internal static class Program
         "source",
         "Source image, .cue or .iso file.");
 
+    private static SparseProgress<double> Progress { get; } =
+        new(OnProgressGetter, OnProgressSetter, OnProgressChanged)
+        {
+            Digits = 2, Synchronous = true
+        };
+
+    private static TextProgressBar ProgressBar { get; } = new();
+
     public static async Task<int> Main(string[] args)
     {
         var root = new RootCommand("CD-ROM image reader.")
@@ -42,15 +50,6 @@ internal static class Program
         {
             throw new InvalidOperationException($"Directory could not be created: '{path}'.", e);
         }
-    }
-
-    private static SparseProgress<double> GetProgress()
-    {
-        var progress = new SparseProgress<double>(OnProgressGetter, OnProgressSetter, OnProgressChanged)
-        {
-            Digits = 2, Synchronous = true
-        };
-        return progress;
     }
 
     private static class Messages
@@ -250,15 +249,13 @@ internal static class Program
 
         try
         {
-            var progress = GetProgress();
-
             if (cooked)
             {
-                await disc.ReadFileUserAsync(file, stream, progress);
+                await disc.ReadFileUserAsync(file, stream, Progress);
             }
             else
             {
-                await disc.ReadFileRawAsync(file, stream, progress);
+                await disc.ReadFileRawAsync(file, stream, Progress);
             }
         }
         catch (Exception e)
@@ -279,8 +276,6 @@ internal static class Program
 
         CreateDirectory(output);
 
-        var progress = GetProgress();
-
         var percent = 0.0d;
 
         await using var src = track.GetStream(track.Position);
@@ -296,17 +291,15 @@ internal static class Program
 
             await dst.WriteAsync(buffer, 0, read);
 
-            progress.Update(ref percent, i, len);
+            Progress.Update(ref percent, i, len);
 
-            progress.Report(percent);
+            Progress.Report(percent);
         }
     }
 
     #endregion
 
     #region Progress
-
-    private static readonly TextProgressBar ProgressBar = new();
 
     private static double OnProgressGetter(ref double s)
     {
