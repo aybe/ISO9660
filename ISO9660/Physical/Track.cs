@@ -30,7 +30,7 @@ public abstract class Track : DisposableAsync
 
     protected ISector ReadSector(in int index, in Stream stream)
     {
-        if (index < Position || index >= Length)
+        if (index < Position || index >= Position + Length)
         {
             throw new ArgumentOutOfRangeException(nameof(index), index, null);
         }
