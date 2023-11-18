@@ -30,10 +30,7 @@ public abstract class Track : DisposableAsync
 
     protected ISector ReadSector(in int index, in Stream stream)
     {
-        if (index < Position || index >= Position + Length)
-        {
-            throw new ArgumentOutOfRangeException(nameof(index), index, null);
-        }
+        ValidateSectorIndex(index, nameof(index));
 
         stream.Position = index * Sector.Length;
 
@@ -56,10 +53,7 @@ public abstract class Track : DisposableAsync
 
     protected Task<ISector> ReadSectorAsync(in int index, in Stream stream)
     {
-        if (index < Position || index >= Length)
-        {
-            throw new ArgumentOutOfRangeException(nameof(index), index, null);
-        }
+        ValidateSectorIndex(index, nameof(index));
 
         stream.Position = index * Sector.Length;
 
@@ -78,6 +72,14 @@ public abstract class Track : DisposableAsync
         };
 
         return sector;
+    }
+
+    private void ValidateSectorIndex(int index, string indexName)
+    {
+        if (index < Position || index >= Position + Length)
+        {
+            throw new ArgumentOutOfRangeException(indexName, index, null);
+        }
     }
 
     public override string ToString()
