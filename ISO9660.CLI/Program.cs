@@ -47,6 +47,125 @@ internal static partial class Program
 
 internal static partial class Program
 {
+    private static SparseProgress<double> Progress { get; } =
+        new(OnProgressGetter, OnProgressSetter, OnProgressChanged)
+        {
+            Digits = 2, Synchronous = true
+        };
+
+    private static TextProgressBar ProgressBar { get; } = new();
+
+    private static double OnProgressGetter(ref double s)
+    {
+        return s;
+    }
+
+    [SuppressMessage("ReSharper", "RedundantAssignment")]
+    private static void OnProgressSetter(ref double s, double t)
+    {
+        s = t;
+    }
+
+    private static void OnProgressChanged(double value)
+    {
+        ProgressBar.Clear();
+        ProgressBar.Update(value);
+        Console.CursorLeft = 0;
+        Console.Write(ProgressBar);
+    }
+}
+
+internal static partial class Program
+{
+    private static Command BuildList()
+    {
+        var command = new Command("list", "List mode.")
+        {
+            BuildListSystem(),
+            BuildListTracks()
+        };
+
+        return command;
+    }
+
+    private static Command BuildListSystem()
+    {
+        var command = new Command("system", "Lists files in file system.")
+        {
+            Source
+        };
+
+        command.SetHandler(StartListSystem, Source);
+
+        return command;
+    }
+
+    private static Command BuildListTracks()
+    {
+        var command = new Command("tracks", "Lists tracks in disc image.")
+        {
+            Source
+        };
+
+        command.SetHandler(StartListTracks, Source);
+
+        return command;
+    }
+
+    private static async Task StartListSystem(string source)
+    {
+        using var workspace = Workspace.TryOpen(source);
+
+        var sys = workspace.System ??
+                  throw new InvalidOperationException(Messages.FileSystemCouldNotBeRead);
+
+        var stack = new Stack<IsoFileSystemEntryDirectory>();
+
+        stack.Push(sys.RootDirectory);
+
+        while (stack.Count > 0)
+        {
+            var pop = stack.Pop();
+
+            foreach (var file in pop.Files)
+            {
+                Console.WriteLine(file.FullName);
+            }
+
+            foreach (var item in pop.Directories.AsEnumerable().Reverse())
+            {
+                stack.Push(item);
+            }
+        }
+
+        await Task.CompletedTask;
+    }
+
+    private static async Task StartListTracks(string source)
+    {
+        using var workspace = Workspace.TryOpen(source);
+
+        var disc = workspace.Disc ??
+                   throw new InvalidOperationException(Messages.DiscCouldNotBeRead);
+
+        foreach (var track in disc.Tracks)
+        {
+            Console.WriteLine($"{nameof(track.Index)}: " +
+                              $"{track.Index,2}, " +
+                              $"{nameof(track.Position)}: " +
+                              $"{track.Position,6}, " +
+                              $"{nameof(track.Length)}: " +
+                              $"{track.Length,6}, " +
+                              $"{nameof(track.Audio)}: " +
+                              $"{track.Audio,5}");
+        }
+
+        await Task.CompletedTask;
+    }
+}
+
+internal static partial class Program
+{
     private static Command BuildRead()
     {
         var command = new Command("read", "Read mode.")
@@ -178,124 +297,5 @@ internal static partial class Program
 
             Progress.Report(percent);
         }
-    }
-}
-
-internal static partial class Program
-{
-    private static SparseProgress<double> Progress { get; } =
-        new(OnProgressGetter, OnProgressSetter, OnProgressChanged)
-        {
-            Digits = 2, Synchronous = true
-        };
-
-    private static TextProgressBar ProgressBar { get; } = new();
-
-    private static double OnProgressGetter(ref double s)
-    {
-        return s;
-    }
-
-    [SuppressMessage("ReSharper", "RedundantAssignment")]
-    private static void OnProgressSetter(ref double s, double t)
-    {
-        s = t;
-    }
-
-    private static void OnProgressChanged(double value)
-    {
-        ProgressBar.Clear();
-        ProgressBar.Update(value);
-        Console.CursorLeft = 0;
-        Console.Write(ProgressBar);
-    }
-}
-
-internal static partial class Program
-{
-    private static Command BuildList()
-    {
-        var command = new Command("list", "List mode.")
-        {
-            BuildListSystem(),
-            BuildListTracks()
-        };
-
-        return command;
-    }
-
-    private static Command BuildListSystem()
-    {
-        var command = new Command("system", "Lists files in file system.")
-        {
-            Source
-        };
-
-        command.SetHandler(StartListSystem, Source);
-
-        return command;
-    }
-
-    private static Command BuildListTracks()
-    {
-        var command = new Command("tracks", "Lists tracks in disc image.")
-        {
-            Source
-        };
-
-        command.SetHandler(StartListTracks, Source);
-
-        return command;
-    }
-
-    private static async Task StartListSystem(string source)
-    {
-        using var workspace = Workspace.TryOpen(source);
-
-        var sys = workspace.System ??
-                  throw new InvalidOperationException(Messages.FileSystemCouldNotBeRead);
-
-        var stack = new Stack<IsoFileSystemEntryDirectory>();
-
-        stack.Push(sys.RootDirectory);
-
-        while (stack.Count > 0)
-        {
-            var pop = stack.Pop();
-
-            foreach (var file in pop.Files)
-            {
-                Console.WriteLine(file.FullName);
-            }
-
-            foreach (var item in pop.Directories.AsEnumerable().Reverse())
-            {
-                stack.Push(item);
-            }
-        }
-
-        await Task.CompletedTask;
-    }
-
-    private static async Task StartListTracks(string source)
-    {
-        using var workspace = Workspace.TryOpen(source);
-
-        var disc = workspace.Disc ??
-                   throw new InvalidOperationException(Messages.DiscCouldNotBeRead);
-
-        foreach (var track in disc.Tracks)
-        {
-            Console.WriteLine($"{nameof(track.Index)}: " +
-                              $"{track.Index,2}, " +
-                              $"{nameof(track.Position)}: " +
-                              $"{track.Position,6}, " +
-                              $"{nameof(track.Length)}: " +
-                              $"{track.Length,6}, " +
-                              $"{nameof(track.Audio)}: " +
-                              $"{track.Audio,5}");
-        }
-
-        await Task.CompletedTask;
     }
 }
