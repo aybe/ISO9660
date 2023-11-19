@@ -281,6 +281,27 @@ internal static partial class Program
 
         var trackLength = track.Length;
 
+        if (track.Audio)
+        {
+            var length = trackLength * sectorLength;
+
+            await stream.WriteStringAsciiAsync("RIFF");
+            await stream.WriteAsync((uint)(length - 8));
+            await stream.WriteStringAsciiAsync("WAVE");
+
+            await stream.WriteStringAsciiAsync("fmt ");
+            await stream.WriteAsync((uint)16);
+            await stream.WriteAsync((ushort)1);    // wFormatTag
+            await stream.WriteAsync((ushort)2);    // wChannels
+            await stream.WriteAsync((uint)44100);  // dwSamplesPerSec
+            await stream.WriteAsync((uint)176400); // dwAvgBytesPerSEc
+            await stream.WriteAsync((ushort)2);    // wBlockAlign
+            await stream.WriteAsync((ushort)16);   // wBitsPerSample
+
+            await stream.WriteStringAsciiAsync("data");
+            await stream.WriteAsync((uint)(length - 44));
+        }
+
         using var buffer = new SharedBuffer<byte>(sectorLength);
 
         for (var i = 0; i < trackLength; i++)
