@@ -287,9 +287,9 @@ internal static partial class Program
         {
             var sector = await track.ReadSectorAsync(track.Position + i);
 
-            sector.GetData().CopyTo(buffer.AsSpan());
+            sector.GetData().CopyTo(buffer.Span);
 
-            await stream.WriteAsync(buffer.AsMemory(0, sectorLength));
+            await stream.WriteAsync(buffer.Memory);
 
             Progress.Update(ref percent, i, trackLength);
 
