@@ -9,6 +9,8 @@ using Whatever.Extensions;
 namespace ISO9660.CLI;
 
 internal static partial class Program
+    // https://learn.microsoft.com/en-us/dotnet/standard/commandline/handle-termination
+    // it isn't worth the effort to implement cancellation, too much work for so little
 {
     private static readonly Argument<string> Source = new(
         "source",
