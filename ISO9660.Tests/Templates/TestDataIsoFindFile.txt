@@ -1,9 +1,11 @@
+This test checks for existence (or not) of a file in an ISO-9660 file system.
+
 Source:
     string
-    Full path to the .cue file to test, e.g. "C:\Temp\Wipeout.cue".
+    Full path to the .cue file to test, e.g. "C:\Temp\WipEout.cue".
 Target:
     string
-    Full path to the file in the ISO9660 file system, e.g. "/WIPEOUT/TEXTURES/WIPEOUT.TIM".
+    Full path to the file in the ISO-9660 file system, e.g. "/WIPEOUT/TEXTURES/WIPEOUT.TIM".
 Exists:
     bool
-    Whether the file is expected to exist in the ISO9660 file system, e.g. true, false.
+    Whether the file is expected to exist in the ISO-9660 file system, e.g. true, false.
