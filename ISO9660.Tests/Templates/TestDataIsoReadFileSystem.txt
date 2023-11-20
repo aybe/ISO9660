@@ -1,3 +1,5 @@
+This test reads an ISO-9660 file system from a .cue or .iso file.
+
 Path:
     string
-    Full path to the .cue or .iso file to test.
+    Full path to the .cue or .iso file to test, e.g. "C:\Temp\WipEout.cue".
