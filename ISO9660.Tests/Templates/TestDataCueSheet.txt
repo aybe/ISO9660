@@ -1,3 +1,5 @@
+This test parses a cue sheet.
+
 Path:
     string
-    Full path to the .cue file to test, e.g. "C:\Temp\Wipeout.cue".
+    Full path to the .cue file to test, e.g. "C:\Temp\WipEout.cue".
