@@ -6,7 +6,7 @@ using Whatever.Extensions;
 
 namespace ISO9660.WorkInProgress;
 
-public sealed class Disc : Disposable
+public sealed class Disc : DisposableAsync, IDisc
 {
     public Disc(DriveInfo info)
     {
@@ -34,7 +34,12 @@ public sealed class Disc : Disposable
 
     private SafeFileHandle Handle { get; }
 
-    public IReadOnlyList<Track> Tracks { get; }
+    public IReadOnlyList<ITrack> Tracks { get; }
+
+    protected override ValueTask DisposeAsyncCore()
+    {
+        throw new NotImplementedException();
+    }
 
     protected override void DisposeNative()
     {
@@ -60,7 +65,7 @@ public sealed class Disc : Disposable
 
         var query = new NativeTypes.STORAGE_PROPERTY_QUERY
         {
-            QueryType = NativeTypes.STORAGE_QUERY_TYPE.PropertyStandardQuery,
+            QueryType  = NativeTypes.STORAGE_QUERY_TYPE.PropertyStandardQuery,
             PropertyId = NativeTypes.STORAGE_PROPERTY_ID.StorageAdapterProperty,
         };
 
@@ -106,7 +111,7 @@ public sealed class Disc : Disposable
 
         var ex = new NativeTypes.CDROM_READ_TOC_EX
         {
-            Format = NativeConstants.CDROM_READ_TOC_EX_FORMAT_TOC,
+            Format       = NativeConstants.CDROM_READ_TOC_EX_FORMAT_TOC,
             SessionTrack = 1,
         };
 
@@ -182,11 +187,11 @@ public sealed class Disc : Disposable
 
             var sptd = new NativeTypes.SCSI_PASS_THROUGH_DIRECT(12)
             {
-                Length = (ushort)inBufferSize,
-                DataIn = NativeConstants.SCSI_IOCTL_DATA_IN,
+                Length             = (ushort)inBufferSize,
+                DataIn             = NativeConstants.SCSI_IOCTL_DATA_IN,
                 DataTransferLength = (uint)buffer.Length,
-                DataBuffer = (nint)data,
-                TimeOutValue = timeout,
+                DataBuffer         = (nint)data,
+                TimeOutValue       = timeout,
                 Cdb =
                 {
                     [00] = 0xBE,                          // operation code: READ CD

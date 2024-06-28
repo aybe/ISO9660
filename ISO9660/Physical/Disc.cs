@@ -1,12 +1,18 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using ISO9660.GoldenHawk;
 using Whatever.Extensions;
 
 namespace ISO9660.Physical;
 
-public sealed partial class Disc : DisposableAsync
+public sealed partial class Disc : DisposableAsync, IDisc
 {
-    public IList<Track> Tracks { get; } = new List<Track>();
+    private Disc(IReadOnlyList<ITrack> tracks)
+    {
+        Tracks = tracks;
+    }
+
+    public IReadOnlyList<ITrack> Tracks { get; }
 
     protected override async ValueTask DisposeAsyncCore()
     {
@@ -39,15 +45,9 @@ public sealed partial class Disc
     [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
     public static Disc FromCueSheet(CueSheet sheet)
     {
-        var disc = new Disc();
+        var tracks = sheet.Files.SelectMany(s => s.Tracks).Select(s => new TrackCue(s)).ToList().AsReadOnly();
 
-        foreach (var file in sheet.Files)
-        {
-            foreach (var track in file.Tracks)
-            {
-                disc.Tracks.Add(new TrackCue(track));
-            }
-        }
+        var disc = new Disc(tracks);
 
         return disc;
     }
@@ -59,9 +59,7 @@ public sealed partial class Disc
 
         var track = new TrackIso(stream, 1, 0);
 
-        var disc = new Disc();
-
-        disc.Tracks.Add(track);
+        var disc = new Disc(new ReadOnlyObservableCollection<ITrack>([track]));
 
         return disc;
     }
