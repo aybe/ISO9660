@@ -38,9 +38,9 @@ internal sealed class Workspace : Disposable
         {
             disc = extension switch
             {
-                ".cue" => IDisc.FromCue(path),
-                ".iso" => IDisc.FromIso(path),
-                _      => throw new NotSupportedException($"Image file type is not supported: '{extension}'.")
+                ".cue" => IDisc.Open(path),
+                ".iso" => IDisc.Open(path),
+                _      => throw new NotSupportedException($"Image file type is not supported: '{extension}'."),
             };
         }
         catch (Exception e)

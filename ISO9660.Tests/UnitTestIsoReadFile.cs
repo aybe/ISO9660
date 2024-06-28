@@ -22,7 +22,7 @@ public sealed class UnitTestIsoReadFile : UnitTestBase
     [DynamicData(nameof(TestIsoReadFileInit), DynamicDataSourceType.Method)]
     public async Task TestIsoReadFile(string source, string target, string sha256, bool cooked)
     {
-        await using var disc = IDisc.FromCue(source);
+        await using var disc = IDisc.Open(source);
 
         var ifs = IsoFileSystem.Read(disc);
 

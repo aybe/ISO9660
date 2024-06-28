@@ -28,8 +28,8 @@ public sealed class UnitTestIsoReadFileSystem : UnitTestBase
 
         await using var disc = extension switch
         {
-            ".cue" => IDisc.FromCue(path),
-            ".iso" => IDisc.FromIso(path),
+            ".cue" => IDisc.Open(path),
+            ".iso" => IDisc.Open(path),
             _      => throw new NotSupportedException(path)
         };
 
