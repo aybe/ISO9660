@@ -4,7 +4,7 @@ using Whatever.Extensions;
 
 namespace ISO9660.Physical;
 
-public sealed partial class Disc : DisposableAsync, IDisc
+public sealed class Disc : DisposableAsync, IDisc
 {
     private Disc(IReadOnlyList<ITrack> tracks)
     {
@@ -28,10 +28,7 @@ public sealed partial class Disc : DisposableAsync, IDisc
             track.Dispose();
         }
     }
-}
 
-public sealed partial class Disc
-{
     public static Disc FromCue(string path)
     {
         var sheet = CueSheetParser.Parse(path);
