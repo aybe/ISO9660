@@ -36,13 +36,6 @@ public sealed partial class Disc
     {
         var sheet = CueSheetParser.Parse(path);
 
-        var cueSheet = FromCueSheet(sheet);
-
-        return cueSheet;
-    }
-
-    public static Disc FromCueSheet(CueSheet sheet)
-    {
         var tracks = sheet.Files.SelectMany(s => s.Tracks).Select(s => new TrackCue(s)).ToList().AsReadOnly();
 
         var disc = new Disc(tracks);
