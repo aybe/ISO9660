@@ -3,7 +3,7 @@ using Whatever.Extensions;
 
 namespace ISO9660.Physical;
 
-public sealed class TrackCue : Track
+internal sealed class TrackCue : Track
 {
     private const int PreGapSize = 150;
 

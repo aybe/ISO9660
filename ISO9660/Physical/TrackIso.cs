@@ -3,7 +3,7 @@ using Whatever.Extensions;
 
 namespace ISO9660.Physical;
 
-public sealed class TrackIso : Track
+internal sealed class TrackIso : Track
 {
     public TrackIso(Stream stream, int index, int position)
     {
