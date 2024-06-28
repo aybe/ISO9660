@@ -11,6 +11,8 @@ public interface IDisc : IDisposable, IAsyncDisposable
 {
     IReadOnlyList<ITrack> Tracks { get; }
 
+    NativeMemory<byte> GetDeviceAlignedBuffer(uint byteCount);
+
     public static IDisc Open(string path)
     {
         var extension = Path.GetExtension(path);
