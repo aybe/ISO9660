@@ -16,7 +16,7 @@ public sealed class IsoFileSystem : Disposable
 
     public IsoFileSystemEntryDirectory RootDirectory { get; }
 
-    public static IsoFileSystem Read(Disc disc)
+    public static IsoFileSystem Read(IDisc disc)
     {
         var descriptorSet = ReadVolumeDescriptors(disc);
 
@@ -70,7 +70,7 @@ public sealed class IsoFileSystem : Disposable
         return false;
     }
 
-    private static VolumeDescriptorSet ReadVolumeDescriptors(Disc disc)
+    private static VolumeDescriptorSet ReadVolumeDescriptors(IDisc disc)
     {
         var sectorIndex = 16;
 
@@ -117,7 +117,7 @@ public sealed class IsoFileSystem : Disposable
         return descriptors;
     }
 
-    private static IsoFileSystemEntryDirectory ReadRootDirectory(Disc disc, VolumeDescriptorPrimary pvd)
+    private static IsoFileSystemEntryDirectory ReadRootDirectory(IDisc disc, VolumeDescriptorPrimary pvd)
     {
         var pathTableRecords = ReadPathTableRecords(disc, pvd);
         var directoryRecords = ReadDirectoryRecords(disc, pathTableRecords);
@@ -169,7 +169,7 @@ public sealed class IsoFileSystem : Disposable
         return firstDirectory;
     }
 
-    private static IList<PathTableRecord> ReadPathTableRecords(Disc disc, VolumeDescriptorPrimary pvd)
+    private static IList<PathTableRecord> ReadPathTableRecords(IDisc disc, VolumeDescriptorPrimary pvd)
     {
         var records = new List<PathTableRecord>();
 
@@ -197,7 +197,7 @@ public sealed class IsoFileSystem : Disposable
         return records;
     }
 
-    private static void ReadDirectoryRecords(Disc disc, ICollection<DirectoryRecord> records, uint extent)
+    private static void ReadDirectoryRecords(IDisc disc, ICollection<DirectoryRecord> records, uint extent)
     {
         using var stream = disc.Tracks.First().GetStream(Convert.ToInt32(extent));
 
@@ -214,7 +214,7 @@ public sealed class IsoFileSystem : Disposable
         }
     }
 
-    private static IDictionary<PathTableRecord, IList<DirectoryRecord>> ReadDirectoryRecords(Disc disc, IEnumerable<PathTableRecord> pathTableRecords)
+    private static IDictionary<PathTableRecord, IList<DirectoryRecord>> ReadDirectoryRecords(IDisc disc, IEnumerable<PathTableRecord> pathTableRecords)
     {
         var dictionary = new Dictionary<PathTableRecord, IList<DirectoryRecord>>();
 

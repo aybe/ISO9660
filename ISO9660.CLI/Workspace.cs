@@ -6,13 +6,13 @@ namespace ISO9660.CLI;
 
 internal sealed class Workspace : Disposable
 {
-    private Workspace(Disc? disc, IsoFileSystem? system)
+    private Workspace(IDisc? disc, IsoFileSystem? system)
     {
         Disc   = disc;
         System = system;
     }
 
-    private Disc? Disc { get; }
+    private IDisc? Disc { get; }
 
     private IsoFileSystem? System { get; }
 
@@ -32,14 +32,14 @@ internal sealed class Workspace : Disposable
 
         var extension = Path.GetExtension(path).ToLowerInvariant();
 
-        Disc disc;
+        IDisc disc;
 
         try
         {
             disc = extension switch
             {
-                ".cue" => Disc.FromCue(path),
-                ".iso" => Disc.FromIso(path),
+                ".cue" => IDisc.FromCue(path),
+                ".iso" => IDisc.FromIso(path),
                 _      => throw new NotSupportedException($"Image file type is not supported: '{extension}'.")
             };
         }
@@ -62,7 +62,7 @@ internal sealed class Workspace : Disposable
         return new Workspace(disc, system);
     }
 
-    public Disc GetDisc()
+    public IDisc GetDisc()
     {
         return Disc ?? 
                throw new InvalidOperationException("Disc could not be read.");
