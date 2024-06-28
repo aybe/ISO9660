@@ -2,7 +2,7 @@
 
 namespace ISO9660.Physical;
 
-public abstract class Track : DisposableAsync
+public abstract class Track : DisposableAsync, ITrack
 {
     public abstract bool Audio { get; }
 
