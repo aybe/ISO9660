@@ -1,6 +1,7 @@
 ﻿using System.Buffers.Binary;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using ISO9660.Physical;
 using Microsoft.Win32.SafeHandles;
 using Whatever.Extensions;
 

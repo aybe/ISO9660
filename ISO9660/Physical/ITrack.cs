@@ -1,6 +1,4 @@
-﻿using ISO9660.Physical;
-
-namespace ISO9660;
+﻿namespace ISO9660.Physical;
 
 public interface ITrack : IDisposable, IAsyncDisposable
 {

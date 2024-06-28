@@ -1,4 +1,4 @@
-﻿namespace ISO9660;
+﻿namespace ISO9660.Physical;
 
 public interface IDisc : IDisposable, IAsyncDisposable
 {
