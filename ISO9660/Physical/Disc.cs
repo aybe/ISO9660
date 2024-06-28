@@ -1,13 +1,17 @@
-﻿using Whatever.Extensions;
+﻿using Microsoft.Win32.SafeHandles;
+using Whatever.Extensions;
 
 namespace ISO9660.Physical;
 
 internal sealed class Disc : DisposableAsync, IDisc
 {
-    public Disc(IReadOnlyList<ITrack> tracks)
+    public Disc(IReadOnlyList<ITrack> tracks, SafeFileHandle? handle = null)
     {
         Tracks = tracks;
+        Handle = handle;
     }
+
+    private SafeFileHandle? Handle { get; }
 
     public IReadOnlyList<ITrack> Tracks { get; }
 

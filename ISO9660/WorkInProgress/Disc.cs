@@ -1,5 +1,4 @@
-﻿using System.Buffers.Binary;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.InteropServices;
 using ISO9660.Physical;
 using Microsoft.Win32.SafeHandles;
@@ -29,8 +28,6 @@ public sealed class Disc : DisposableAsync, IDisc
         }
 
         Handle = handle;
-
-        Tracks = GetTracks().AsReadOnly();
     }
 
     private SafeFileHandle Handle { get; }
@@ -100,67 +97,6 @@ public sealed class Disc : DisposableAsync, IDisc
         }
 
         return alignmentMask;
-    }
-
-    private Track[] GetTracks()
-    {
-        var inBufferSize = (uint)Marshal.SizeOf<NativeTypes.CDROM_READ_TOC_EX>();
-        var inBuffer = Marshal.AllocHGlobal((int)inBufferSize);
-
-        var outBufferSize = (uint)Marshal.SizeOf<NativeTypes.CDROM_TOC>();
-        var outBuffer = Marshal.AllocHGlobal((int)outBufferSize);
-
-        var ex = new NativeTypes.CDROM_READ_TOC_EX
-        {
-            Format       = NativeConstants.CDROM_READ_TOC_EX_FORMAT_TOC,
-            SessionTrack = 1,
-        };
-
-        Marshal.StructureToPtr(ex, inBuffer, false);
-
-        var ioctl = NativeMethods.DeviceIoControl(
-            Handle.DangerousGetHandle(),
-            NativeConstants.IOCTL_CDROM_READ_TOC_EX,
-            inBuffer,
-            inBufferSize,
-            outBuffer,
-            outBufferSize,
-            out _
-        );
-
-        var toc = ioctl ? Marshal.PtrToStructure<NativeTypes.CDROM_TOC>(outBuffer) : default;
-
-        Marshal.FreeHGlobal(inBuffer);
-        Marshal.FreeHGlobal(outBuffer);
-
-        if (ioctl is false)
-        {
-            throw new Win32Exception();
-        }
-
-        var datas = toc.TrackData!;
-
-        if (Array.FindIndex(datas, s => s.TrackNumber == toc.FirstTrack) is var index && index is -1)
-        {
-            throw new InvalidOperationException("Failed to find first track from index.");
-        }
-
-        var array = new Track[toc.LastTrack - toc.FirstTrack + 1];
-
-        for (var i = 0; i < array.Length; i++)
-        {
-            var track1 = datas[i + index + 0];
-            var track2 = datas[i + index + 1];
-
-            var address1 = BinaryPrimitives.ReadInt32BigEndian(track1.Address);
-            var address2 = BinaryPrimitives.ReadInt32BigEndian(track2.Address);
-
-            var length = address2 - address1;
-
-            array[i] = new Track(track1.TrackNumber, address1, length, (track1.Control & 4) == 0);
-        }
-
-        return array;
     }
 
     /// <remarks>
