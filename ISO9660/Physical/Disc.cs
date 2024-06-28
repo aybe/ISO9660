@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
 using ISO9660.GoldenHawk;
 using Whatever.Extensions;
 
@@ -42,7 +41,6 @@ public sealed partial class Disc
         return cueSheet;
     }
 
-    [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
     public static Disc FromCueSheet(CueSheet sheet)
     {
         var tracks = sheet.Files.SelectMany(s => s.Tracks).Select(s => new TrackCue(s)).ToList().AsReadOnly();
@@ -52,7 +50,6 @@ public sealed partial class Disc
         return disc;
     }
 
-    [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
     public static Disc FromIso(string path)
     {
         var stream = File.OpenRead(path);
