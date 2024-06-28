@@ -151,9 +151,7 @@ public sealed class Disc : Disposable
 
             var length = address2 - address1;
 
-            var type = (track1.Control & 4) == 0 ? TrackType.Audio : TrackType.Data;
-
-            array[i] = new Track(track1.TrackNumber, address1, length, type);
+            array[i] = new Track(track1.TrackNumber, address1, length, (track1.Control & 4) == 0);
         }
 
         return array;

@@ -1,12 +1,17 @@
 ﻿namespace ISO9660.WorkInProgress;
 
-public sealed class Track(byte Number, int Position, int Length, TrackType Type)
+public sealed class Track(int index, int Position, int Length, bool Audio)
 {
-    public byte Number { get; } = Number;
+    public int Index { get; } = index;
 
     public int Position { get; } = Position;
 
     public int Length { get; } = Length;
 
-    public TrackType Type { get; } = Type;
+    public bool Audio { get; } = Audio;
+
+    public override string ToString()
+    {
+        return $"{nameof(Index)}: {Index}, {nameof(Position)}: {Position}, {nameof(Length)}: {Length}, {nameof(Audio)}: {Audio}";
+    }
 }
