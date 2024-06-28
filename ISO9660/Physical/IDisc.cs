@@ -13,6 +13,11 @@ public interface IDisc : IDisposable, IAsyncDisposable
 
     NativeMemory<byte> GetDeviceAlignedBuffer(uint byteCount);
 
+    /// <remarks>
+    ///     <see cref="GetDeviceAlignedBuffer" />
+    /// </remarks>
+    public void ReadSector(uint position, Span<byte> buffer, uint timeout = 3);
+
     public static IDisc Open(string path)
     {
         var extension = Path.GetExtension(path);
