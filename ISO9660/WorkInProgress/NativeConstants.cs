@@ -2,35 +2,6 @@
 
 public static partial class NativeConstants
 {
-    #region ntddscsi.h
-
-    public const int IOCTL_SCSI_BASE = FILE_DEVICE_CONTROLLER;
-
-    /// <summary>
-    ///     https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ntddscsi/ni-ntddscsi-ioctl_scsi_pass_through_direct
-    /// </summary>
-    public static uint IOCTL_SCSI_PASS_THROUGH_DIRECT
-        => CTL_CODE(IOCTL_SCSI_BASE, 0x0405, METHOD_BUFFERED, FILE_READ_ACCESS | FILE_WRITE_ACCESS);
-
-    public const int SCSI_IOCTL_DATA_IN = 1;
-
-    #endregion
-
-    #region ntddstor.h
-
-    public const int IOCTL_STORAGE_BASE = FILE_DEVICE_MASS_STORAGE;
-
-    /// <summary>
-    ///     https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ntddstor/ni-ntddstor-ioctl_storage_query_property
-    /// </summary>
-    public static uint IOCTL_STORAGE_QUERY_PROPERTY
-        => CTL_CODE(IOCTL_STORAGE_BASE, 0x0500, METHOD_BUFFERED, FILE_ANY_ACCESS);
-
-    #endregion
-}
-
-public static partial class NativeConstants
-{
     #region devioctl.h
 
     public const uint FILE_DEVICE_CD_ROM = 0x00000002;
@@ -69,6 +40,38 @@ public static partial class NativeConstants
     ///     https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ntddcdrm/ni-ntddcdrm-ioctl_cdrom_read_toc_ex
     /// </summary>
     public static uint IOCTL_CDROM_READ_TOC_EX { get; } = CTL_CODE(IOCTL_CDROM_BASE, 0x0015, METHOD_BUFFERED, FILE_READ_ACCESS);
+
+    #endregion
+}
+
+public static partial class NativeConstants
+{
+    #region ntddscsi.h
+
+    public const int IOCTL_SCSI_BASE = FILE_DEVICE_CONTROLLER;
+
+    /// <summary>
+    ///     https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ntddscsi/ni-ntddscsi-ioctl_scsi_pass_through_direct
+    /// </summary>
+    public static uint IOCTL_SCSI_PASS_THROUGH_DIRECT
+        => CTL_CODE(IOCTL_SCSI_BASE, 0x0405, METHOD_BUFFERED, FILE_READ_ACCESS | FILE_WRITE_ACCESS);
+
+    public const int SCSI_IOCTL_DATA_IN = 1;
+
+    #endregion
+}
+
+public static partial class NativeConstants
+{
+    #region ntddstor.h
+
+    public const int IOCTL_STORAGE_BASE = FILE_DEVICE_MASS_STORAGE;
+
+    /// <summary>
+    ///     https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ntddstor/ni-ntddstor-ioctl_storage_query_property
+    /// </summary>
+    public static uint IOCTL_STORAGE_QUERY_PROPERTY
+        => CTL_CODE(IOCTL_STORAGE_BASE, 0x0500, METHOD_BUFFERED, FILE_ANY_ACCESS);
 
     #endregion
 }

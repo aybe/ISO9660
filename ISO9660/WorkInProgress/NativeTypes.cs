@@ -3,7 +3,101 @@ using System.Runtime.InteropServices;
 
 namespace ISO9660.WorkInProgress;
 
-public static class NativeTypes
+public static partial class NativeTypes
+{
+    #region ntddcdrm.h
+
+    /// <summary>
+    ///     https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ntddcdrm/ns-ntddcdrm-_cdrom_read_toc_ex
+    /// </summary>
+    [StructLayout(LayoutKind.Sequential)]
+    public struct CDROM_READ_TOC_EX
+    {
+        public byte BitVector1;
+
+        public byte SessionTrack;
+
+        public byte Reserved2;
+
+        public byte Reserved3;
+
+        public byte Format
+        {
+            get => (byte)(BitVector1 >> 0 & 0b1111);
+            set => BitVector1 |= (byte)((value & 0b1111) << 0);
+        }
+
+        public byte Reserved1
+        {
+            get => (byte)(BitVector1 >> 4 & 0b111);
+            set => BitVector1 |= (byte)((value & 0b111) << 4);
+        }
+
+        public byte Msf
+        {
+            get => (byte)(BitVector1 >> 7 & 0b1);
+            set => BitVector1 |= (byte)((value & 0b1) << 7);
+        }
+
+        public override string ToString()
+        {
+            return $"{nameof(SessionTrack)}: {SessionTrack}, {nameof(Format)}: {Format}, {nameof(Msf)}: {Msf}";
+        }
+    }
+
+    /// <summary>
+    ///     https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ntddcdrm/ns-ntddcdrm-_cdrom_toc
+    /// </summary>
+    [StructLayout(LayoutKind.Sequential)]
+    public struct CDROM_TOC
+    {
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
+        public byte[] Length;
+
+        public byte FirstTrack;
+
+        public byte LastTrack;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = NativeConstants.MAXIMUM_NUMBER_TRACKS)]
+        public TRACK_DATA[] TrackData;
+
+        public override string ToString()
+        {
+            return $"{nameof(Length)}: {BinaryPrimitives.ReadUInt16BigEndian(Length)}, {nameof(FirstTrack)}: {FirstTrack}, {nameof(LastTrack)}: {LastTrack}";
+        }
+    }
+
+    /// <summary>
+    ///     https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ntddcdrm/ns-ntddcdrm-_track_data
+    /// </summary>
+    [StructLayout(LayoutKind.Sequential)]
+    public struct TRACK_DATA
+    {
+        public byte Reserved;
+
+        public byte BitVector1;
+
+        public byte TrackNumber;
+
+        public byte Reserved1;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+        public byte[] Address;
+
+        public byte Control => (byte)(BitVector1 & 0b00001111);
+
+        public byte Adr => (byte)(BitVector1 >> 4 & 0b1111);
+
+        public override string ToString()
+        {
+            return $"{nameof(TrackNumber)}: {TrackNumber}, {nameof(Control)}: {Control}, {nameof(Adr)}: {Adr}, {nameof(Address)}: {BinaryPrimitives.ReadInt32BigEndian(Address)}";
+        }
+    }
+
+    #endregion
+}
+
+public static partial class NativeTypes
 {
     #region ntddscsi.h
 
@@ -61,7 +155,10 @@ public static class NativeTypes
     }
 
     #endregion
+}
 
+public static partial class NativeTypes
+{
     #region ntddstor.h
 
     /// <summary>
@@ -172,97 +269,6 @@ public static class NativeTypes
         PropertyExistsQuery,
         PropertyMaskQuery,
         PropertyQueryMaxDefined,
-    }
-
-    #endregion
-
-    #region ntddcdrm.h
-
-    /// <summary>
-    ///     https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ntddcdrm/ns-ntddcdrm-_cdrom_read_toc_ex
-    /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    public struct CDROM_READ_TOC_EX
-    {
-        public byte BitVector1;
-
-        public byte SessionTrack;
-
-        public byte Reserved2;
-
-        public byte Reserved3;
-
-        public byte Format
-        {
-            get => (byte)(BitVector1 >> 0 & 0b1111);
-            set => BitVector1 |= (byte)((value & 0b1111) << 0);
-        }
-
-        public byte Reserved1
-        {
-            get => (byte)(BitVector1 >> 4 & 0b111);
-            set => BitVector1 |= (byte)((value & 0b111) << 4);
-        }
-
-        public byte Msf
-        {
-            get => (byte)(BitVector1 >> 7 & 0b1);
-            set => BitVector1 |= (byte)((value & 0b1) << 7);
-        }
-
-        public override string ToString()
-        {
-            return $"{nameof(SessionTrack)}: {SessionTrack}, {nameof(Format)}: {Format}, {nameof(Msf)}: {Msf}";
-        }
-    }
-
-    /// <summary>
-    ///     https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ntddcdrm/ns-ntddcdrm-_cdrom_toc
-    /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    public struct CDROM_TOC
-    {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
-        public byte[] Length;
-
-        public byte FirstTrack;
-
-        public byte LastTrack;
-
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = NativeConstants.MAXIMUM_NUMBER_TRACKS)]
-        public TRACK_DATA[] TrackData;
-
-        public override string ToString()
-        {
-            return $"{nameof(Length)}: {BinaryPrimitives.ReadUInt16BigEndian(Length)}, {nameof(FirstTrack)}: {FirstTrack}, {nameof(LastTrack)}: {LastTrack}";
-        }
-    }
-
-    /// <summary>
-    ///     https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ntddcdrm/ns-ntddcdrm-_track_data
-    /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    public struct TRACK_DATA
-    {
-        public byte Reserved;
-
-        public byte BitVector1;
-
-        public byte TrackNumber;
-
-        public byte Reserved1;
-
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public byte[] Address;
-
-        public byte Control => (byte)(BitVector1 & 0b00001111);
-
-        public byte Adr => (byte)(BitVector1 >> 4 & 0b1111);
-
-        public override string ToString()
-        {
-            return $"{nameof(TrackNumber)}: {TrackNumber}, {nameof(Control)}: {Control}, {nameof(Adr)}: {Adr}, {nameof(Address)}: {BinaryPrimitives.ReadInt32BigEndian(Address)}";
-        }
     }
 
     #endregion
