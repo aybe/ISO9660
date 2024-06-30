@@ -41,9 +41,14 @@ public sealed class Disc : DisposableAsync
             throw new NotImplementedException();
         }
 
+        ReadSector(Handle.DangerousGetHandle(), position, buffer, timeout);
+    }
+
+    private static void ReadSector(nint handle, uint position, Span<byte> buffer, uint timeout = 3)
+    {
         if (OperatingSystem.IsWindows())
         {
-            ReadSectorWindows(position, buffer, timeout);
+            ReadSectorWindows(handle, position, buffer, timeout);
         }
         else
         {
@@ -52,7 +57,7 @@ public sealed class Disc : DisposableAsync
     }
 
     [SupportedOSPlatform("windows")]
-    private unsafe void ReadSectorWindows(uint position, Span<byte> buffer, uint timeout = 3)
+    private static unsafe void ReadSectorWindows(nint handle, uint position, Span<byte> buffer, uint timeout = 3)
     {
         if (buffer.Length < 2352)
         {
@@ -94,7 +99,7 @@ public sealed class Disc : DisposableAsync
             Marshal.StructureToPtr(sptd, inBuffer, false);
 
             var ioctl = NativeMethods.DeviceIoControl(
-                Handle.DangerousGetHandle(),
+                handle,
                 NativeConstants.IOCTL_SCSI_PASS_THROUGH_DIRECT,
                 inBuffer,
                 inBufferSize,
