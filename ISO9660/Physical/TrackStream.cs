@@ -1,3 +1,4 @@
+﻿using System.Runtime.CompilerServices;
 using Whatever.Extensions;
 
 namespace ISO9660.Physical;
@@ -40,6 +41,8 @@ internal sealed class TrackStream : Stream
         get => SectorNumber * UserDataLength + SectorOffset;
         set
         {
+            ValidatePosition(value);
+
             SectorNumber = (value / UserDataLength).ToInt32();
             SectorOffset = (value % UserDataLength).ToInt32();
         }
@@ -104,6 +107,8 @@ internal sealed class TrackStream : Stream
             _                  => throw new ArgumentOutOfRangeException(nameof(origin), origin, null)
         };
 
+        ValidatePosition(position);
+
         Position = position;
 
         return Position;
@@ -122,5 +127,14 @@ internal sealed class TrackStream : Stream
     public override string ToString()
     {
         return $"{nameof(SectorNumber)}: {SectorNumber}, {nameof(SectorOffset)}: {SectorOffset}"; // TODO add UserDataLength
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void ValidatePosition(long position, [CallerArgumentExpression(nameof(position))] string positionName = null!)
+    {
+        if (position < Track.Position || position >= Track.Position + Track.Length)
+        {
+            throw new ArgumentOutOfRangeException(positionName, position, null);
+        }
     }
 }
