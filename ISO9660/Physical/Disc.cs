@@ -3,8 +3,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
+using ISO9660.Extensions;
 using ISO9660.GoldenHawk;
-using ISO9660.WorkInProgress;
 using Microsoft.Win32.SafeHandles;
 using Whatever.Extensions;
 

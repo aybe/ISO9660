@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using Whatever.Extensions;
 
-namespace ISO9660.WorkInProgress;
+namespace ISO9660.Extensions;
 
 public sealed unsafe class NativeMemory<T> : Disposable where T : unmanaged
 {
