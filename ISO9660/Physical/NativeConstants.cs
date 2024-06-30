@@ -1,4 +1,4 @@
-﻿namespace ISO9660.WorkInProgress;
+﻿namespace ISO9660.Physical;
 
 internal static partial class NativeConstants
 {

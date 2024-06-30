@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace ISO9660.WorkInProgress;
+namespace ISO9660.Physical;
 
 internal static class NativeMethods
 {
