@@ -10,7 +10,7 @@ internal sealed class TrackStream : Stream
 {
     private readonly Track Track;
 
-    private readonly int UserDataLength;
+    private readonly int UserDataLength; // TODO rename to SectorLength
 
     private int SectorNumber;
 
@@ -121,6 +121,6 @@ internal sealed class TrackStream : Stream
 
     public override string ToString()
     {
-        return $"{nameof(SectorNumber)}: {SectorNumber}, {nameof(SectorOffset)}: {SectorOffset}";
+        return $"{nameof(SectorNumber)}: {SectorNumber}, {nameof(SectorOffset)}: {SectorOffset}"; // TODO add UserDataLength
     }
 }

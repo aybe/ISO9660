@@ -39,24 +39,24 @@ internal sealed class TrackCue : Track
 
     public override int Position => GetPosition(Track, Sector.Length);
 
-    public override ISector Sector { get; }
+    public override ISector Sector { get; } // TODO DRY
 
-    protected override async ValueTask DisposeAsyncCore()
+    protected override async ValueTask DisposeAsyncCore() // TODO DRY
     {
         await Stream.DisposeAsync().ConfigureAwait(false);
     }
 
-    protected override void DisposeManaged()
+    protected override void DisposeManaged() // TODO DRY
     {
         Stream.Dispose();
     }
 
-    public override ISector ReadSector(in int index)
+    public override ISector ReadSector(in int index) // TODO DRY
     {
         return ReadSector(index, Stream);
     }
 
-    public override Task<ISector> ReadSectorAsync(in int index)
+    public override Task<ISector> ReadSectorAsync(in int index) // TODO DRY
     {
         return ReadSectorAsync(index, Stream);
     }

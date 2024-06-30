@@ -16,7 +16,7 @@ internal abstract class Track : DisposableAsync, ITrack
 
     public Stream GetStream(in int sector)
     {
-        if (sector < Position || sector >= Position + Length)
+        if (sector < Position || sector >= Position + Length) // TODO DRY
         {
             throw new ArgumentOutOfRangeException(nameof(sector), sector, null);
         }
@@ -74,7 +74,7 @@ internal abstract class Track : DisposableAsync, ITrack
         return sector;
     }
 
-    private void ValidateSectorIndex(int index, string indexName)
+    private void ValidateSectorIndex(int index, string indexName) // TODO DRY
     {
         if (index < Position || index >= Position + Length)
         {
