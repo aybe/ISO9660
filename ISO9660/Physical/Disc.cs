@@ -21,11 +21,9 @@ internal sealed class Disc : DisposableAsync, IDisc
 
     public NativeMemory<byte> GetDeviceAlignedBuffer(uint byteCount)
     {
-        var alignment = GetDeviceAlignmentMask() + 1;
+        var memory = IDisc.GetDeviceAlignedBuffer(byteCount, Handle);
 
-        var buffer = new NativeMemory<byte>(byteCount, alignment);
-
-        return buffer;
+        return memory;
     }
 
     public void ReadSector(uint position, Span<byte> buffer, uint timeout = 3)
@@ -125,19 +123,5 @@ internal sealed class Disc : DisposableAsync, IDisc
         {
             track.Dispose();
         }
-    }
-
-    private uint GetDeviceAlignmentMask()
-    {
-        if (Handle is null)
-        {
-            return 0;
-        }
-
-        var handle = Handle.DangerousGetHandle();
-
-        var alignmentMask = IDisc.GetDeviceAlignmentMask(handle);
-
-        return alignmentMask;
     }
 }

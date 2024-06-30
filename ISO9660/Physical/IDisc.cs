@@ -5,12 +5,22 @@ using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using ISO9660.GoldenHawk;
 using ISO9660.WorkInProgress;
+using Microsoft.Win32.SafeHandles;
 
 namespace ISO9660.Physical;
 
 public interface IDisc : IDisposable, IAsyncDisposable
 {
     IReadOnlyList<ITrack> Tracks { get; }
+
+    internal static NativeMemory<byte> GetDeviceAlignedBuffer(uint byteCount, SafeFileHandle? handle)
+    {
+        var alignment = handle is null ? 1 : GetDeviceAlignmentMask(handle.DangerousGetHandle()) + 1;
+
+        var memory = new NativeMemory<byte>(byteCount, alignment);
+
+        return memory;
+    }
 
     internal static uint GetDeviceAlignmentMask(nint handle)
     {
@@ -72,7 +82,7 @@ public interface IDisc : IDisposable, IAsyncDisposable
     NativeMemory<byte> GetDeviceAlignedBuffer(uint byteCount);
 
     /// <remarks>
-    ///     <see cref="GetDeviceAlignedBuffer" />
+    ///     <see cref="GetDeviceAlignedBuffer(uint)" />
     /// </remarks>
     public void ReadSector(uint position, Span<byte> buffer, uint timeout = 3);
 
