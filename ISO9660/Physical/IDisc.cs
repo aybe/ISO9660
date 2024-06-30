@@ -124,7 +124,9 @@ public interface IDisc : IDisposable, IAsyncDisposable
 
             var length = address2 - address1;
 
-            tracks[i] = new WorkInProgress.Track(track1.TrackNumber, address1, length, (track1.Control & 4) == 0);
+            // TODO sector type
+
+            tracks[i] = new TrackRaw(track1.TrackNumber, address1, length, (track1.Control & 4) == 0);
         }
 
         return new Disc(tracks, handle);
