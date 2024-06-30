@@ -5,17 +5,17 @@ namespace ISO9660.Physical;
 
 public static class DiscExtensions
 {
-    public static async Task ReadFileRawAsync(this IDisc disc, IsoFileSystemEntryFile file, Stream stream, IProgress<double>? progress = null)
+    public static async Task ReadFileRawAsync(this Disc disc, IsoFileSystemEntryFile file, Stream stream, IProgress<double>? progress = null)
     {
         await ReadFileAsync(disc, file, stream, ReadFileRaw, progress).ConfigureAwait(false);
     }
 
-    public static async Task ReadFileUserAsync(this IDisc disc, IsoFileSystemEntryFile file, Stream stream, IProgress<double>? progress = null)
+    public static async Task ReadFileUserAsync(this Disc disc, IsoFileSystemEntryFile file, Stream stream, IProgress<double>? progress = null)
     {
         await ReadFileAsync(disc, file, stream, ReadFileUser, progress).ConfigureAwait(false);
     }
 
-    private static async Task ReadFileAsync(IDisc disc, IsoFileSystemEntryFile file, Stream stream, ReadFileHandler handler, IProgress<double>? progress)
+    private static async Task ReadFileAsync(Disc disc, IsoFileSystemEntryFile file, Stream stream, ReadFileHandler handler, IProgress<double>? progress)
     {
         var position = (int)file.Position;
 
