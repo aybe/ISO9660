@@ -1,9 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
-using ISO9660.Logical;
 using Whatever.Extensions;
 
-namespace ISO9660;
+namespace ISO9660.Logical;
 
 public static class StreamExtensions
 {
