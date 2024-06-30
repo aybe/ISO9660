@@ -3,8 +3,11 @@ using Whatever.Extensions;
 
 namespace ISO9660.Physical;
 
+/// <summary>
+///     Track stream over user data, i.e. cooked stream.
+/// </summary>
 internal sealed class TrackStream : Stream
-    // this approach is better than a track exposing its stream, which might in turn represent N tracks
+// that's because a track may be N tracks, e.g. bin/cue.
 {
     private readonly Track Track;
 
@@ -47,6 +50,7 @@ internal sealed class TrackStream : Stream
 
     public override void Flush()
     {
+        // NOP
     }
 
     public override int Read(byte[] bytes, int index, int count)
