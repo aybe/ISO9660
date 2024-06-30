@@ -136,57 +136,7 @@ internal sealed class Disc : DisposableAsync, IDisc
 
         var handle = Handle.DangerousGetHandle();
 
-        if (OperatingSystem.IsWindows())
-        {
-            return GetDeviceAlignmentMaskWindows(handle);
-        }
-
-        throw new PlatformNotSupportedException();
-    }
-
-    [SupportedOSPlatform("windows")]
-    private uint GetDeviceAlignmentMaskWindows(nint handle)
-    {
-        var inBufferSize = (uint)Marshal.SizeOf<NativeTypes.STORAGE_PROPERTY_QUERY>();
-        var inBuffer = Marshal.AllocHGlobal((int)inBufferSize);
-
-        var outBufferSize = (uint)Marshal.SizeOf<NativeTypes.STORAGE_ADAPTER_DESCRIPTOR>();
-        var outBuffer = Marshal.AllocHGlobal((int)outBufferSize);
-
-        var query = new NativeTypes.STORAGE_PROPERTY_QUERY
-        {
-            QueryType  = NativeTypes.STORAGE_QUERY_TYPE.PropertyStandardQuery,
-            PropertyId = NativeTypes.STORAGE_PROPERTY_ID.StorageAdapterProperty,
-        };
-
-        Marshal.StructureToPtr(query, inBuffer, false);
-
-        var ioctl = NativeMethods.DeviceIoControl(
-            handle,
-            NativeConstants.IOCTL_STORAGE_QUERY_PROPERTY,
-            inBuffer,
-            inBufferSize,
-            outBuffer,
-            outBufferSize,
-            out _
-        );
-
-        var alignmentMask = 0u;
-
-        if (ioctl)
-        {
-            var descriptor = Marshal.PtrToStructure<NativeTypes.STORAGE_ADAPTER_DESCRIPTOR>(outBuffer);
-
-            alignmentMask = descriptor.AlignmentMask;
-        }
-
-        Marshal.FreeHGlobal(inBuffer);
-        Marshal.FreeHGlobal(outBuffer);
-
-        if (ioctl is false)
-        {
-            throw new Win32Exception();
-        }
+        var alignmentMask = IDisc.GetDeviceAlignmentMask(handle);
 
         return alignmentMask;
     }
