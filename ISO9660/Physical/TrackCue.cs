@@ -9,9 +9,7 @@ internal sealed class TrackCue : Track
 
     public TrackCue(CueSheetTrack track)
     {
-        Stream = File.OpenRead((Track = track).File.Name);
-
-        Sector = track.Type switch
+        ISector sector = track.Type switch
         {
             CueSheetTrackType.Audio             => new SectorRawAudio(),
             CueSheetTrackType.Karaoke           => throw new NotSupportedException(track.Type.ToString()),
@@ -25,19 +23,29 @@ internal sealed class TrackCue : Track
             CueSheetTrackType.InteractiveRaw    => throw new NotSupportedException(track.Type.ToString()),
             _                                   => throw new NotSupportedException(track.Type.ToString())
         };
+
+        Audio = track.Type == CueSheetTrackType.Audio;
+
+        Index = track.Index;
+
+        Length = GetCueLength(track, sector.Length);
+
+        Position = GetCuePosition(track, sector.Length);
+
+        Stream = File.OpenRead(track.File.Name);
+
+        Sector = sector;
     }
 
     private Stream Stream { get; }
 
-    private CueSheetTrack Track { get; }
+    public override bool Audio { get; }
 
-    public override bool Audio => Track.Type == CueSheetTrackType.Audio;
+    public override int Index { get; }
 
-    public override int Index => Track.Index;
+    public override int Length { get; }
 
-    public override int Length => GetLength(Track, Sector.Length);
-
-    public override int Position => GetPosition(Track, Sector.Length);
+    public override int Position { get; }
 
     public override ISector Sector { get; } // TODO DRY
 
@@ -61,7 +69,7 @@ internal sealed class TrackCue : Track
         return ReadSectorAsync(index, Stream);
     }
 
-    private static int GetLength(CueSheetTrack track, in int sectorSize)
+    private static int GetCueLength(CueSheetTrack track, in int sectorSize)
     {
         var lengthStream = (new FileInfo(track.File.Name).Length / sectorSize).ToInt32();
 
@@ -80,8 +88,8 @@ internal sealed class TrackCue : Track
 
                 var value = node.Value;
 
-                var pos1 = GetPosition(value, sectorSize);
-                var pos2 = next != null ? GetPosition(next.Value, sectorSize) : lengthStream;
+                var pos1 = GetCuePosition(value, sectorSize);
+                var pos2 = next != null ? GetCuePosition(next.Value, sectorSize) : lengthStream;
 
                 length = pos2 - pos1;
 
@@ -117,7 +125,7 @@ internal sealed class TrackCue : Track
         return length;
     }
 
-    private static int GetPosition(CueSheetTrack track, in int sectorSize)
+    private static int GetCuePosition(CueSheetTrack track, in int sectorSize)
     {
         var files = track.File.Sheet.Files;
 
