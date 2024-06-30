@@ -31,6 +31,11 @@ public sealed class Disc : DisposableAsync
 
     public void ReadSector(uint position, Span<byte> buffer, uint timeout = 3)
     {
+        if (position < Tracks[0].Position || position >= Tracks[^1].Position + Tracks[^1].Length)
+        {
+            throw new ArgumentOutOfRangeException(nameof(position), position, "Invalid sector position.");
+        }
+
         if (Handle is null)
         {
             throw new NotImplementedException();
@@ -49,11 +54,6 @@ public sealed class Disc : DisposableAsync
     [SupportedOSPlatform("windows")]
     private unsafe void ReadSectorWindows(uint position, Span<byte> buffer, uint timeout = 3)
     {
-        if (position < Tracks[0].Position || position >= Tracks[^1].Position + Tracks[^1].Length)
-        {
-            throw new ArgumentOutOfRangeException(nameof(position), position, "Invalid sector position.");
-        }
-
         if (buffer.Length < 2352)
         {
             throw new ArgumentOutOfRangeException(nameof(buffer), "Buffer length must be >= 2352 bytes.");
