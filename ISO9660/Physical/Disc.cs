@@ -12,7 +12,7 @@ namespace ISO9660.Physical;
 
 public sealed class Disc : DisposableAsync
 {
-    private Disc(IReadOnlyList<ITrack> tracks, SafeFileHandle? handle = null)
+    private Disc(IReadOnlyList<Track> tracks, SafeFileHandle? handle = null)
     {
         Tracks = tracks;
         Handle = handle;
@@ -20,7 +20,7 @@ public sealed class Disc : DisposableAsync
 
     private SafeFileHandle? Handle { get; }
 
-    public IReadOnlyList<ITrack> Tracks { get; }
+    public IReadOnlyList<Track> Tracks { get; }
 
     public NativeMemory<byte> GetDeviceAlignedBuffer(uint byteCount)
     {
@@ -239,7 +239,7 @@ public sealed class Disc : DisposableAsync
 
         var track = new TrackIso(stream, 1, 0);
 
-        var disc = new Disc(new ReadOnlyObservableCollection<ITrack>([track]));
+        var disc = new Disc(new ReadOnlyObservableCollection<Track>([track]));
 
         return disc;
     }
@@ -289,7 +289,7 @@ public sealed class Disc : DisposableAsync
             throw new InvalidOperationException("Failed to find first track from index.");
         }
 
-        var tracks = new ITrack[toc.LastTrack - toc.FirstTrack + 1];
+        var tracks = new Track[toc.LastTrack - toc.FirstTrack + 1];
 
         for (var i = 0; i < tracks.Length; i++)
         {
