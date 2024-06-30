@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace ISO9660.WorkInProgress;
 
-public static partial class NativeTypes
+internal static partial class NativeTypes
 {
     #region ntddcdrm.h
 
@@ -97,7 +97,7 @@ public static partial class NativeTypes
     #endregion
 }
 
-public static partial class NativeTypes
+internal static partial class NativeTypes
 {
     #region ntddscsi.h
 
@@ -157,7 +157,7 @@ public static partial class NativeTypes
     #endregion
 }
 
-public static partial class NativeTypes
+internal static partial class NativeTypes
 {
     #region ntddstor.h
 

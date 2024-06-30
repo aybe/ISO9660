@@ -1,6 +1,6 @@
 ﻿namespace ISO9660.WorkInProgress;
 
-public static partial class NativeConstants
+internal static partial class NativeConstants
 {
     #region devioctl.h
 
@@ -26,7 +26,7 @@ public static partial class NativeConstants
     #endregion
 }
 
-public static partial class NativeConstants
+internal static partial class NativeConstants
 {
     #region ntddcdrm.h
 
@@ -44,7 +44,7 @@ public static partial class NativeConstants
     #endregion
 }
 
-public static partial class NativeConstants
+internal static partial class NativeConstants
 {
     #region ntddscsi.h
 
@@ -61,7 +61,7 @@ public static partial class NativeConstants
     #endregion
 }
 
-public static partial class NativeConstants
+internal static partial class NativeConstants
 {
     #region ntddstor.h
 
