@@ -1,13 +1,16 @@
+using System.Runtime.InteropServices;
 using JetBrains.Annotations;
 
 namespace ISO9660.Physical;
 
+[StructLayout(LayoutKind.Explicit, Pack = 1, Size = 2352)]
 public unsafe struct SectorRawAudio : ISector
 {
     private const int UserDataLength = 2352;
 
     private const int UserDataPosition = 0;
 
+    [FieldOffset(0)]
     [UsedImplicitly]
     public fixed byte UserData[UserDataLength];
 
