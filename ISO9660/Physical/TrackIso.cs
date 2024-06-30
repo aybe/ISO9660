@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Whatever.Extensions;
+﻿using Whatever.Extensions;
 
 namespace ISO9660.Physical;
 
@@ -27,8 +26,7 @@ internal sealed class TrackIso : Track
 
     private Stream Stream { get; }
 
-    [SuppressMessage("ReSharper", "UnassignedGetOnlyAutoProperty")]
-    public override bool Audio { get; }
+    public override bool Audio { get; } = false;
 
     public override int Index { get; }
 

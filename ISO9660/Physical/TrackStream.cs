@@ -1,4 +1,3 @@
-﻿using System.Diagnostics.CodeAnalysis;
 using Whatever.Extensions;
 
 namespace ISO9660.Physical;
@@ -30,11 +29,9 @@ internal sealed class TrackStream : Stream
 
     public override bool CanRead { get; } = true;
 
-    [SuppressMessage("ReSharper", "UnassignedGetOnlyAutoProperty")]
-    public override bool CanSeek { get; }
+    public override bool CanSeek { get; } = true;
 
-    [SuppressMessage("ReSharper", "UnassignedGetOnlyAutoProperty")]
-    public override bool CanWrite { get; }
+    public override bool CanWrite { get; } = false;
 
     public override long Length { get; }
 
