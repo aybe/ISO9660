@@ -45,7 +45,7 @@ public sealed class Disc : DisposableAsync
         ReadSector(Handle.DangerousGetHandle(), position, buffer, timeout);
     }
 
-    private static void ReadSector(nint handle, uint position, Span<byte> buffer, uint timeout = 3)
+    public static void ReadSector(nint handle, uint position, Span<byte> buffer, uint timeout = 3)
     {
         if (OperatingSystem.IsWindows())
         {
@@ -346,6 +346,8 @@ public sealed class Disc : DisposableAsync
 
         var tracks = new Track[toc.LastTrack - toc.FirstTrack + 1];
 
+        using var memory = GetDeviceAlignedBuffer(2352 /*TODO*/, handle);
+
         for (var i = 0; i < tracks.Length; i++)
         {
             var track1 = datas[i + index + 0];
@@ -356,9 +358,24 @@ public sealed class Disc : DisposableAsync
 
             var length = address2 - address1;
 
-            // TODO sector type
+            var audio = (track1.Control & 4) == 0;
 
-            tracks[i] = new TrackRaw(track1.TrackNumber, address1, length, (track1.Control & 4) == 0);
+            ISector sector;
+
+            if (audio)
+            {
+                sector = new SectorRawAudio();
+            }
+            else
+            {
+                var buffer = memory.Span;
+
+                ReadSector(handle.DangerousGetHandle(), (uint)address1, buffer);
+
+                sector = GetSectorType(buffer);
+            }
+
+            tracks[i] = new TrackRaw(track1.TrackNumber, address1, length, audio, sector, handle);
         }
 
         return new Disc(tracks, handle);

@@ -37,31 +37,7 @@ public sealed class UnitTestIsoReadFileSystem : UnitTestBase
 
         var builder = new StringBuilder();
 
-        var stack = new Stack<(IsoFileSystemEntry Entry, int Depth)>();
-
-        stack.Push((fs.RootDirectory, 0));
-
-        while (stack.Count > 0)
-        {
-            var (entry, i) = stack.Pop();
-
-            builder.AppendLine($"{new string('\t', i)}{entry.FileName}");
-
-            if (entry is not IsoFileSystemEntryDirectory directory)
-            {
-                continue;
-            }
-
-            foreach (var item in directory.Directories.AsEnumerable().Reverse())
-            {
-                stack.Push((item, i + 1));
-            }
-
-            foreach (var item in directory.Files.AsEnumerable().Reverse())
-            {
-                stack.Push((item, i + 1));
-            }
-        }
+        fs.Print(builder);
 
         WriteLine(builder.ToString());
     }

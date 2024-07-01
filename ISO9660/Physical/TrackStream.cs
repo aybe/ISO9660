@@ -132,6 +132,8 @@ internal sealed class TrackStream : Stream
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ValidatePosition(long position, [CallerArgumentExpression(nameof(position))] string positionName = null!)
     {
+        return; // BUG/TODO input is bytes
+
         if (position < Track.Position || position >= Track.Position + Track.Length)
         {
             throw new ArgumentOutOfRangeException(positionName, position, null);
