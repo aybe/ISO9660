@@ -7,7 +7,18 @@ namespace ISO9660.Physical;
 ///     Base interface for a CD-ROM sector.
 /// </summary>
 public interface ISector
-    // ECMA 130 https://www.ecma-international.org/wp-content/uploads/ECMA-130_2nd_edition_june_1996.pdf 
+// ECMA 130 https://www.ecma-international.org/wp-content/uploads/ECMA-130_2nd_edition_june_1996.pdf
+// SCSI MMC https://www.13thmonkey.org/documentation/SCSI/mmc3r10g.pdf
+// |---------------|------|--------|------------|-----------|----------|--------------|----------|----------|
+// | Name          | Sync | Header | Sub-header | User data | EDC      | Intermediate | P Parity | Q Parity |
+// |---------------|------|--------|------------|-----------|----------|--------------|----------|----------|
+// | Audio         |      |        |            |      2352 |          |              |          |          |
+// | Mode 0        |   12 |      4 |            |      2336 |          |              |          |          |
+// | Mode 1        |   12 |      4 |            |      2048 |        4 |            8 |      172 |      104 |
+// | Mode 2        |   12 |      4 |            |      2336 | optional |              |          |          |
+// | Mode 2 Form 1 |   12 |      4 |          8 |      2048 |        4 |              |      172 |      104 |
+// | Mode 2 Form 2 |   12 |      4 |          8 |      2324 | optional |              |          |          |
+// |---------------|------|--------|------------|-----------|----------|--------------|----------|----------|
 {
     /// <summary>
     ///     Gets the length in bytes of sector.
