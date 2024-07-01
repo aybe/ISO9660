@@ -32,16 +32,6 @@ internal sealed class TrackRaw : Track
 
     private SafeFileHandle Handle { get; }
 
-    protected override ValueTask DisposeAsyncCore()
-    {
-        throw new NotImplementedException();
-    }
-
-    protected override void DisposeManaged()
-    {
-        throw new NotImplementedException();
-    }
-
     public override ISector ReadSector(in int index)
     {
         using var memory = Disc.GetDeviceAlignedBuffer(2352 /*TODO*/, Handle);
