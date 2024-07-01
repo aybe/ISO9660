@@ -59,6 +59,10 @@ internal sealed class TrackRaw : Track
 
     public override Task<ISector> ReadSectorAsync(in int index)
     {
-        throw new NotImplementedException();
+        // TODO async DeviceIoControl -> PreAllocatedOverlapped, ThreadPoolBoundHandle
+
+        var sector = ReadSector(index);
+
+        return Task.FromResult(sector);
     }
 }
