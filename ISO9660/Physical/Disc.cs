@@ -20,7 +20,7 @@ public sealed class Disc : DisposableAsync
 
     public IReadOnlyList<Track> Tracks { get; }
 
-    public static void ReadSector(nint handle, uint position, Span<byte> buffer, uint timeout = 3)
+    internal static void ReadSector(nint handle, uint position, Span<byte> buffer, uint timeout = 3)
     {
         if (OperatingSystem.IsWindows())
         {
