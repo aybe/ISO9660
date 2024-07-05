@@ -58,15 +58,13 @@ public interface ISector
     /// </summary>
     internal static ISector Read<T>(Stream stream) where T : struct, ISector
     {
-        var size = Unsafe.SizeOf<T>();
-
-        Span<byte> span = stackalloc byte[size];
+        Span<byte> span = stackalloc byte[Unsafe.SizeOf<T>()];
 
         stream.ReadExactly(span);
 
-        var read = MemoryMarshal.Read<T>(span);
+        var sector = MemoryMarshal.Read<T>(span);
 
-        return read;
+        return sector;
     }
 
     /// <summary>
