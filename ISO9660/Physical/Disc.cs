@@ -205,7 +205,7 @@ public sealed class Disc : DisposableAsync
     {
         var header = MemoryMarshal.Read<SectorHeader>(buffer[12..16]);
 
-        var mode = header.Mode;
+        var mode = (SectorMode)((int)header.Mode & 0b111); // TODO fix
 
         switch (mode)
         {
