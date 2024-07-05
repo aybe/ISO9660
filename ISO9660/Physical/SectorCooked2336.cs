@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 
 namespace ISO9660.Physical;
 
-[StructLayout(LayoutKind.Explicit, Pack = 1, Size = 2352)]
+[StructLayout(LayoutKind.Explicit, Pack = 1, Size = 2336)]
 public unsafe struct SectorCooked2336 : ISector
 {
     private const int UserDataLength = 2336;
