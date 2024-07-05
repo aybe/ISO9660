@@ -32,9 +32,9 @@ internal sealed class TrackRaw : Track
 
         ISector sector = Sector switch
         {
-            SectorCooked2048       => MemoryMarshal.Read<SectorCooked2048>(buffer),
-            SectorCooked2324       => MemoryMarshal.Read<SectorCooked2324>(buffer),
-            SectorCooked2336       => MemoryMarshal.Read<SectorCooked2336>(buffer),
+            SectorCooked2048       => throw new NotSupportedException(Sector.GetType().Name),
+            SectorCooked2324       => throw new NotSupportedException(Sector.GetType().Name),
+            SectorCooked2336       => throw new NotSupportedException(Sector.GetType().Name),
             SectorRawAudio         => MemoryMarshal.Read<SectorRawAudio>(buffer),
             SectorRawMode0         => MemoryMarshal.Read<SectorRawMode0>(buffer),
             SectorRawMode1         => MemoryMarshal.Read<SectorRawMode1>(buffer),
