@@ -20,16 +20,6 @@ internal sealed class TrackRaw : Track
         Handle = handle;
     }
 
-    public override int Index { get; }
-
-    public override int Position { get; }
-
-    public override int Length { get; }
-
-    public override bool Audio { get; }
-
-    public override ISector Sector { get; }
-
     private SafeFileHandle Handle { get; }
 
     public override ISector ReadSector(in int index)

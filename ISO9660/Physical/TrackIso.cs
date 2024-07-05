@@ -13,6 +13,8 @@ internal sealed class TrackIso : Track
             new SectorCooked2336()
         };
 
+        Audio = false;
+
         Sector = sectors.Single(s => stream.Length % s.GetUserDataLength() == 0);
 
         Length = (stream.Length / Sector.Length).ToInt32();
@@ -25,16 +27,6 @@ internal sealed class TrackIso : Track
     }
 
     private Stream Stream { get; }
-
-    public override bool Audio { get; } = false;
-
-    public override int Index { get; }
-
-    public override int Length { get; }
-
-    public override int Position { get; }
-
-    public override ISector Sector { get; } // TODO DRY
 
     protected override async ValueTask DisposeAsyncCore() // TODO DRY
     {

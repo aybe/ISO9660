@@ -4,15 +4,15 @@ namespace ISO9660.Physical;
 
 public abstract class Track : DisposableAsync
 {
-    public abstract bool Audio { get; }
+    public bool Audio { get; protected init; }
 
-    public abstract int Index { get; }
+    public int Index { get; protected init; }
 
-    public abstract int Length { get; }
+    public int Length { get; protected init; }
 
-    public abstract int Position { get; }
+    public int Position { get; protected init; }
 
-    public abstract ISector Sector { get; }
+    public ISector Sector { get; protected init; } = null!;
 
     public Stream GetStream(in int sector)
     {

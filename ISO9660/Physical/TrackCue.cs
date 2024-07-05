@@ -39,16 +39,6 @@ internal sealed class TrackCue : Track
 
     private Stream Stream { get; }
 
-    public override bool Audio { get; }
-
-    public override int Index { get; }
-
-    public override int Length { get; }
-
-    public override int Position { get; }
-
-    public override ISector Sector { get; } // TODO DRY
-
     protected override async ValueTask DisposeAsyncCore() // TODO DRY
     {
         await Stream.DisposeAsync().ConfigureAwait(false);
