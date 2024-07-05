@@ -23,28 +23,6 @@ public sealed class Disc : DisposableAsync
 
     public IReadOnlyList<Track> Tracks { get; }
 
-    public NativeMemory<byte> GetDeviceAlignedBuffer(uint byteCount)
-    {
-        var memory = GetDeviceAlignedBuffer(byteCount, Handle);
-
-        return memory;
-    }
-
-    public void ReadSector(uint position, Span<byte> buffer, uint timeout = 3)
-    {
-        if (position < Tracks[0].Position || position >= Tracks[^1].Position + Tracks[^1].Length)
-        {
-            throw new ArgumentOutOfRangeException(nameof(position), position, "Invalid sector position.");
-        }
-
-        if (Handle is null)
-        {
-            throw new NotImplementedException();
-        }
-
-        ReadSector(Handle.DangerousGetHandle(), position, buffer, timeout);
-    }
-
     public static void ReadSector(nint handle, uint position, Span<byte> buffer, uint timeout = 3)
     {
         if (OperatingSystem.IsWindows())
