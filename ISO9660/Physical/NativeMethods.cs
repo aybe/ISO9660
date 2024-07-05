@@ -21,5 +21,20 @@ internal static class NativeMethods
         [Out] out uint lpBytesReturned,
         [In] [Out] [Optional] nint lpOverlapped);
 
+    /// <summary>
+    ///     https://learn.microsoft.com/en-us/windows/win32/api/ioapiset/nf-ioapiset-deviceiocontrol
+    /// </summary>
+    [return: MarshalAs(UnmanagedType.Bool)]
+    [DllImport("kernel32.dll", SetLastError = true)]
+    public static extern unsafe bool DeviceIoControl(
+        [In] nint hDevice,
+        [In] uint dwIoControlCode,
+        [In] [Optional] nint lpInBuffer,
+        [In] uint nInBufferSize,
+        [Out] [Optional] nint lpOutBuffer,
+        [In] uint nOutBufferSize,
+        [Out] out uint lpBytesReturned,
+        NativeOverlapped* lpOverlapped);
+
     #endregion
 }

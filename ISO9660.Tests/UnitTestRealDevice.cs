@@ -9,7 +9,7 @@ namespace ISO9660.Tests;
 public sealed class UnitTestRealDevice : UnitTestBase
 {
     [TestMethod]
-    public async Task TestMethod1()
+    public async Task TestMethod1() 
     {
         var info = GetDrive();
 
@@ -55,6 +55,6 @@ public sealed class UnitTestRealDevice : UnitTestBase
     {
         var info = DriveInfo.GetDrives().FirstOrDefault(s => s is { DriveType: DriveType.CDRom, IsReady: true });
 
-        return info ?? throw new InvalidOperationException();
+        return info ?? throw new InvalidOperationException("Failed to find a CD-ROM drive.");
     }
 }

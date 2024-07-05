@@ -54,7 +54,7 @@ internal sealed class TrackCue : Track
         return ReadSector(index, Stream);
     }
 
-    public override Task<ISector> ReadSectorAsync(in int index)
+    public override Task<ISector> ReadSectorAsync(int index)
     {
         return ReadSectorAsync(index, Stream);
     }

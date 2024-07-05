@@ -24,7 +24,7 @@ public abstract class Track : DisposableAsync
 
     public abstract ISector ReadSector(in int index);
 
-    public abstract Task<ISector> ReadSectorAsync(in int index);
+    public abstract Task<ISector> ReadSectorAsync(int index);
 
     protected ISector ReadSector(in int index, in Stream stream)
     {

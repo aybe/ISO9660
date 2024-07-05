@@ -274,10 +274,18 @@ public sealed class Disc : DisposableAsync
         return disc;
     }
 
-    private static Disc OpenRawWindows(DriveInfo info)
+    private static Disc OpenRawWindows(DriveInfo info) // TODO split
     {
-        var handle = File.OpenHandle($@"\\.\{info.Name[..2]}", FileMode.Open, FileAccess.ReadWrite); // TODO async
-
+        //var handle = File.OpenHandle($@"\\.\{info.Name[..2]}", FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite, FileOptions.Asynchronous); // TODO async
+        var handle =DeviceIoControlAsync. CreateFile(
+            $@"\\.\{info.Name[..2]}",
+            FileAccess.ReadWrite,
+            FileShare.Read,
+            nint.Zero,
+            FileMode.Open,
+            (FileAttributes)FileOptions.Asynchronous,
+            nint.Zero
+        );
         var inBufferSize = (uint)Marshal.SizeOf<NativeTypes.CDROM_READ_TOC_EX>();
         var inBuffer = Marshal.AllocHGlobal((int)inBufferSize);
 
