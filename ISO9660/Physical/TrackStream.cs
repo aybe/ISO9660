@@ -126,7 +126,7 @@ internal sealed class TrackStream : Stream
 
     public override string ToString()
     {
-        return $"{nameof(SectorNumber)}: {SectorNumber}, {nameof(SectorOffset)}: {SectorOffset}"; // TODO add UserDataLength
+        return $"{nameof(SectorNumber)}: {SectorNumber}, {nameof(SectorOffset)}: {SectorOffset}, {nameof(SectorLength)}: {SectorLength}";
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
