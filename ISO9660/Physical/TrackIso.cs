@@ -28,22 +28,22 @@ internal sealed class TrackIso : Track
 
     private Stream Stream { get; }
 
-    protected override async ValueTask DisposeAsyncCore() // TODO DRY
+    protected override async ValueTask DisposeAsyncCore()
     {
         await Stream.DisposeAsync().ConfigureAwait(false);
     }
 
-    protected override void DisposeManaged() // TODO DRY
+    protected override void DisposeManaged()
     {
         Stream.Dispose();
     }
 
-    public override ISector ReadSector(in int index) // TODO DRY
+    public override ISector ReadSector(in int index)
     {
         return ReadSector(index, Stream);
     }
 
-    public override Task<ISector> ReadSectorAsync(in int index) // TODO DRY
+    public override Task<ISector> ReadSectorAsync(in int index)
     {
         return ReadSectorAsync(index, Stream);
     }
