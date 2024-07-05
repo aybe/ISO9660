@@ -40,7 +40,7 @@ public interface ISector
     /// </summary>
     int GetUserDataLength();
 
-    public static Span<byte> GetSpan<T>(scoped ref T sector, int start, int length)
+    internal static Span<byte> GetSpan<T>(scoped ref T sector, int start, int length)
         where T : struct, ISector
     {
         var span = MemoryMarshal.CreateSpan(ref sector, 1);
@@ -55,7 +55,7 @@ public interface ISector
     /// <summary>
     ///     Reads a sector of specified type from a stream.
     /// </summary>
-    public static ISector Read<T>(Stream stream) where T : struct, ISector
+    internal static ISector Read<T>(Stream stream) where T : struct, ISector
     {
         var size = Unsafe.SizeOf<T>();
 
@@ -71,7 +71,7 @@ public interface ISector
     /// <summary>
     ///     Reads a sector of specified type from a stream.
     /// </summary>
-    public static async Task<ISector> ReadAsync<T>(Stream stream)
+    internal static async Task<ISector> ReadAsync<T>(Stream stream)
         where T : struct, ISector
     {
         var buffer = new byte[Unsafe.SizeOf<T>()];
