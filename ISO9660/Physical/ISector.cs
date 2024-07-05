@@ -1,3 +1,4 @@
+using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -74,11 +75,17 @@ public interface ISector
     internal static async Task<ISector> ReadAsync<T>(Stream stream)
         where T : struct, ISector
     {
-        var buffer = new byte[Unsafe.SizeOf<T>()];
+        var pool = ArrayPool<byte>.Shared;
 
-        await stream.ReadExactlyAsync(buffer).ConfigureAwait(false);
+        var buffer = pool.Rent(Unsafe.SizeOf<T>());
 
-        var sector = MemoryMarshal.Read<T>(buffer);
+        var memory = buffer.AsMemory(0, buffer.Length);
+
+        await stream.ReadExactlyAsync(memory).ConfigureAwait(false);
+
+        var sector = MemoryMarshal.Read<T>(memory.Span);
+
+        pool.Return(buffer);
 
         return sector;
     }
