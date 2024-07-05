@@ -30,7 +30,7 @@ internal sealed class TrackRaw : Track
 
         Disc.ReadSector(Handle.DangerousGetHandle(), (uint)index, buffer);
 
-        ISector sector = Sector switch // TODO DRY with ISector.Read
+        ISector sector = Sector switch
         {
             SectorCooked2048       => MemoryMarshal.Read<SectorCooked2048>(buffer),
             SectorCooked2324       => MemoryMarshal.Read<SectorCooked2324>(buffer),
