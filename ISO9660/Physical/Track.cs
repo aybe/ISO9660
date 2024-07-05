@@ -1,4 +1,5 @@
-﻿using Whatever.Extensions;
+﻿using System.Runtime.CompilerServices;
+using Whatever.Extensions;
 
 namespace ISO9660.Physical;
 
@@ -16,10 +17,7 @@ public abstract class Track : DisposableAsync
 
     public Stream GetStream(in int sector)
     {
-        if (sector < Position || sector >= Position + Length) // TODO DRY
-        {
-            throw new ArgumentOutOfRangeException(nameof(sector), sector, null);
-        }
+        ValidateSectorIndex(sector);
 
         return new TrackStream(this, sector);
     }
@@ -30,7 +28,7 @@ public abstract class Track : DisposableAsync
 
     protected ISector ReadSector(in int index, in Stream stream)
     {
-        ValidateSectorIndex(index, nameof(index));
+        ValidateSectorIndex(index);
 
         stream.Position = index * Sector.Length;
 
@@ -53,7 +51,7 @@ public abstract class Track : DisposableAsync
 
     protected Task<ISector> ReadSectorAsync(in int index, in Stream stream)
     {
-        ValidateSectorIndex(index, nameof(index));
+        ValidateSectorIndex(index);
 
         stream.Position = index * Sector.Length;
 
@@ -74,7 +72,8 @@ public abstract class Track : DisposableAsync
         return sector;
     }
 
-    private void ValidateSectorIndex(int index, string indexName) // TODO DRY
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void ValidateSectorIndex(int index, [CallerArgumentExpression(nameof(index))] string indexName = null!)
     {
         if (index < Position || index >= Position + Length)
         {
