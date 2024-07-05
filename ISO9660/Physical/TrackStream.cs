@@ -11,7 +11,7 @@ internal sealed class TrackStream : Stream
 {
     private readonly Track Track;
 
-    private readonly int UserDataLength; // TODO rename to SectorLength
+    private readonly int SectorLength;
 
     private int SectorNumber;
 
@@ -21,11 +21,11 @@ internal sealed class TrackStream : Stream
     {
         Track = track;
 
-        UserDataLength = Track.Sector.GetUserDataLength();
+        SectorLength = Track.Sector.GetUserDataLength();
 
-        Length = Track.Length * UserDataLength;
+        Length = Track.Length * SectorLength;
 
-        Position = index * UserDataLength;
+        Position = index * SectorLength;
     }
 
     public override bool CanRead { get; } = true;
@@ -38,13 +38,13 @@ internal sealed class TrackStream : Stream
 
     public override long Position
     {
-        get => SectorNumber * UserDataLength + SectorOffset;
+        get => SectorNumber * SectorLength + SectorOffset;
         set
         {
             ValidatePosition(value);
 
-            SectorNumber = (value / UserDataLength).ToInt32();
-            SectorOffset = (value % UserDataLength).ToInt32();
+            SectorNumber = (value / SectorLength).ToInt32();
+            SectorOffset = (value % SectorLength).ToInt32();
         }
     }
 
@@ -132,7 +132,7 @@ internal sealed class TrackStream : Stream
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ValidatePosition(long position, [CallerArgumentExpression(nameof(position))] string positionName = null!)
     {
-        if (position < Track.Position * UserDataLength || position >= (Track.Position + Track.Length) * UserDataLength)
+        if (position < Track.Position * SectorLength || position >= (Track.Position + Track.Length) * SectorLength)
         {
             throw new ArgumentOutOfRangeException(positionName, position, null);
         }
