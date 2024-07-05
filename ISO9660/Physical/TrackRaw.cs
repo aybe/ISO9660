@@ -24,7 +24,7 @@ internal sealed class TrackRaw : Track
 
     public override ISector ReadSector(in int index)
     {
-        using var memory = Disc.GetDeviceAlignedBuffer(2352 /*TODO*/, Handle);
+        using var memory = Disc.GetDeviceAlignedBuffer(2352, Handle);
 
         var buffer = memory.Span;
 

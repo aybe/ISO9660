@@ -346,7 +346,7 @@ public sealed class Disc : DisposableAsync
 
         var tracks = new Track[toc.LastTrack - toc.FirstTrack + 1];
 
-        using var memory = GetDeviceAlignedBuffer(2352 /*TODO*/, handle);
+        using var memory = GetDeviceAlignedBuffer(2352, handle);
 
         for (var i = 0; i < tracks.Length; i++)
         {
