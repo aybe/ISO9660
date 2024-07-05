@@ -13,13 +13,10 @@ namespace ISO9660.Physical;
 
 public sealed class Disc : DisposableAsync
 {
-    private Disc(IReadOnlyList<Track> tracks, SafeFileHandle? handle = null)
+    private Disc(IReadOnlyList<Track> tracks)
     {
         Tracks = tracks;
-        Handle = handle;
     }
-
-    private SafeFileHandle? Handle { get; }
 
     public IReadOnlyList<Track> Tracks { get; }
 
@@ -356,6 +353,6 @@ public sealed class Disc : DisposableAsync
             tracks[i] = new TrackRaw(track1.TrackNumber, address1, length, audio, sector, handle);
         }
 
-        return new Disc(tracks, handle);
+        return new Disc(tracks);
     }
 }
