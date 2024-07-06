@@ -138,19 +138,7 @@ internal sealed class TrackRaw : Track
             }
             else
             {
-                ISector sector = Sector switch
-                {
-                    SectorCooked2048       => throw new NotSupportedException(Sector.GetType().Name),
-                    SectorCooked2324       => throw new NotSupportedException(Sector.GetType().Name),
-                    SectorCooked2336       => throw new NotSupportedException(Sector.GetType().Name),
-                    SectorRawAudio         => MemoryMarshal.Read<SectorRawAudio>(memory.Span),
-                    SectorRawMode0         => MemoryMarshal.Read<SectorRawMode0>(memory.Span),
-                    SectorRawMode1         => MemoryMarshal.Read<SectorRawMode1>(memory.Span),
-                    SectorRawMode2Form1    => MemoryMarshal.Read<SectorRawMode2Form1>(memory.Span),
-                    SectorRawMode2Form2    => MemoryMarshal.Read<SectorRawMode2Form2>(memory.Span),
-                    SectorRawMode2FormLess => MemoryMarshal.Read<SectorRawMode2FormLess>(memory.Span),
-                    _                      => throw new NotSupportedException(Sector.GetType().Name),
-                };
+                var sector = ReadSector(memory.Span);
 
                 source.SetResult(sector);
             }
@@ -159,6 +147,25 @@ internal sealed class TrackRaw : Track
         {
             source.SetException(e);
         }
+    }
+
+    private ISector ReadSector(Span<byte> span) // TODO DRY
+    {
+        ISector sector = Sector switch
+        {
+            SectorCooked2048       => throw new NotSupportedException(Sector.GetType().Name),
+            SectorCooked2324       => throw new NotSupportedException(Sector.GetType().Name),
+            SectorCooked2336       => throw new NotSupportedException(Sector.GetType().Name),
+            SectorRawAudio         => MemoryMarshal.Read<SectorRawAudio>(span),
+            SectorRawMode0         => MemoryMarshal.Read<SectorRawMode0>(span),
+            SectorRawMode1         => MemoryMarshal.Read<SectorRawMode1>(span),
+            SectorRawMode2Form1    => MemoryMarshal.Read<SectorRawMode2Form1>(span),
+            SectorRawMode2Form2    => MemoryMarshal.Read<SectorRawMode2Form2>(span),
+            SectorRawMode2FormLess => MemoryMarshal.Read<SectorRawMode2FormLess>(span),
+            _                      => throw new NotSupportedException(Sector.GetType().Name),
+        };
+
+        return sector;
     }
 
     private record struct ReadSectorAsyncData(TaskCompletionSource<ISector> Source, NativeMemory<byte> Memory);
