@@ -9,18 +9,18 @@ public sealed unsafe class NativeMemory<T> : Disposable where T : unmanaged
     {
         ArgumentOutOfRangeException.ThrowIfZero(alignment);
 
-        var length = count * (uint)sizeof(T);
+        Length = count * (uint)sizeof(T);
 
-        var pointer = NativeMemory.AlignedAlloc(length, alignment);
+        Pointer = (nint)NativeMemory.AlignedAlloc(Length, alignment);
 
-        Pointer = (nint)pointer;
-
-        Manager = new NativeMemoryManager<T>((T*)pointer, (int)length);
+        Manager = new NativeMemoryManager<T>((T*)Pointer, (int)Length);
 
         Span.Clear();
     }
 
     private NativeMemoryManager<T> Manager { get; }
+
+    public uint Length { get; }
 
     public nint Pointer { get; }
 
@@ -52,5 +52,10 @@ public sealed unsafe class NativeMemory<T> : Disposable where T : unmanaged
     private void ThrowIfDisposed()
     {
         // TODO add to Whatever.Extensions.Disposable
+
+        if (IsDisposed)
+        {
+            throw new ObjectDisposedException(GetType().Name);
+        }
     }
 }

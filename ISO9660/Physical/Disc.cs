@@ -276,7 +276,7 @@ public sealed class Disc : DisposableAsync
 
     private static Disc OpenRawWindows(DriveInfo info)
     {
-        var handle = File.OpenHandle($@"\\.\{info.Name[..2]}", FileMode.Open, FileAccess.ReadWrite); // TODO async
+        var handle = File.OpenHandle($@"\\.\{info.Name[..2]}", FileMode.Open, FileAccess.ReadWrite, FileShare.Read, FileOptions.Asynchronous);
 
         var inBufferSize = (uint)Marshal.SizeOf<NativeTypes.CDROM_READ_TOC_EX>();
         var inBuffer = Marshal.AllocHGlobal((int)inBufferSize);

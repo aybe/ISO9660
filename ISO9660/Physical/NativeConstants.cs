@@ -75,3 +75,14 @@ internal static partial class NativeConstants
 
     #endregion
 }
+
+internal static partial class NativeConstants
+{
+    #region winerror.h
+
+    public const int ERROR_SUCCESS = 0;
+
+    public const int ERROR_IO_PENDING = 997;
+
+    #endregion
+}
