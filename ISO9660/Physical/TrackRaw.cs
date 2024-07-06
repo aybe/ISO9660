@@ -109,15 +109,13 @@ internal sealed class TrackRaw : Track
         var handle = ThreadPool.RegisterWaitForSingleObject(
             @event,
             ReadSectorAsyncCallBack,
-            new ReadSectorAsyncData(source, memory),
+            new ReadSectorAsyncData(source, memory, inBuffer, nativeOverlapped),
             TimeSpan.FromSeconds(timeOut),
             true
         );
 
         source.Task.ContinueWith(_ =>
         {
-            //Overlapped.Free(nativeOverlapped); // BUG fails at end
-            Marshal.FreeHGlobal(inBuffer);
             handle.Unregister(null);
             memory.Dispose();
             @event.Dispose();
@@ -126,9 +124,9 @@ internal sealed class TrackRaw : Track
         return source.Task;
     }
 
-    private void ReadSectorAsyncCallBack(object? state, bool timedOut)
+    private unsafe void ReadSectorAsyncCallBack(object? state, bool timedOut)
     {
-        var (source, memory) = (ReadSectorAsyncData)state!;
+        var (source, memory, buffer, overlapped) = (ReadSectorAsyncData)state!;
 
         try
         {
@@ -146,6 +144,12 @@ internal sealed class TrackRaw : Track
         catch (Exception e)
         {
             source.SetException(e);
+        }
+        finally
+        {
+            Overlapped.Free(overlapped);
+
+            Marshal.FreeHGlobal(buffer);
         }
     }
 
@@ -168,5 +172,31 @@ internal sealed class TrackRaw : Track
         return sector;
     }
 
-    private record struct ReadSectorAsyncData(TaskCompletionSource<ISector> Source, NativeMemory<byte> Memory);
+    private readonly unsafe struct ReadSectorAsyncData(
+        TaskCompletionSource<ISector> source,
+        NativeMemory<byte> memory,
+        nint buffer,
+        NativeOverlapped* overlapped
+    )
+    {
+        public TaskCompletionSource<ISector> Source { get; } = source;
+
+        public NativeMemory<byte> Memory { get; } = memory;
+
+        public nint Buffer { get; } = buffer;
+
+        public NativeOverlapped* Overlapped { get; } = overlapped;
+
+        public void Deconstruct(
+            out TaskCompletionSource<ISector> source,
+            out NativeMemory<byte> memory,
+            out nint buffer,
+            out NativeOverlapped* overlapped)
+        {
+            source     = Source;
+            memory     = Memory;
+            buffer     = Buffer;
+            overlapped = Overlapped;
+        }
+    }
 }
