@@ -82,7 +82,7 @@ internal sealed class TrackRaw : Track
         var handle = ThreadPool.RegisterWaitForSingleObject(
             @event,
             ReadSectorAsyncCallBack,
-            new ReadSectorAsyncData(source, memory, sector.Pointer, nativeOverlapped),
+            new ReadSectorAsyncData(source, memory, nativeOverlapped),
             TimeSpan.FromSeconds(duration),
             true
         );
@@ -100,7 +100,7 @@ internal sealed class TrackRaw : Track
 
     private unsafe void ReadSectorAsyncCallBack(object? state, bool timedOut)
     {
-        var (source, memory, buffer, overlapped) = (ReadSectorAsyncData)state!;
+        var (source, memory, overlapped) = (ReadSectorAsyncData)state!;
 
         try
         {
@@ -122,8 +122,6 @@ internal sealed class TrackRaw : Track
         finally
         {
             Overlapped.Free(overlapped);
-
-            Marshal.FreeHGlobal(buffer);
         }
     }
 
@@ -179,7 +177,6 @@ internal sealed class TrackRaw : Track
     private readonly unsafe struct ReadSectorAsyncData(
         TaskCompletionSource<ISector> source,
         NativeMemory<byte> memory,
-        nint buffer,
         NativeOverlapped* overlapped
     )
     {
@@ -187,19 +184,15 @@ internal sealed class TrackRaw : Track
 
         public NativeMemory<byte> Memory { get; } = memory;
 
-        public nint Buffer { get; } = buffer;
-
         public NativeOverlapped* Overlapped { get; } = overlapped;
 
         public void Deconstruct(
             out TaskCompletionSource<ISector> source,
             out NativeMemory<byte> memory,
-            out nint buffer,
             out NativeOverlapped* overlapped)
         {
             source     = Source;
             memory     = Memory;
-            buffer     = Buffer;
             overlapped = Overlapped;
         }
     }
