@@ -111,7 +111,7 @@ internal static partial class NativeTypes
         {
             ArgumentOutOfRangeException.ThrowIfGreaterThan(cdbLength, 16);
 
-            Length = 0;
+            Length = (ushort)Marshal.SizeOf<SCSI_PASS_THROUGH_DIRECT>();
             ScsiStatus = 0;
             PathId = 0;
             TargetId = 0;
