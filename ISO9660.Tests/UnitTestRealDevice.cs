@@ -55,6 +55,6 @@ public sealed class UnitTestRealDevice : UnitTestBase
     {
         var info = DriveInfo.GetDrives().FirstOrDefault(s => s is { DriveType: DriveType.CDRom, IsReady: true });
 
-        return info ?? throw new InvalidOperationException();
+        return info ?? throw new InvalidOperationException("Couldn't find a CD-ROM drive.");
     }
 }
