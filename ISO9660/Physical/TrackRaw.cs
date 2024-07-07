@@ -95,14 +95,13 @@ internal sealed class TrackRaw : Track
         var handle = ThreadPool.RegisterWaitForSingleObject(
             @event,
             ReadSectorAsyncWindowsCallBack,
-            new ReadSectorAsyncWindowsData(source, memory, nativeOverlapped),
+            new ReadSectorAsyncWindowsData(source, sector, memory, nativeOverlapped),
             TimeSpan.FromSeconds(duration),
             true
         );
 
         source.Task.ContinueWith(_ =>
         {
-            sector.Dispose();
             handle.Unregister(null);
             memory.Dispose();
             @event.Dispose();
@@ -114,7 +113,7 @@ internal sealed class TrackRaw : Track
     [SupportedOSPlatform("windows")]
     private unsafe void ReadSectorAsyncWindowsCallBack(object? state, bool timedOut)
     {
-        var (source, memory, overlapped) = (ReadSectorAsyncWindowsData)state!;
+        var (source, query, memory, overlapped) = (ReadSectorAsyncWindowsData)state!;
 
         try
         {
@@ -136,16 +135,20 @@ internal sealed class TrackRaw : Track
         finally
         {
             Overlapped.Free(overlapped);
+            query.Dispose();
         }
     }
 
     private readonly unsafe struct ReadSectorAsyncWindowsData(
         TaskCompletionSource<ISector> source,
+        NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT> query,
         NativeMemory<byte> memory,
         NativeOverlapped* overlapped
     )
     {
         public TaskCompletionSource<ISector> Source { get; } = source;
+
+        public NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT> Query { get; } = query;
 
         public NativeMemory<byte> Memory { get; } = memory;
 
@@ -153,10 +156,12 @@ internal sealed class TrackRaw : Track
 
         public void Deconstruct(
             out TaskCompletionSource<ISector> source,
+            out NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT> query,
             out NativeMemory<byte> memory,
             out NativeOverlapped* overlapped)
         {
             source     = Source;
+            query      = Query;
             memory     = Memory;
             overlapped = Overlapped;
         }
