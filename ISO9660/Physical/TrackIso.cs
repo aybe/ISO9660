@@ -6,7 +6,7 @@ internal sealed class TrackIso : Track
 {
     public TrackIso(Stream stream, int index, int position)
     {
-        ISector[] sectors =
+        ISector[] sectors = // TODO check ECMA-119 + CDRWIN
         [
             new SectorCooked2048(),
             new SectorCooked2336(),
