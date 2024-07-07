@@ -124,7 +124,7 @@ internal sealed class TrackRaw : Track
             }
             else
             {
-                var sector = ReadSector(memory.Span);
+                var sector = ISector.Read(Sector, memory.Span);
 
                 source.SetResult(sector);
             }
@@ -137,13 +137,6 @@ internal sealed class TrackRaw : Track
         {
             Overlapped.Free(overlapped);
         }
-    }
-
-    private ISector ReadSector(Span<byte> span)
-    {
-        var sector = ISector.Read(Sector, span);
-
-        return sector;
     }
 
     private readonly unsafe struct ReadSectorAsyncWindowsData(
