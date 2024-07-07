@@ -1,6 +1,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using ISO9660.Extensions;
+using ISO9660.GoldenHawk;
 
 namespace ISO9660.Physical;
 
@@ -58,6 +59,26 @@ public interface ISector
         };
 
         return length;
+    }
+
+    internal static ISector GetSectorTypeCue(CueSheetTrackType type)
+    {
+        ISector sector = type switch
+        {
+            CueSheetTrackType.Audio             => new SectorRawAudio(),
+            CueSheetTrackType.Karaoke           => throw new NotSupportedException(type.ToString()),
+            CueSheetTrackType.Mode1Cooked       => new SectorCooked2048(),
+            CueSheetTrackType.Mode1Raw          => new SectorRawMode1(),
+            CueSheetTrackType.Mode2Form1Cooked  => new SectorCooked2324(),
+            CueSheetTrackType.Mode2Form2Cooked  => new SectorCooked2336(),
+            CueSheetTrackType.Mode2Mixed        => throw new NotSupportedException(type.ToString()),
+            CueSheetTrackType.Mode2Raw          => new SectorRawMode2Form1(),
+            CueSheetTrackType.InteractiveCooked => throw new NotSupportedException(type.ToString()),
+            CueSheetTrackType.InteractiveRaw    => throw new NotSupportedException(type.ToString()),
+            _                                   => throw new NotSupportedException(type.ToString()),
+        };
+
+        return sector;
     }
 
     internal static Span<byte> GetSpan<T>(scoped ref T sector, int start, int length)

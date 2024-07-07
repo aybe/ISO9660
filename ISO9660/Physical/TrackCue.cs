@@ -9,20 +9,7 @@ internal sealed class TrackCue : Track
 
     public TrackCue(CueSheetTrack track)
     {
-        ISector sector = track.Type switch
-        {
-            CueSheetTrackType.Audio             => new SectorRawAudio(),
-            CueSheetTrackType.Karaoke           => throw new NotSupportedException(track.Type.ToString()),
-            CueSheetTrackType.Mode1Cooked       => new SectorCooked2048(),
-            CueSheetTrackType.Mode1Raw          => new SectorRawMode1(),
-            CueSheetTrackType.Mode2Form1Cooked  => new SectorCooked2324(),
-            CueSheetTrackType.Mode2Form2Cooked  => new SectorCooked2336(),
-            CueSheetTrackType.Mode2Mixed        => throw new NotSupportedException(track.Type.ToString()),
-            CueSheetTrackType.Mode2Raw          => new SectorRawMode2Form1(),
-            CueSheetTrackType.InteractiveCooked => throw new NotSupportedException(track.Type.ToString()),
-            CueSheetTrackType.InteractiveRaw    => throw new NotSupportedException(track.Type.ToString()),
-            _                                   => throw new NotSupportedException(track.Type.ToString())
-        };
+        var sector = ISector.GetSectorTypeCue(track.Type);
 
         Audio = track.Type == CueSheetTrackType.Audio;
 
