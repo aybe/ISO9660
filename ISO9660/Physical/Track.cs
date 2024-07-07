@@ -28,9 +28,7 @@ public abstract class Track : DisposableAsync
 
     protected ISector ReadSector(in int index, in Stream stream)
     {
-        ValidateSectorIndex(index);
-
-        stream.Position = index * Sector.Length;
+        ReadSectorInit(stream, index);
 
         var sector = ISector.Read(Sector, stream);
 
@@ -39,13 +37,18 @@ public abstract class Track : DisposableAsync
 
     protected Task<ISector> ReadSectorAsync(in int index, in Stream stream)
     {
-        ValidateSectorIndex(index);
-
-        stream.Position = index * Sector.Length;
+        ReadSectorInit(stream, index);
 
         var sector = ISector.ReadAsync(Sector, stream);
 
         return sector;
+    }
+
+    private void ReadSectorInit(Stream stream, int index)
+    {
+        ValidateSectorIndex(index);
+
+        stream.Position = index * Sector.Length;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
