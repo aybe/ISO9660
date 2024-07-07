@@ -15,18 +15,18 @@ public abstract class Track : DisposableAsync
 
     public ISector Sector { get; protected init; } = null!;
 
-    public Stream GetStream(in int sector)
+    public Stream GetStream(int sector)
     {
         ValidateSectorIndex(sector);
 
         return new TrackStream(this, sector);
     }
 
-    public abstract ISector ReadSector(in int index);
+    public abstract ISector ReadSector(int index);
 
-    public abstract Task<ISector> ReadSectorAsync(in int index);
+    public abstract Task<ISector> ReadSectorAsync(int index);
 
-    protected ISector ReadSector(in int index, in Stream stream)
+    protected ISector ReadSector(int index, Stream stream)
     {
         ReadSectorInit(stream, index);
 
@@ -35,7 +35,7 @@ public abstract class Track : DisposableAsync
         return sector;
     }
 
-    protected Task<ISector> ReadSectorAsync(in int index, in Stream stream)
+    protected Task<ISector> ReadSectorAsync(int index, Stream stream)
     {
         ReadSectorInit(stream, index);
 

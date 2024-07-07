@@ -49,17 +49,17 @@ internal sealed class TrackCue : Track
         Stream.Dispose();
     }
 
-    public override ISector ReadSector(in int index)
+    public override ISector ReadSector(int index)
     {
         return ReadSector(index, Stream);
     }
 
-    public override Task<ISector> ReadSectorAsync(in int index)
+    public override Task<ISector> ReadSectorAsync(int index)
     {
         return ReadSectorAsync(index, Stream);
     }
 
-    private static int GetCueLength(CueSheetTrack track, in int sectorSize)
+    private static int GetCueLength(CueSheetTrack track, int sectorSize)
     {
         var lengthStream = (new FileInfo(track.File.Name).Length / sectorSize).ToInt32();
 
@@ -115,7 +115,7 @@ internal sealed class TrackCue : Track
         return length;
     }
 
-    private static int GetCuePosition(CueSheetTrack track, in int sectorSize)
+    private static int GetCuePosition(CueSheetTrack track, int sectorSize)
     {
         var files = track.File.Sheet.Files;
 

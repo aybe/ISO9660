@@ -38,12 +38,12 @@ internal sealed class TrackIso : Track
         Stream.Dispose();
     }
 
-    public override ISector ReadSector(in int index)
+    public override ISector ReadSector(int index)
     {
         return ReadSector(index, Stream);
     }
 
-    public override Task<ISector> ReadSectorAsync(in int index)
+    public override Task<ISector> ReadSectorAsync(int index)
     {
         return ReadSectorAsync(index, Stream);
     }

@@ -24,7 +24,7 @@ internal sealed class TrackRaw : Track
 
     private SafeFileHandle Handle { get; }
 
-    public override ISector ReadSector(in int index)
+    public override ISector ReadSector(int index)
     {
         using var memory = Disc.GetDeviceAlignedBuffer(2352, Handle);
 
@@ -37,7 +37,7 @@ internal sealed class TrackRaw : Track
         return sector;
     }
 
-    public override unsafe Task<ISector> ReadSectorAsync(in int index)
+    public override unsafe Task<ISector> ReadSectorAsync(int index)
     {
         const uint duration = 3u;
         const uint transfer = 1u; // sectors

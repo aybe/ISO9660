@@ -17,7 +17,7 @@ internal sealed class TrackStream : Stream
 
     private int SectorOffset;
 
-    public TrackStream(in Track track, in int index)
+    public TrackStream(Track track, int index)
     {
         Track = track;
 
