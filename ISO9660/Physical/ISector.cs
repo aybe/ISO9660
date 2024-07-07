@@ -72,6 +72,25 @@ public interface ISector
         return result;
     }
 
+    internal static ISector Read(ISector sector, Stream stream)
+    {
+        var result = sector switch
+        {
+            SectorCooked2048       => Read<SectorCooked2048>(stream),
+            SectorCooked2324       => Read<SectorCooked2324>(stream),
+            SectorCooked2336       => Read<SectorCooked2336>(stream),
+            SectorRawAudio         => Read<SectorRawAudio>(stream),
+            SectorRawMode0         => Read<SectorRawMode0>(stream),
+            SectorRawMode1         => Read<SectorRawMode1>(stream),
+            SectorRawMode2Form1    => Read<SectorRawMode2Form1>(stream),
+            SectorRawMode2Form2    => Read<SectorRawMode2Form2>(stream),
+            SectorRawMode2FormLess => Read<SectorRawMode2FormLess>(stream),
+            _                      => throw new NotSupportedException(sector.GetType().Name),
+        };
+
+        return result;
+    }
+
     /// <summary>
     ///     Reads a sector of specified type from a stream.
     /// </summary>
@@ -105,5 +124,24 @@ public interface ISector
         pool.Return(buffer);
 
         return sector;
+    }
+
+    internal static Task<ISector> ReadAsync(ISector sector, Stream stream)
+    {
+        var result = sector switch
+        {
+            SectorCooked2048       => ReadAsync<SectorCooked2048>(stream),
+            SectorCooked2324       => ReadAsync<SectorCooked2324>(stream),
+            SectorCooked2336       => ReadAsync<SectorCooked2336>(stream),
+            SectorRawAudio         => ReadAsync<SectorRawAudio>(stream),
+            SectorRawMode0         => ReadAsync<SectorRawMode0>(stream),
+            SectorRawMode1         => ReadAsync<SectorRawMode1>(stream),
+            SectorRawMode2Form1    => ReadAsync<SectorRawMode2Form1>(stream),
+            SectorRawMode2Form2    => ReadAsync<SectorRawMode2Form2>(stream),
+            SectorRawMode2FormLess => ReadAsync<SectorRawMode2FormLess>(stream),
+            _                      => throw new NotSupportedException(sector.GetType().Name),
+        };
+
+        return result;
     }
 }
