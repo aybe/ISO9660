@@ -1,6 +1,6 @@
-using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using ISO9660.Extensions;
 
 namespace ISO9660.Physical;
 
@@ -41,6 +41,25 @@ public interface ISector
     /// </summary>
     int GetUserDataLength();
 
+    private static int GetLength(ISector sector)
+    {
+        var length = sector switch
+        {
+            SectorCooked2048       => Unsafe.SizeOf<SectorCooked2048>(),
+            SectorCooked2324       => Unsafe.SizeOf<SectorCooked2324>(),
+            SectorCooked2336       => Unsafe.SizeOf<SectorCooked2336>(),
+            SectorRawAudio         => Unsafe.SizeOf<SectorRawAudio>(),
+            SectorRawMode0         => Unsafe.SizeOf<SectorRawMode0>(),
+            SectorRawMode1         => Unsafe.SizeOf<SectorRawMode1>(),
+            SectorRawMode2Form1    => Unsafe.SizeOf<SectorRawMode2Form1>(),
+            SectorRawMode2Form2    => Unsafe.SizeOf<SectorRawMode2Form2>(),
+            SectorRawMode2FormLess => Unsafe.SizeOf<SectorRawMode2FormLess>(),
+            _                      => throw new NotSupportedException(sector.GetType().Name),
+        };
+
+        return length;
+    }
+
     internal static Span<byte> GetSpan<T>(scoped ref T sector, int start, int length)
         where T : struct, ISector
     {
@@ -74,65 +93,22 @@ public interface ISector
 
     internal static ISector Read(ISector sector, Stream stream)
     {
-        var length = sector switch
-        {
-            SectorCooked2048       => Unsafe.SizeOf<SectorCooked2048>(),
-            SectorCooked2324       => Unsafe.SizeOf<SectorCooked2324>(),
-            SectorCooked2336       => Unsafe.SizeOf<SectorCooked2336>(),
-            SectorRawAudio         => Unsafe.SizeOf<SectorRawAudio>(),
-            SectorRawMode0         => Unsafe.SizeOf<SectorRawMode0>(),
-            SectorRawMode1         => Unsafe.SizeOf<SectorRawMode1>(),
-            SectorRawMode2Form1    => Unsafe.SizeOf<SectorRawMode2Form1>(),
-            SectorRawMode2Form2    => Unsafe.SizeOf<SectorRawMode2Form2>(),
-            SectorRawMode2FormLess => Unsafe.SizeOf<SectorRawMode2FormLess>(),
-            _                      => throw new NotSupportedException(sector.GetType().Name),
-        };
+        using var scope = new ArrayPoolScope<byte>(GetLength(sector));
 
-        Span<byte> buffer = stackalloc byte[length];
+        stream.ReadExactly(scope.Span);
 
-        stream.ReadExactly(buffer);
-
-        var result = Read(sector, buffer);
+        var result = Read(sector, scope.Span);
 
         return result;
     }
 
-    /// <summary>
-    ///     Reads a sector of specified type from a stream.
-    /// </summary>
-    internal static async Task<ISector> ReadAsync<T>(Stream stream)
-        where T : struct, ISector
+    internal static async Task<ISector> ReadAsync(ISector sector, Stream stream)
     {
-        var pool = ArrayPool<byte>.Shared;
+        using var scope = new ArrayPoolScope<byte>(GetLength(sector));
 
-        var buffer = pool.Rent(Unsafe.SizeOf<T>());
+        await stream.ReadExactlyAsync(scope.Memory);
 
-        var memory = buffer.AsMemory(0, buffer.Length);
-
-        await stream.ReadExactlyAsync(memory).ConfigureAwait(false);
-
-        var sector = MemoryMarshal.Read<T>(memory.Span);
-
-        pool.Return(buffer);
-
-        return sector;
-    }
-
-    internal static Task<ISector> ReadAsync(ISector sector, Stream stream)
-    {
-        var result = sector switch
-        {
-            SectorCooked2048       => ReadAsync<SectorCooked2048>(stream),
-            SectorCooked2324       => ReadAsync<SectorCooked2324>(stream),
-            SectorCooked2336       => ReadAsync<SectorCooked2336>(stream),
-            SectorRawAudio         => ReadAsync<SectorRawAudio>(stream),
-            SectorRawMode0         => ReadAsync<SectorRawMode0>(stream),
-            SectorRawMode1         => ReadAsync<SectorRawMode1>(stream),
-            SectorRawMode2Form1    => ReadAsync<SectorRawMode2Form1>(stream),
-            SectorRawMode2Form2    => ReadAsync<SectorRawMode2Form2>(stream),
-            SectorRawMode2FormLess => ReadAsync<SectorRawMode2FormLess>(stream),
-            _                      => throw new NotSupportedException(sector.GetType().Name),
-        };
+        var result = Read(sector, scope.Span);
 
         return result;
     }
