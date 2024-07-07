@@ -65,9 +65,9 @@ internal sealed class TrackRaw : Track
         const uint duration = 3u;
         const uint transfer = 1u; // sectors
 
+#pragma warning disable CA2000 // Dispose objects before losing scope
         var memory = Disc.GetDeviceAlignedBuffer(2352, Handle);
 
-#pragma warning disable CA2000 // Dispose objects before losing scope
         var sector = Disc.ReadSectorWindowsQuery((uint)index, transfer, duration, memory.Pointer, memory.Length);
 #pragma warning restore CA2000 // Dispose objects before losing scope
 
