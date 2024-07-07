@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using ISO9660.Extensions;
 using Microsoft.Win32.SafeHandles;
@@ -37,6 +38,7 @@ internal sealed class TrackRaw : Track
         return sector;
     }
 
+    [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
     public override unsafe Task<ISector> ReadSectorAsync(int index)
     {
         const uint duration = 3u;
