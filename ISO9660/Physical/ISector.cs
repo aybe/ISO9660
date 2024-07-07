@@ -53,6 +53,25 @@ public interface ISector
         return slice;
     }
 
+    internal static ISector Read(ISector sector, Span<byte> buffer)
+    {
+        ISector result = sector switch
+        {
+            SectorCooked2048       => MemoryMarshal.Read<SectorCooked2048>(buffer),
+            SectorCooked2324       => MemoryMarshal.Read<SectorCooked2324>(buffer),
+            SectorCooked2336       => MemoryMarshal.Read<SectorCooked2336>(buffer),
+            SectorRawAudio         => MemoryMarshal.Read<SectorRawAudio>(buffer),
+            SectorRawMode0         => MemoryMarshal.Read<SectorRawMode0>(buffer),
+            SectorRawMode1         => MemoryMarshal.Read<SectorRawMode1>(buffer),
+            SectorRawMode2Form1    => MemoryMarshal.Read<SectorRawMode2Form1>(buffer),
+            SectorRawMode2Form2    => MemoryMarshal.Read<SectorRawMode2Form2>(buffer),
+            SectorRawMode2FormLess => MemoryMarshal.Read<SectorRawMode2FormLess>(buffer),
+            _                      => throw new NotSupportedException(sector.GetType().Name),
+        };
+
+        return result;
+    }
+
     /// <summary>
     ///     Reads a sector of specified type from a stream.
     /// </summary>

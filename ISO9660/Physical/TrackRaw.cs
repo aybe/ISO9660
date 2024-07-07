@@ -32,19 +32,7 @@ internal sealed class TrackRaw : Track
 
         Disc.ReadSector(Handle.DangerousGetHandle(), (uint)index, buffer);
 
-        ISector sector = Sector switch
-        {
-            SectorCooked2048       => throw new NotSupportedException(Sector.GetType().Name),
-            SectorCooked2324       => throw new NotSupportedException(Sector.GetType().Name),
-            SectorCooked2336       => throw new NotSupportedException(Sector.GetType().Name),
-            SectorRawAudio         => MemoryMarshal.Read<SectorRawAudio>(buffer),
-            SectorRawMode0         => MemoryMarshal.Read<SectorRawMode0>(buffer),
-            SectorRawMode1         => MemoryMarshal.Read<SectorRawMode1>(buffer),
-            SectorRawMode2Form1    => MemoryMarshal.Read<SectorRawMode2Form1>(buffer),
-            SectorRawMode2Form2    => MemoryMarshal.Read<SectorRawMode2Form2>(buffer),
-            SectorRawMode2FormLess => MemoryMarshal.Read<SectorRawMode2FormLess>(buffer),
-            _                      => throw new NotSupportedException(Sector.GetType().Name),
-        };
+        var sector = ISector.Read(Sector, buffer);
 
         return sector;
     }
@@ -125,21 +113,9 @@ internal sealed class TrackRaw : Track
         }
     }
 
-    private ISector ReadSector(Span<byte> span) // TODO DRY
+    private ISector ReadSector(Span<byte> span)
     {
-        ISector sector = Sector switch
-        {
-            SectorCooked2048       => throw new NotSupportedException(Sector.GetType().Name),
-            SectorCooked2324       => throw new NotSupportedException(Sector.GetType().Name),
-            SectorCooked2336       => throw new NotSupportedException(Sector.GetType().Name),
-            SectorRawAudio         => MemoryMarshal.Read<SectorRawAudio>(span),
-            SectorRawMode0         => MemoryMarshal.Read<SectorRawMode0>(span),
-            SectorRawMode1         => MemoryMarshal.Read<SectorRawMode1>(span),
-            SectorRawMode2Form1    => MemoryMarshal.Read<SectorRawMode2Form1>(span),
-            SectorRawMode2Form2    => MemoryMarshal.Read<SectorRawMode2Form2>(span),
-            SectorRawMode2FormLess => MemoryMarshal.Read<SectorRawMode2FormLess>(span),
-            _                      => throw new NotSupportedException(Sector.GetType().Name),
-        };
+        var sector = ISector.Read(Sector, span);
 
         return sector;
     }
