@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using ISO9660.Extensions;
 using Microsoft.Win32.SafeHandles;
 
@@ -27,6 +28,17 @@ internal sealed class TrackRaw : Track
 
     public override ISector ReadSector(int index)
     {
+        if (OperatingSystem.IsWindows())
+        {
+            return ReadSectorWindows(index);
+        }
+
+        throw new PlatformNotSupportedException();
+    }
+
+    [SupportedOSPlatform("windows")]
+    private ISector ReadSectorWindows(int index)
+    {
         using var memory = Disc.GetDeviceAlignedBuffer(2352, Handle);
 
         var buffer = memory.Span;
@@ -38,8 +50,19 @@ internal sealed class TrackRaw : Track
         return sector;
     }
 
+    public override Task<ISector> ReadSectorAsync(int index)
+    {
+        if (OperatingSystem.IsWindows())
+        {
+            return ReadSectorAsyncWindows(index);
+        }
+
+        throw new PlatformNotSupportedException();
+    }
+
+    [SupportedOSPlatform("windows")]
     [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
-    public override unsafe Task<ISector> ReadSectorAsync(int index)
+    private unsafe Task<ISector> ReadSectorAsyncWindows(int index)
     {
         const uint duration = 3u;
         const uint transfer = 1u; // sectors
@@ -71,8 +94,8 @@ internal sealed class TrackRaw : Track
 
         var handle = ThreadPool.RegisterWaitForSingleObject(
             @event,
-            ReadSectorAsyncCallBack,
-            new ReadSectorAsyncData(source, memory, nativeOverlapped),
+            ReadSectorAsyncWindowsCallBack,
+            new ReadSectorAsyncWindowsData(source, memory, nativeOverlapped),
             TimeSpan.FromSeconds(duration),
             true
         );
@@ -88,9 +111,10 @@ internal sealed class TrackRaw : Track
         return source.Task;
     }
 
-    private unsafe void ReadSectorAsyncCallBack(object? state, bool timedOut)
+    [SupportedOSPlatform("windows")]
+    private unsafe void ReadSectorAsyncWindowsCallBack(object? state, bool timedOut)
     {
-        var (source, memory, overlapped) = (ReadSectorAsyncData)state!;
+        var (source, memory, overlapped) = (ReadSectorAsyncWindowsData)state!;
 
         try
         {
@@ -122,7 +146,7 @@ internal sealed class TrackRaw : Track
         return sector;
     }
 
-    private readonly unsafe struct ReadSectorAsyncData(
+    private readonly unsafe struct ReadSectorAsyncWindowsData(
         TaskCompletionSource<ISector> source,
         NativeMemory<byte> memory,
         NativeOverlapped* overlapped
