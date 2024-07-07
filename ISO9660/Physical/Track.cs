@@ -15,7 +15,7 @@ public abstract class Track : DisposableAsync
 
     public ISector Sector { get; protected init; } = null!;
 
-    public Stream GetStream(int sector)
+    internal Stream GetStream(int sector)
     {
         ValidateSectorIndex(sector);
 
