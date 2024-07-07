@@ -68,4 +68,7 @@ Global
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {438863E5-7809-4D6C-BE50-B440EAF039A8}
 	EndGlobalSection
+	GlobalSection(NDepend) = preSolution
+		Project = ".\ISO9660.ndproj"
+	EndGlobalSection
 EndGlobal

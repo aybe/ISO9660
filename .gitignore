@@ -373,3 +373,4 @@ FodyWeavers.xsd
 ISO9660.Tests/Templates/*.json
 /TODO.TXT
 launchSettings.json
+NDependOut
