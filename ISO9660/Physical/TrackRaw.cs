@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using ISO9660.Extensions;
@@ -61,7 +60,6 @@ internal sealed class TrackRaw : Track
     }
 
     [SupportedOSPlatform("windows")]
-    [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
     private unsafe Task<ISector> ReadSectorAsyncWindows(int index)
     {
         const uint duration = 3u;
@@ -69,7 +67,9 @@ internal sealed class TrackRaw : Track
 
         var memory = Disc.GetDeviceAlignedBuffer(2352, Handle);
 
+#pragma warning disable CA2000 // Dispose objects before losing scope
         var sector = Disc.ReadSectorWindowsQuery((uint)index, transfer, duration, memory.Pointer, memory.Length);
+#pragma warning restore CA2000 // Dispose objects before losing scope
 
         var @event = new ManualResetEvent(false);
 
