@@ -81,6 +81,19 @@ public interface ISector
         return sector;
     }
 
+    internal static ISector GetSectorTypeIso(Stream stream)
+    {
+        ISector[] sectors = // TODO check ECMA-119 + CDRWIN
+        [
+            new SectorCooked2048(),
+            new SectorCooked2336(),
+        ];
+
+        var sector = sectors.Single(s => stream.Length % s.GetUserDataLength() == 0);
+
+        return sector;
+    }
+
     internal static Span<byte> GetSpan<T>(scoped ref T sector, int start, int length)
         where T : struct, ISector
     {

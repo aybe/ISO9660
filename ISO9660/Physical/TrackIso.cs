@@ -6,15 +6,9 @@ internal sealed class TrackIso : Track
 {
     public TrackIso(Stream stream, int index, int position)
     {
-        ISector[] sectors = // TODO check ECMA-119 + CDRWIN
-        [
-            new SectorCooked2048(),
-            new SectorCooked2336(),
-        ];
-
         Audio = false;
 
-        Sector = sectors.Single(s => stream.Length % s.GetUserDataLength() == 0);
+        Sector = ISector.GetSectorTypeIso(stream);
 
         Length = (stream.Length / Sector.Length).ToInt32();
 
