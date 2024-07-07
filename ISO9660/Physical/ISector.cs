@@ -74,35 +74,27 @@ public interface ISector
 
     internal static ISector Read(ISector sector, Stream stream)
     {
-        var result = sector switch
+        var length = sector switch
         {
-            SectorCooked2048       => Read<SectorCooked2048>(stream),
-            SectorCooked2324       => Read<SectorCooked2324>(stream),
-            SectorCooked2336       => Read<SectorCooked2336>(stream),
-            SectorRawAudio         => Read<SectorRawAudio>(stream),
-            SectorRawMode0         => Read<SectorRawMode0>(stream),
-            SectorRawMode1         => Read<SectorRawMode1>(stream),
-            SectorRawMode2Form1    => Read<SectorRawMode2Form1>(stream),
-            SectorRawMode2Form2    => Read<SectorRawMode2Form2>(stream),
-            SectorRawMode2FormLess => Read<SectorRawMode2FormLess>(stream),
+            SectorCooked2048       => Unsafe.SizeOf<SectorCooked2048>(),
+            SectorCooked2324       => Unsafe.SizeOf<SectorCooked2324>(),
+            SectorCooked2336       => Unsafe.SizeOf<SectorCooked2336>(),
+            SectorRawAudio         => Unsafe.SizeOf<SectorRawAudio>(),
+            SectorRawMode0         => Unsafe.SizeOf<SectorRawMode0>(),
+            SectorRawMode1         => Unsafe.SizeOf<SectorRawMode1>(),
+            SectorRawMode2Form1    => Unsafe.SizeOf<SectorRawMode2Form1>(),
+            SectorRawMode2Form2    => Unsafe.SizeOf<SectorRawMode2Form2>(),
+            SectorRawMode2FormLess => Unsafe.SizeOf<SectorRawMode2FormLess>(),
             _                      => throw new NotSupportedException(sector.GetType().Name),
         };
 
+        Span<byte> buffer = stackalloc byte[length];
+
+        stream.ReadExactly(buffer);
+
+        var result = Read(sector, buffer);
+
         return result;
-    }
-
-    /// <summary>
-    ///     Reads a sector of specified type from a stream.
-    /// </summary>
-    internal static ISector Read<T>(Stream stream) where T : struct, ISector
-    {
-        Span<byte> span = stackalloc byte[Unsafe.SizeOf<T>()];
-
-        stream.ReadExactly(span);
-
-        var sector = MemoryMarshal.Read<T>(span);
-
-        return sector;
     }
 
     /// <summary>
