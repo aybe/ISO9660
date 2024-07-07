@@ -41,49 +41,17 @@ public sealed class Disc : DisposableAsync
 
         fixed (byte* data = &MemoryMarshal.GetReference(buffer))
         {
-            var inBufferSize = (uint)Marshal.SizeOf<NativeTypes.SCSI_PASS_THROUGH_DIRECT>();
-            var inBuffer = Marshal.AllocHGlobal((int)inBufferSize);
-
             // ReSharper disable once ConvertToConstant.Local
             var transfer = 1u; // sectors
 
-            var sptd = new NativeTypes.SCSI_PASS_THROUGH_DIRECT(12)
-            {
-                Length             = (ushort)inBufferSize,
-                DataIn             = NativeConstants.SCSI_IOCTL_DATA_IN,
-                DataTransferLength = (uint)buffer.Length,
-                DataBuffer         = (nint)data,
-                TimeOutValue       = timeout,
-                Cdb =
-                {
-                    [00] = 0xBE,                          // operation code: READ CD
-                    [01] = 0,                             // expected sector type: any
-                    [02] = (byte)(position >> 24 & 0xFF), // starting LBA
-                    [03] = (byte)(position >> 16 & 0xFF), // starting LBA
-                    [04] = (byte)(position >> 08 & 0xFF), // starting LBA
-                    [05] = (byte)(position >> 00 & 0xFF), // starting LBA
-                    [06] = (byte)(transfer >> 16 & 0xFF), // transfer length
-                    [07] = (byte)(transfer >> 08 & 0xFF), // transfer length
-                    [08] = (byte)(transfer >> 00 & 0xFF), // transfer length
-                    [09] = 0xF8,                          // sync, header, sub-header, user data, EDC, ECC
-                    [10] = 0,                             // sub-channel data: none
-                    [11] = 0,                             // control
-                },
-            };
-
-            Marshal.StructureToPtr(sptd, inBuffer, false);
+            using var query = ReadSectorWindowsQuery(position, transfer, timeout, (nint)data, (uint)buffer.Length);
 
             var ioctl = NativeMethods.DeviceIoControl(
                 handle,
                 NativeConstants.IOCTL_SCSI_PASS_THROUGH_DIRECT,
-                inBuffer,
-                inBufferSize,
-                inBuffer,
-                inBufferSize,
+                query.Pointer, (uint)query.Length, query.Pointer, (uint)query.Length,
                 out _
             );
-
-            Marshal.FreeHGlobal(inBuffer);
 
             if (ioctl is false)
             {
@@ -303,5 +271,37 @@ public sealed class Disc : DisposableAsync
         }
 
         return new Disc(tracks);
+    }
+
+    [SupportedOSPlatform("windows")]
+    internal static NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT> ReadSectorWindowsQuery(
+        uint position, uint transfer, uint timeOut, nint buffer, uint bufferLength)
+    {
+        return new NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT>
+        {
+            Structure = new NativeTypes.SCSI_PASS_THROUGH_DIRECT(12)
+            {
+                Length             = (ushort)Marshal.SizeOf<NativeTypes.SCSI_PASS_THROUGH_DIRECT>(),
+                DataIn             = NativeConstants.SCSI_IOCTL_DATA_IN,
+                DataTransferLength = bufferLength,
+                DataBuffer         = buffer,
+                TimeOutValue       = timeOut,
+                Cdb =
+                {
+                    [00] = 0xBE,                          // operation code: READ CD
+                    [01] = 0,                             // expected sector type: any
+                    [02] = (byte)(position >> 24 & 0xFF), // starting LBA
+                    [03] = (byte)(position >> 16 & 0xFF), // starting LBA
+                    [04] = (byte)(position >> 08 & 0xFF), // starting LBA
+                    [05] = (byte)(position >> 00 & 0xFF), // starting LBA
+                    [06] = (byte)(transfer >> 16 & 0xFF), // transfer length
+                    [07] = (byte)(transfer >> 08 & 0xFF), // transfer length
+                    [08] = (byte)(transfer >> 00 & 0xFF), // transfer length
+                    [09] = 0xF8,                          // sync, header, sub-header, user data, EDC, ECC
+                    [10] = 0,                             // sub-channel data: none
+                    [11] = 0,                             // control
+                },
+            },
+        };
     }
 }

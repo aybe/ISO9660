@@ -44,7 +44,7 @@ internal sealed class TrackRaw : Track
 
         var memory = Disc.GetDeviceAlignedBuffer(2352, Handle);
 
-        var sector = ReadSectorQuery((uint)index, transfer, duration, memory);
+        var sector = Disc.ReadSectorWindowsQuery((uint)index, transfer, duration, memory.Pointer, memory.Length);
 
         var @event = new ManualResetEvent(false);
 
@@ -118,36 +118,6 @@ internal sealed class TrackRaw : Track
         var sector = ISector.Read(Sector, span);
 
         return sector;
-    }
-
-    private static NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT> ReadSectorQuery(
-        uint position, uint transfer, uint timeOut, NativeMemory<byte> memory)
-    {
-        return new NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT>
-        {
-            Structure = new NativeTypes.SCSI_PASS_THROUGH_DIRECT(12)
-            {
-                DataIn             = NativeConstants.SCSI_IOCTL_DATA_IN,
-                DataTransferLength = memory.Length,
-                DataBuffer         = memory.Pointer,
-                TimeOutValue       = timeOut,
-                Cdb =
-                {
-                    [00] = 0xBE,                          // operation code: READ CD
-                    [01] = 0,                             // expected sector type: any
-                    [02] = (byte)(position >> 24 & 0xFF), // starting LBA
-                    [03] = (byte)(position >> 16 & 0xFF), // starting LBA
-                    [04] = (byte)(position >> 08 & 0xFF), // starting LBA
-                    [05] = (byte)(position >> 00 & 0xFF), // starting LBA
-                    [06] = (byte)(transfer >> 16 & 0xFF), // transfer length
-                    [07] = (byte)(transfer >> 08 & 0xFF), // transfer length
-                    [08] = (byte)(transfer >> 00 & 0xFF), // transfer length
-                    [09] = 0xF8,                          // sync, header, sub-header, user data, EDC, ECC
-                    [10] = 0,                             // sub-channel data: none
-                    [11] = 0,                             // control
-                },
-            },
-        };
     }
 
     private readonly unsafe struct ReadSectorAsyncData(
