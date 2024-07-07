@@ -7,11 +7,10 @@ internal sealed class TrackIso : Track
     public TrackIso(Stream stream, int index, int position)
     {
         ISector[] sectors =
-        {
+        [
             new SectorCooked2048(),
-            new SectorCooked2324(),
-            new SectorCooked2336()
-        };
+            new SectorCooked2336(),
+        ];
 
         Audio = false;
 
