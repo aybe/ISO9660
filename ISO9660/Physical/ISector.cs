@@ -1,7 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using ISO9660.Extensions;
 using ISO9660.GoldenHawk;
+using Whatever.Extensions;
 
 namespace ISO9660.Physical;
 
@@ -92,6 +94,56 @@ public interface ISector
         var sector = sectors.Single(s => stream.Length % s.GetUserDataLength() == 0);
 
         return sector;
+    }
+
+    [SuppressMessage("ReSharper", "RedundantIfElseBlock")]
+    internal static ISector GetSectorTypeRaw(Span<byte> buffer, bool verify = true)
+    {
+        var header = MemoryMarshal.Read<SectorHeader>(buffer[12..16]);
+
+        var mode = (SectorMode)((int)header.Mode & 0b111); // TODO fix
+
+        switch (mode)
+        {
+            case SectorMode.Mode0:
+                return new SectorRawMode0();
+            case SectorMode.Mode1:
+                if (verify)
+                {
+                    EDC.Validate(buffer[..2064], buffer[2064..2068]);
+                }
+                return new SectorRawMode1();
+            case SectorMode.Mode2:
+                var header1 = MemoryMarshal.Read<SectorMode2SubHeader>(buffer[16..20]);
+                var header2 = MemoryMarshal.Read<SectorMode2SubHeader>(buffer[20..24]);
+
+                if (header1 != header2)
+                {
+                    return new SectorRawMode2FormLess(); // assumption
+                }
+
+                if (header1.SubMode.HasFlags(SectorMode2SubMode.Form))
+                {
+                    if (verify)
+                    {
+                        EDC.Validate(buffer[16..2332], buffer[2348..2352]);
+                    }
+
+                    return new SectorRawMode2Form2();
+                }
+                else
+                {
+                    if (verify)
+                    {
+                        EDC.Validate(buffer[16..2072], buffer[2072..2076]);
+                    }
+
+                    return new SectorRawMode2Form1();
+                }
+            case SectorMode.Reserved:
+            default:
+                throw new NotSupportedException(mode.ToString());
+        }
     }
 
     internal static Span<byte> GetSpan<T>(scoped ref T sector, int start, int length)

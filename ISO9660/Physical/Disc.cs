@@ -1,7 +1,6 @@
 ﻿using System.Buffers.Binary;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using ISO9660.Extensions;
@@ -175,56 +174,6 @@ public sealed class Disc : DisposableAsync
         return alignmentMask;
     }
 
-    [SuppressMessage("ReSharper", "RedundantIfElseBlock")]
-    private static ISector GetSectorType(Span<byte> buffer, bool verify = true)
-    {
-        var header = MemoryMarshal.Read<SectorHeader>(buffer[12..16]);
-
-        var mode = (SectorMode)((int)header.Mode & 0b111); // TODO fix
-
-        switch (mode)
-        {
-            case SectorMode.Mode0:
-                return new SectorRawMode0();
-            case SectorMode.Mode1:
-                if (verify)
-                {
-                    EDC.Validate(buffer[..2064], buffer[2064..2068]);
-                }
-                return new SectorRawMode1();
-            case SectorMode.Mode2:
-                var header1 = MemoryMarshal.Read<SectorMode2SubHeader>(buffer[16..20]);
-                var header2 = MemoryMarshal.Read<SectorMode2SubHeader>(buffer[20..24]);
-
-                if (header1 != header2)
-                {
-                    return new SectorRawMode2FormLess(); // assumption
-                }
-
-                if (header1.SubMode.HasFlags(SectorMode2SubMode.Form))
-                {
-                    if (verify)
-                    {
-                        EDC.Validate(buffer[16..2332], buffer[2348..2352]);
-                    }
-
-                    return new SectorRawMode2Form2();
-                }
-                else
-                {
-                    if (verify)
-                    {
-                        EDC.Validate(buffer[16..2072], buffer[2072..2076]);
-                    }
-
-                    return new SectorRawMode2Form1();
-                }
-            case SectorMode.Reserved:
-            default:
-                throw new NotSupportedException(mode.ToString());
-        }
-    }
-
     public static Disc Open(string path)
     {
         var extension = Path.GetExtension(path);
@@ -347,7 +296,7 @@ public sealed class Disc : DisposableAsync
 
                 ReadSector(handle.DangerousGetHandle(), (uint)address1, buffer);
 
-                sector = GetSectorType(buffer);
+                sector = ISector.GetSectorTypeRaw(buffer);
             }
 
             tracks[i] = new TrackRaw(track1.TrackNumber, address1, length, audio, sector, handle);
