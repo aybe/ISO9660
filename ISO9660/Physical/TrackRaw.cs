@@ -71,9 +71,14 @@ internal sealed class TrackRaw : Track
         {
             var ioctl = state.Execute(Handle);
 
-            if (ioctl is false && Marshal.GetLastPInvokeError() is not NativeConstants.ERROR_IO_PENDING)
+            if (ioctl is false)
             {
-                throw new Win32Exception();
+                var error = Marshal.GetLastPInvokeError();
+
+                if (error is not NativeConstants.ERROR_IO_PENDING)
+                {
+                    throw new Win32Exception(error);
+                }
             }
 
             var handle = ThreadPool.RegisterWaitForSingleObject(
