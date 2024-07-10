@@ -71,12 +71,8 @@ internal sealed class TrackRaw : Track
         var sector = Disc.ReadSectorWindowsQuery((uint)index, 1u, timeout, memory.Pointer, memory.Length);
 #pragma warning restore CA2000 // Dispose objects before losing scope
 
-        var @event = new ManualResetEvent(false);
-
-        var overlapped = new Overlapped(0, 0, @event.SafeWaitHandle.DangerousGetHandle(), null).Pack(null, null);
-
 #pragma warning disable CA2000 // Dispose objects before losing scope
-        var state = new ReadSectorAsyncWindowsState(sector, memory, overlapped);
+        var state = new ReadSectorAsyncWindowsState(sector, memory);
 #pragma warning restore CA2000 // Dispose objects before losing scope
 
         try
@@ -86,7 +82,7 @@ internal sealed class TrackRaw : Track
                 NativeConstants.IOCTL_SCSI_PASS_THROUGH_DIRECT,
                 sector.Pointer, (uint)sector.Length, sector.Pointer, (uint)sector.Length,
                 out _,
-                overlapped
+                state.Overlapped
             );
 
             if (ioctl is false && Marshal.GetLastPInvokeError() is not NativeConstants.ERROR_IO_PENDING)
@@ -95,15 +91,11 @@ internal sealed class TrackRaw : Track
             }
 
             var handle = ThreadPool.RegisterWaitForSingleObject(
-                @event, ReadSectorAsyncWindowsCallBack, state, TimeSpan.FromSeconds(timeout), true);
+                state.Event, ReadSectorAsyncWindowsCallBack, state, TimeSpan.FromSeconds(timeout), true);
 
             var task = state.Source.Task;
 
-            task.ContinueWith(_ =>
-            {
-                handle.Unregister(null);
-                @event.Dispose();
-            }, TaskScheduler.Current);
+            task.ContinueWith(_ => { handle.Unregister(null); }, TaskScheduler.Current);
 
             return task;
         }
@@ -144,12 +136,19 @@ internal sealed class TrackRaw : Track
 
     private sealed unsafe class ReadSectorAsyncWindowsState : Disposable
     {
-        public ReadSectorAsyncWindowsState(NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT> query, NativeMemory<byte> memory, NativeOverlapped* overlapped)
+        public ReadSectorAsyncWindowsState(NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT> query, NativeMemory<byte> memory)
         {
-            Query      = query;
-            Memory     = memory;
-            Overlapped = overlapped;
+            Query  = query;
+            Memory = memory;
+
+            Event = new ManualResetEvent(false);
+
+            var overlapped = new Overlapped(0, 0, Event.SafeWaitHandle.DangerousGetHandle(), null);
+
+            Overlapped = overlapped.Pack(null, null);
         }
+
+        public ManualResetEvent Event { get; }
 
         public TaskCompletionSource<ISector> Source { get; } = new();
 
@@ -161,6 +160,7 @@ internal sealed class TrackRaw : Track
 
         protected override void DisposeNative()
         {
+            Event.Dispose();
             System.Threading.Overlapped.Free(Overlapped);
             Query.Dispose();
             Memory.Dispose();
