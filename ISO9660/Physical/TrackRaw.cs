@@ -73,16 +73,14 @@ internal sealed class TrackRaw : Track
 
         var @event = new ManualResetEvent(false);
 
-        var overlapped = new Overlapped(0, 0, @event.SafeWaitHandle.DangerousGetHandle(), null);
-
-        var nativeOverlapped = overlapped.Pack(null, null);
+        var overlapped = new Overlapped(0, 0, @event.SafeWaitHandle.DangerousGetHandle(), null).Pack(null, null);
 
         var ioctl = NativeMethods.DeviceIoControl(
             Handle,
             NativeConstants.IOCTL_SCSI_PASS_THROUGH_DIRECT,
             sector.Pointer, (uint)sector.Length, sector.Pointer, (uint)sector.Length,
             out _,
-            nativeOverlapped
+            overlapped
         );
 
         if (ioctl is false && Marshal.GetLastPInvokeError() is not NativeConstants.ERROR_IO_PENDING)
@@ -95,7 +93,7 @@ internal sealed class TrackRaw : Track
         var handle = ThreadPool.RegisterWaitForSingleObject(
             @event,
             ReadSectorAsyncWindowsCallBack,
-            new ReadSectorAsyncWindowsData(source, sector, memory, nativeOverlapped),
+            new ReadSectorAsyncWindowsData(source, sector, memory, overlapped),
             TimeSpan.FromSeconds(duration),
             true
         );
