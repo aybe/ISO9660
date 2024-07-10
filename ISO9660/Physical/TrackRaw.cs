@@ -73,33 +73,43 @@ internal sealed class TrackRaw : Track
 
         var overlapped = new Overlapped(0, 0, @event.SafeWaitHandle.DangerousGetHandle(), null).Pack(null, null);
 
-        var ioctl = NativeMethods.DeviceIoControl(
-            Handle,
-            NativeConstants.IOCTL_SCSI_PASS_THROUGH_DIRECT,
-            sector.Pointer, (uint)sector.Length, sector.Pointer, (uint)sector.Length,
-            out _,
-            overlapped
-        );
-
-        if (ioctl is false && Marshal.GetLastPInvokeError() is not NativeConstants.ERROR_IO_PENDING)
-        {
-            throw new Win32Exception();
-        }
-
+#pragma warning disable CA2000 // Dispose objects before losing scope
         var state = new ReadSectorAsyncWindowsState(sector, memory, overlapped);
+#pragma warning restore CA2000 // Dispose objects before losing scope
 
-        var handle = ThreadPool.RegisterWaitForSingleObject(
-            @event, ReadSectorAsyncWindowsCallBack, state, TimeSpan.FromSeconds(timeout), true);
-
-        var task = state.Source.Task;
-
-        task.ContinueWith(_ =>
+        try
         {
-            handle.Unregister(null);
-            @event.Dispose();
-        }, TaskScheduler.Current);
+            var ioctl = NativeMethods.DeviceIoControl(
+                Handle,
+                NativeConstants.IOCTL_SCSI_PASS_THROUGH_DIRECT,
+                sector.Pointer, (uint)sector.Length, sector.Pointer, (uint)sector.Length,
+                out _,
+                overlapped
+            );
 
-        return task;
+            if (ioctl is false && Marshal.GetLastPInvokeError() is not NativeConstants.ERROR_IO_PENDING)
+            {
+                throw new Win32Exception();
+            }
+
+            var handle = ThreadPool.RegisterWaitForSingleObject(
+                @event, ReadSectorAsyncWindowsCallBack, state, TimeSpan.FromSeconds(timeout), true);
+
+            var task = state.Source.Task;
+
+            task.ContinueWith(_ =>
+            {
+                handle.Unregister(null);
+                @event.Dispose();
+            }, TaskScheduler.Current);
+
+            return task;
+        }
+        catch (Exception)
+        {
+            state.Dispose();
+            throw;
+        }
     }
 
     [SupportedOSPlatform("windows")]
