@@ -63,12 +63,11 @@ internal sealed class TrackRaw : Track
     private unsafe Task<ISector> ReadSectorAsyncWindows(int index)
     {
         const uint duration = 3u;
-        const uint transfer = 1u; // sectors
 
 #pragma warning disable CA2000 // Dispose objects before losing scope
         var memory = Disc.GetDeviceAlignedBuffer(2352, Handle);
 
-        var sector = Disc.ReadSectorWindowsQuery((uint)index, transfer, duration, memory.Pointer, memory.Length);
+        var sector = Disc.ReadSectorWindowsQuery((uint)index, 1u, duration, memory.Pointer, memory.Length);
 #pragma warning restore CA2000 // Dispose objects before losing scope
 
         var @event = new ManualResetEvent(false);
