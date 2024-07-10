@@ -86,7 +86,7 @@ internal sealed class TrackRaw : Track
             throw new Win32Exception();
         }
 
-        var state = new ReadSectorAsyncWindowsData(sector, memory, overlapped);
+        var state = new ReadSectorAsyncWindowsState(sector, memory, overlapped);
 
         var handle = ThreadPool.RegisterWaitForSingleObject(
             @event, ReadSectorAsyncWindowsCallBack, state, TimeSpan.FromSeconds(timeout), true);
@@ -105,7 +105,7 @@ internal sealed class TrackRaw : Track
     [SupportedOSPlatform("windows")]
     private void ReadSectorAsyncWindowsCallBack(object? state, bool timedOut)
     {
-        var s = (ReadSectorAsyncWindowsData)state!;
+        var s = (ReadSectorAsyncWindowsState)state!;
 
         try
         {
@@ -130,7 +130,7 @@ internal sealed class TrackRaw : Track
         }
     }
 
-    private sealed unsafe class ReadSectorAsyncWindowsData(
+    private sealed unsafe class ReadSectorAsyncWindowsState(
         NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT> query,
         NativeMemory<byte> memory,
         NativeOverlapped* overlapped
