@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using ISO9660.Extensions;
 using Microsoft.Win32.SafeHandles;
+using Whatever.Extensions;
 
 namespace ISO9660.Physical;
 
@@ -102,9 +103,11 @@ internal sealed class TrackRaw : Track
     }
 
     [SupportedOSPlatform("windows")]
-    private unsafe void ReadSectorAsyncWindowsCallBack(object? state, bool timedOut)
+    private void ReadSectorAsyncWindowsCallBack(object? state, bool timedOut)
     {
-        var (source, query, memory, overlapped) = (ReadSectorAsyncWindowsData)state!;
+        var s = (ReadSectorAsyncWindowsData)state!;
+
+        var (source, query, memory, overlapped) = s;
 
         try
         {
@@ -125,9 +128,7 @@ internal sealed class TrackRaw : Track
         }
         finally
         {
-            Overlapped.Free(overlapped);
-            query.Dispose();
-            memory.Dispose();
+            s.Dispose();
         }
     }
 
@@ -135,7 +136,7 @@ internal sealed class TrackRaw : Track
         NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT> query,
         NativeMemory<byte> memory,
         NativeOverlapped* overlapped
-    )
+    ) : Disposable
     {
         public TaskCompletionSource<ISector> Source { get; } = new();
 
@@ -155,6 +156,13 @@ internal sealed class TrackRaw : Track
             query      = Query;
             memory     = Memory;
             overlapped = Overlapped;
+        }
+
+        protected override void DisposeNative()
+        {
+            System.Threading.Overlapped.Free(Overlapped);
+            Query.Dispose();
+            Memory.Dispose();
         }
     }
 }
