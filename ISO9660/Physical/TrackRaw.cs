@@ -85,9 +85,7 @@ internal sealed class TrackRaw : Track
             throw new Win32Exception();
         }
 
-        var source = new TaskCompletionSource<ISector>();
-
-        var state = new ReadSectorAsyncWindowsData(source, sector, memory, overlapped);
+        var state = new ReadSectorAsyncWindowsData(sector, memory, overlapped);
 
         var handle = ThreadPool.RegisterWaitForSingleObject(
             @event,
@@ -139,13 +137,12 @@ internal sealed class TrackRaw : Track
     }
 
     private readonly unsafe struct ReadSectorAsyncWindowsData(
-        TaskCompletionSource<ISector> source,
         NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT> query,
         NativeMemory<byte> memory,
         NativeOverlapped* overlapped
     )
     {
-        public TaskCompletionSource<ISector> Source { get; } = source;
+        public TaskCompletionSource<ISector> Source { get; } = new();
 
         public NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT> Query { get; } = query;
 
