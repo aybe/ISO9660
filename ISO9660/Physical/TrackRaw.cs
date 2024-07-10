@@ -65,7 +65,7 @@ internal sealed class TrackRaw : Track
     {
         var memory = Disc.GetDeviceAlignedBuffer(2352, Handle);
         var sector = Disc.ReadSectorWindowsQuery((uint)index, 1u, timeout, memory.Pointer, memory.Length);
-#pragma warning disable CA2000 // Dispose objects before losing scope
+#pragma warning disable CA2000 // Dispose objects before losing scope // gets disposed in callback
         var state = new ReadSectorAsyncWindowsState(sector, memory);
 #pragma warning restore CA2000 // Dispose objects before losing scope
 
