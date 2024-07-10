@@ -61,7 +61,7 @@ internal sealed class TrackRaw : Track
     }
 
     [SupportedOSPlatform("windows")]
-    private unsafe Task<ISector> ReadSectorAsyncWindows(int index, uint timeout = 3u)
+    private Task<ISector> ReadSectorAsyncWindows(int index, uint timeout = 3u)
     {
 #pragma warning disable CA2000 // Dispose objects before losing scope
         var memory = Disc.GetDeviceAlignedBuffer(2352, Handle);
@@ -71,13 +71,7 @@ internal sealed class TrackRaw : Track
 
         try
         {
-            var ioctl = NativeMethods.DeviceIoControl(
-                Handle,
-                NativeConstants.IOCTL_SCSI_PASS_THROUGH_DIRECT,
-                sector.Pointer, (uint)sector.Length, sector.Pointer, (uint)sector.Length,
-                out _,
-                state.Overlapped
-            );
+            var ioctl = state.Execute(Handle);
 
             if (ioctl is false && Marshal.GetLastPInvokeError() is not NativeConstants.ERROR_IO_PENDING)
             {
@@ -158,6 +152,19 @@ internal sealed class TrackRaw : Track
             System.Threading.Overlapped.Free(Overlapped);
             Query.Dispose();
             Memory.Dispose();
+        }
+
+        public bool Execute(SafeFileHandle handle)
+        {
+            var ioctl = NativeMethods.DeviceIoControl(
+                handle,
+                NativeConstants.IOCTL_SCSI_PASS_THROUGH_DIRECT,
+                Query.Pointer, (uint)Query.Length, Query.Pointer, (uint)Query.Length,
+                out _,
+                Overlapped
+            );
+
+            return ioctl;
         }
     }
 }
