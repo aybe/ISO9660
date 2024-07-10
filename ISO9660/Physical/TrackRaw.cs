@@ -88,12 +88,7 @@ internal sealed class TrackRaw : Track
         var state = new ReadSectorAsyncWindowsData(sector, memory, overlapped);
 
         var handle = ThreadPool.RegisterWaitForSingleObject(
-            @event,
-            ReadSectorAsyncWindowsCallBack,
-            state,
-            TimeSpan.FromSeconds(timeout),
-            true
-        );
+            @event, ReadSectorAsyncWindowsCallBack, state, TimeSpan.FromSeconds(timeout), true);
 
         var task = state.Source.Task;
 
