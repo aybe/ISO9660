@@ -95,7 +95,6 @@ internal sealed class TrackRaw : Track
         task.ContinueWith(_ =>
         {
             handle.Unregister(null);
-            memory.Dispose();
             @event.Dispose();
         }, TaskScheduler.Current);
 
@@ -128,6 +127,7 @@ internal sealed class TrackRaw : Track
         {
             Overlapped.Free(overlapped);
             query.Dispose();
+            memory.Dispose();
         }
     }
 
