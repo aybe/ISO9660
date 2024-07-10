@@ -69,16 +69,22 @@ internal sealed class TrackRaw : Track
 
         try
         {
-            var ioctl = state.Execute(Handle);
-
-            if (ioctl is false)
+            if (state.Execute(Handle))
             {
-                var error = Marshal.GetLastPInvokeError();
+                var sector = state.GetResult(Sector);
 
-                if (error is not NativeConstants.ERROR_IO_PENDING)
-                {
-                    throw new Win32Exception(error);
-                }
+                state.Dispose();
+
+                var result = Task.FromResult(sector);
+
+                return result;
+            }
+
+            var error = Marshal.GetLastPInvokeError();
+
+            if (error is not NativeConstants.ERROR_IO_PENDING)
+            {
+                throw new Win32Exception(error);
             }
 
             var handle = ThreadPool.RegisterWaitForSingleObject(
@@ -110,7 +116,7 @@ internal sealed class TrackRaw : Track
             }
             else
             {
-                var sector = ISector.Read(Sector, s.Memory.Span);
+                var sector = s.GetResult(Sector);
 
                 s.Source.SetResult(sector);
             }
@@ -169,6 +175,13 @@ internal sealed class TrackRaw : Track
             );
 
             return ioctl;
+        }
+
+        public ISector GetResult(ISector sector)
+        {
+            var result = ISector.Read(sector, Memory.Span);
+
+            return result;
         }
     }
 }
