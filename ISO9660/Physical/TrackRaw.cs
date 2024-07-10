@@ -131,7 +131,7 @@ internal sealed class TrackRaw : Track
         }
     }
 
-    private readonly unsafe struct ReadSectorAsyncWindowsData(
+    private sealed unsafe class ReadSectorAsyncWindowsData(
         NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT> query,
         NativeMemory<byte> memory,
         NativeOverlapped* overlapped
