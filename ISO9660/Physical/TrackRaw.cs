@@ -64,14 +64,14 @@ internal sealed class TrackRaw : Track
     private Task<ISector> ReadSectorAsyncWindows(int index, uint timeout = 3u)
     {
 #pragma warning disable CA2000 // Dispose objects before losing scope // gets disposed in callback
-        var state = new ReadSectorAsyncWindowsState(Handle, (uint)index, timeout);
+        var state = new ReadSectorAsyncWindowsState(Sector, Handle, (uint)index, timeout);
 #pragma warning restore CA2000 // Dispose objects before losing scope
 
         try
         {
             if (state.Execute(Handle))
             {
-                var sector = state.GetResult(Sector);
+                var sector = state.GetResult();
 
                 state.Dispose();
 
@@ -104,7 +104,7 @@ internal sealed class TrackRaw : Track
     }
 
     [SupportedOSPlatform("windows")]
-    private void ReadSectorAsyncWindowsCallBack(object? state, bool timedOut)
+    private static void ReadSectorAsyncWindowsCallBack(object? state, bool timedOut)
     {
         var s = (ReadSectorAsyncWindowsState)state!;
 
@@ -116,7 +116,7 @@ internal sealed class TrackRaw : Track
             }
             else
             {
-                var sector = s.GetResult(Sector);
+                var sector = s.GetResult();
 
                 s.Source.SetResult(sector);
             }
@@ -133,8 +133,10 @@ internal sealed class TrackRaw : Track
 
     private sealed unsafe class ReadSectorAsyncWindowsState : Disposable
     {
-        public ReadSectorAsyncWindowsState(SafeFileHandle handle, uint position, uint timeout = 3u)
+        public ReadSectorAsyncWindowsState(ISector sector, SafeFileHandle handle, uint position, uint timeout = 3u)
         {
+            Sector = sector;
+
             Memory = Disc.GetDeviceAlignedBuffer(2352, handle);
 
             Query = Disc.ReadSectorWindowsQuery(position, 1u, timeout, Memory.Pointer, Memory.Length);
@@ -145,6 +147,8 @@ internal sealed class TrackRaw : Track
 
             Overlapped = overlapped.Pack(null, null);
         }
+
+        public ISector Sector { get; }
 
         public ManualResetEvent Event { get; }
 
@@ -177,9 +181,9 @@ internal sealed class TrackRaw : Track
             return ioctl;
         }
 
-        public ISector GetResult(ISector sector)
+        public ISector GetResult()
         {
-            var result = ISector.Read(sector, Memory.Span);
+            var result = ISector.Read(Sector, Memory.Span);
 
             return result;
         }
