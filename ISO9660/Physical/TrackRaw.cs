@@ -142,19 +142,22 @@ internal sealed class TrackRaw : Track
         }
     }
 
-    private sealed unsafe class ReadSectorAsyncWindowsState(
-        NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT> query,
-        NativeMemory<byte> memory,
-        NativeOverlapped* overlapped
-    ) : Disposable
+    private sealed unsafe class ReadSectorAsyncWindowsState : Disposable
     {
+        public ReadSectorAsyncWindowsState(NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT> query, NativeMemory<byte> memory, NativeOverlapped* overlapped)
+        {
+            Query      = query;
+            Memory     = memory;
+            Overlapped = overlapped;
+        }
+
         public TaskCompletionSource<ISector> Source { get; } = new();
 
-        public NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT> Query { get; } = query;
+        public NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT> Query { get; }
 
-        public NativeMemory<byte> Memory { get; } = memory;
+        public NativeMemory<byte> Memory { get; }
 
-        public NativeOverlapped* Overlapped { get; } = overlapped;
+        public NativeOverlapped* Overlapped { get; }
 
         protected override void DisposeNative()
         {
