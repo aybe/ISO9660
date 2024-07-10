@@ -63,10 +63,8 @@ internal sealed class TrackRaw : Track
     [SupportedOSPlatform("windows")]
     private Task<ISector> ReadSectorAsyncWindows(int index, uint timeout = 3u)
     {
-        var memory = Disc.GetDeviceAlignedBuffer(2352, Handle);
-        var sector = Disc.ReadSectorWindowsQuery((uint)index, 1u, timeout, memory.Pointer, memory.Length);
 #pragma warning disable CA2000 // Dispose objects before losing scope // gets disposed in callback
-        var state = new ReadSectorAsyncWindowsState(sector, memory);
+        var state = new ReadSectorAsyncWindowsState(Handle, (uint)index, timeout);
 #pragma warning restore CA2000 // Dispose objects before losing scope
 
         try
@@ -124,10 +122,11 @@ internal sealed class TrackRaw : Track
 
     private sealed unsafe class ReadSectorAsyncWindowsState : Disposable
     {
-        public ReadSectorAsyncWindowsState(NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT> query, NativeMemory<byte> memory)
+        public ReadSectorAsyncWindowsState(SafeFileHandle handle, uint position, uint timeout = 3u)
         {
-            Query  = query;
-            Memory = memory;
+            Memory = Disc.GetDeviceAlignedBuffer(2352, handle);
+
+            Query = Disc.ReadSectorWindowsQuery(position, 1u, timeout, Memory.Pointer, Memory.Length);
 
             Event = new ManualResetEvent(false);
 
