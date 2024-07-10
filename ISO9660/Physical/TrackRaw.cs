@@ -97,14 +97,16 @@ internal sealed class TrackRaw : Track
             true
         );
 
-        source.Task.ContinueWith(_ =>
+        var task = state.Source.Task;
+
+        task.ContinueWith(_ =>
         {
             handle.Unregister(null);
             memory.Dispose();
             @event.Dispose();
         }, TaskScheduler.Current);
 
-        return source.Task;
+        return task;
     }
 
     [SupportedOSPlatform("windows")]
