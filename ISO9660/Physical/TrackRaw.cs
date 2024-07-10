@@ -107,24 +107,22 @@ internal sealed class TrackRaw : Track
     {
         var s = (ReadSectorAsyncWindowsData)state!;
 
-        var (source, query, memory, overlapped) = s;
-
         try
         {
             if (timedOut)
             {
-                source.SetCanceled();
+                s.Source.SetCanceled();
             }
             else
             {
-                var sector = ISector.Read(Sector, memory.Span);
+                var sector = ISector.Read(Sector, s.Memory.Span);
 
-                source.SetResult(sector);
+                s.Source.SetResult(sector);
             }
         }
         catch (Exception e)
         {
-            source.SetException(e);
+            s.Source.SetException(e);
         }
         finally
         {
@@ -145,18 +143,6 @@ internal sealed class TrackRaw : Track
         public NativeMemory<byte> Memory { get; } = memory;
 
         public NativeOverlapped* Overlapped { get; } = overlapped;
-
-        public void Deconstruct(
-            out TaskCompletionSource<ISector> source,
-            out NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT> query,
-            out NativeMemory<byte> memory,
-            out NativeOverlapped* overlapped)
-        {
-            source     = Source;
-            query      = Query;
-            memory     = Memory;
-            overlapped = Overlapped;
-        }
 
         protected override void DisposeNative()
         {
