@@ -87,10 +87,12 @@ internal sealed class TrackRaw : Track
 
         var source = new TaskCompletionSource<ISector>();
 
+        var state = new ReadSectorAsyncWindowsData(source, sector, memory, overlapped);
+
         var handle = ThreadPool.RegisterWaitForSingleObject(
             @event,
             ReadSectorAsyncWindowsCallBack,
-            new ReadSectorAsyncWindowsData(source, sector, memory, overlapped),
+            state,
             TimeSpan.FromSeconds(timeout),
             true
         );
