@@ -88,10 +88,9 @@ internal sealed class TrackRaw : Track
             var handle = ThreadPool.RegisterWaitForSingleObject(
                 state.Event, ReadSectorAsyncWindowsCallBack, state, TimeSpan.FromSeconds(timeout), true);
 
-            var task = state.Source.Task;
             var memory = await state.Source.Task;
 
-            task.ContinueWith(_ => { handle.Unregister(null); }, TaskScheduler.Current);
+            handle.Unregister(null);
 
             return ISector.Read(Sector, memory.Span);
         }
