@@ -75,7 +75,9 @@ internal sealed class TrackRaw : Track
 
         var tcs = new TaskCompletionSource();
 
-        if (!state.Execute(Handle, query, TimeSpan.FromSeconds(timeout), ReadSectorAsyncWindowsCallback, tcs))
+        var handle = ReadSectorAsyncWindows(query, state, tcs, TimeSpan.FromSeconds(timeout));
+
+        if (handle != null)
         {
             var error = Marshal.GetLastPInvokeError();
 
@@ -85,11 +87,42 @@ internal sealed class TrackRaw : Track
             }
 
             await tcs.Task;
+
+            handle.Unregister(null);
         }
 
         var sector = ISector.Read(Sector, bytes.Span);
 
         return sector;
+    }
+
+    [SupportedOSPlatform("windows")]
+    private unsafe RegisteredWaitHandle? ReadSectorAsyncWindows(
+        NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT> query,
+        ReadSectorAsyncWindowsState state,
+        TaskCompletionSource source,
+        TimeSpan timeout)
+    {
+        var overlapped =
+            new Overlapped(0, 0, state.Event.SafeWaitHandle.DangerousGetHandle(), null)
+                .Pack(null, null);
+
+        var ioctl = NativeMethods.DeviceIoControl(
+            Handle,
+            NativeConstants.IOCTL_SCSI_PASS_THROUGH_DIRECT,
+            query.Pointer, (uint)query.Length, query.Pointer, (uint)query.Length,
+            out _,
+            overlapped
+        );
+
+        if (ioctl is false)
+        {
+            return ThreadPool.RegisterWaitForSingleObject(state.Event, ReadSectorAsyncWindowsCallback, source, timeout, true);
+        }
+
+        Overlapped.Free(overlapped); // implicit when async...
+
+        return null;
     }
 
     [SupportedOSPlatform("windows")]
@@ -115,16 +148,13 @@ internal sealed class TrackRaw : Track
         }
     }
 
-    private sealed unsafe class ReadSectorAsyncWindowsState : DisposableAsync
+    private sealed class ReadSectorAsyncWindowsState : DisposableAsync
+    // for the magic of 'await using'
     {
-        private readonly ManualResetEvent Event = new(false);
-
-        private RegisteredWaitHandle? Handle;
+        public readonly ManualResetEvent Event = new(false);
 
         private void DisposeCore()
         {
-            Handle?.Unregister(null);
-
             Event.Dispose();
         }
 
@@ -138,37 +168,6 @@ internal sealed class TrackRaw : Track
             DisposeCore();
 
             return ValueTask.CompletedTask;
-        }
-
-        public bool Execute(
-            SafeFileHandle handle,
-            NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT> sptd,
-            TimeSpan timeout,
-            WaitOrTimerCallback callback,
-            TaskCompletionSource source)
-        {
-            var overlapped =
-                new Overlapped(0, 0, Event.SafeWaitHandle.DangerousGetHandle(), null)
-                    .Pack(null, null);
-
-            var ioctl = NativeMethods.DeviceIoControl(
-                handle,
-                NativeConstants.IOCTL_SCSI_PASS_THROUGH_DIRECT,
-                sptd.Pointer, (uint)sptd.Length, sptd.Pointer, (uint)sptd.Length,
-                out _,
-                overlapped
-            );
-
-            if (ioctl)
-            {
-                Overlapped.Free(overlapped);
-            }
-            else
-            {
-                Handle = ThreadPool.RegisterWaitForSingleObject(Event, callback, source, timeout, true);
-            }
-
-            return ioctl;
         }
     }
 }
