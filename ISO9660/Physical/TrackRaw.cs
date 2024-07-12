@@ -75,7 +75,7 @@ internal sealed class TrackRaw : Track
 
         try
         {
-            if (state.Execute(Handle, sptd))
+            if (state.Execute(Handle, sptd, TimeSpan.FromSeconds(timeout)))
             {
                 var sector = ISector.Read(Sector, data.Span);
 
@@ -91,11 +91,7 @@ internal sealed class TrackRaw : Track
                 throw new Win32Exception(error);
             }
 
-            var handle = state.GetHandle(TimeSpan.FromSeconds(timeout));
-
             await state.Source.Task;
-
-            handle.Unregister(null);
 
             return ISector.Read(Sector, data.Span);
         }
@@ -108,6 +104,8 @@ internal sealed class TrackRaw : Track
 
     private sealed unsafe class ReadSectorAsyncWindowsState : Disposable
     {
+        private RegisteredWaitHandle? Handle;
+
         public ReadSectorAsyncWindowsState()
         {
             Event = new ManualResetEvent(false);
@@ -119,6 +117,8 @@ internal sealed class TrackRaw : Track
 
         protected override void DisposeNative()
         {
+            Handle?.Unregister(null);
+
             Event.Dispose();
         }
 
@@ -145,7 +145,7 @@ internal sealed class TrackRaw : Track
             }
         }
 
-        public bool Execute(SafeFileHandle handle, NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT> sptd)
+        public bool Execute(SafeFileHandle handle, NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT> sptd, TimeSpan timeout)
         {
             var overlapped =
                 new Overlapped(0, 0, Event.SafeWaitHandle.DangerousGetHandle(), null)
@@ -163,13 +163,12 @@ internal sealed class TrackRaw : Track
             {
                 Overlapped.Free(overlapped);
             }
+            else
+            {
+                Handle = ThreadPool.RegisterWaitForSingleObject(Event, Callback, this, timeout, true);
+            }
 
             return ioctl;
-        }
-
-        public RegisteredWaitHandle GetHandle(TimeSpan timeout)
-        {
-            return ThreadPool.RegisterWaitForSingleObject(Event, Callback, this, timeout, true);
         }
     }
 }
