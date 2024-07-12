@@ -134,10 +134,6 @@ internal sealed class TrackRaw : Track
             {
                 Source.SetException(e);
             }
-            finally
-            {
-                Dispose();
-            }
         }
 
         public bool Execute(SafeFileHandle handle, NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT> sptd, TimeSpan timeout)
