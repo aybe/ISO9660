@@ -63,15 +63,21 @@ internal sealed class TrackRaw : Track
     [SupportedOSPlatform("windows")]
     private async Task<ISector> ReadSectorAsyncWindows(int index, uint timeout = 3u)
     {
+        var data = Disc.GetDeviceAlignedBuffer(2352, Handle);
+        var sptd = Disc.ReadSectorWindowsQuery((uint)index, 1u, timeout, data.Pointer, data.Length);
+
+        await using var x = data.ConfigureAwait(false);
+        await using var y = sptd.ConfigureAwait(false);
+
 #pragma warning disable CA2000 // Dispose objects before losing scope // gets disposed in callback
-        var state = new ReadSectorAsyncWindowsState(Handle, (uint)index, timeout);
+        var state = new ReadSectorAsyncWindowsState();
 #pragma warning restore CA2000 // Dispose objects before losing scope
 
         try
         {
-            if (state.Execute(Handle))
+            if (state.Execute(Handle, sptd))
             {
-                var sector = ISector.Read(Sector, state.Memory.Span);
+                var sector = ISector.Read(Sector, data.Span);
 
                 state.Dispose();
 
@@ -87,11 +93,11 @@ internal sealed class TrackRaw : Track
 
             var handle = state.GetHandle(ReadSectorAsyncWindowsCallBack, TimeSpan.FromSeconds(timeout));
 
-            var memory = await state.Source.Task;
+            await state.Source.Task;
 
             handle.Unregister(null);
 
-            return ISector.Read(Sector, memory.Span);
+            return ISector.Read(Sector, data.Span);
         }
         catch (Exception)
         {
@@ -113,7 +119,7 @@ internal sealed class TrackRaw : Track
             }
             else
             {
-                s.Source.SetResult(s.Memory.Memory);
+                s.Source.SetResult();
             }
         }
         catch (Exception e)
@@ -128,31 +134,21 @@ internal sealed class TrackRaw : Track
 
     private sealed unsafe class ReadSectorAsyncWindowsState : Disposable
     {
-        public ReadSectorAsyncWindowsState(SafeFileHandle handle, uint position, uint timeout = 3u)
+        public ReadSectorAsyncWindowsState()
         {
-            Memory = Disc.GetDeviceAlignedBuffer(2352, handle);
-
-            Query = Disc.ReadSectorWindowsQuery(position, 1u, timeout, Memory.Pointer, Memory.Length);
-
             Event = new ManualResetEvent(false);
         }
 
         private ManualResetEvent Event { get; }
 
-        public TaskCompletionSource<Memory<byte>> Source { get; } = new();
-
-        public NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT> Query { get; }
-
-        public NativeMemory<byte> Memory { get; }
+        public TaskCompletionSource Source { get; } = new();
 
         protected override void DisposeNative()
         {
             Event.Dispose();
-            Query.Dispose();
-            Memory.Dispose();
         }
 
-        public bool Execute(SafeFileHandle handle)
+        public bool Execute(SafeFileHandle handle, NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT> sptd)
         {
             var overlapped =
                 new Overlapped(0, 0, Event.SafeWaitHandle.DangerousGetHandle(), null)
@@ -161,7 +157,7 @@ internal sealed class TrackRaw : Track
             var ioctl = NativeMethods.DeviceIoControl(
                 handle,
                 NativeConstants.IOCTL_SCSI_PASS_THROUGH_DIRECT,
-                Query.Pointer, (uint)Query.Length, Query.Pointer, (uint)Query.Length,
+                sptd.Pointer, (uint)sptd.Length, sptd.Pointer, (uint)sptd.Length,
                 out _,
                 overlapped
             );
