@@ -11,6 +11,7 @@ public sealed unsafe class NativeMemoryManager<T>(T* pointer, int length)
 
     protected override void Dispose(bool disposing)
     {
+        // NOP
     }
 
     public override Span<T> GetSpan()
@@ -29,5 +30,6 @@ public sealed unsafe class NativeMemoryManager<T>(T* pointer, int length)
 
     public override void Unpin()
     {
+        // NOP
     }
 }
