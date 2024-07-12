@@ -85,8 +85,7 @@ internal sealed class TrackRaw : Track
                 throw new Win32Exception(error);
             }
 
-            var handle = ThreadPool.RegisterWaitForSingleObject(
-                state.Event, ReadSectorAsyncWindowsCallBack, state, TimeSpan.FromSeconds(timeout), true);
+            var handle = state.GetHandle(ReadSectorAsyncWindowsCallBack, TimeSpan.FromSeconds(timeout));
 
             var memory = await state.Source.Task;
 
@@ -138,7 +137,7 @@ internal sealed class TrackRaw : Track
             Event = new ManualResetEvent(false);
         }
 
-        public ManualResetEvent Event { get; }
+        private ManualResetEvent Event { get; }
 
         public TaskCompletionSource<Memory<byte>> Source { get; } = new();
 
@@ -173,6 +172,11 @@ internal sealed class TrackRaw : Track
             }
 
             return ioctl;
+        }
+
+        public RegisteredWaitHandle GetHandle(WaitOrTimerCallback callback, TimeSpan timeout)
+        {
+            return ThreadPool.RegisterWaitForSingleObject(Event, callback, this, timeout, true);
         }
     }
 }
