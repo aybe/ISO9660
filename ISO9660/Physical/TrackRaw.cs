@@ -86,7 +86,7 @@ internal sealed class TrackRaw : Track
 
             var error = Marshal.GetLastPInvokeError();
 
-            if (error is not NativeConstants.ERROR_IO_PENDING)
+            if (error is not (NativeConstants.ERROR_SUCCESS or NativeConstants.ERROR_IO_PENDING))
             {
                 throw new Win32Exception(error);
             }
