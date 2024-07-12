@@ -142,10 +142,6 @@ internal sealed class TrackRaw : Track
             Query = Disc.ReadSectorWindowsQuery(position, 1u, timeout, Memory.Pointer, Memory.Length);
 
             Event = new ManualResetEvent(false);
-
-            var overlapped = new Overlapped(0, 0, Event.SafeWaitHandle.DangerousGetHandle(), null);
-
-            Overlapped = overlapped.Pack(null, null);
         }
 
         public ISector Sector { get; }
@@ -158,8 +154,6 @@ internal sealed class TrackRaw : Track
 
         public NativeMemory<byte> Memory { get; }
 
-        public NativeOverlapped* Overlapped { get; }
-
         protected override void DisposeNative()
         {
             Event.Dispose();
@@ -169,17 +163,21 @@ internal sealed class TrackRaw : Track
 
         public bool Execute(SafeFileHandle handle)
         {
+            var overlapped =
+                new Overlapped(0, 0, Event.SafeWaitHandle.DangerousGetHandle(), null)
+                    .Pack(null, null);
+
             var ioctl = NativeMethods.DeviceIoControl(
                 handle,
                 NativeConstants.IOCTL_SCSI_PASS_THROUGH_DIRECT,
                 Query.Pointer, (uint)Query.Length, Query.Pointer, (uint)Query.Length,
                 out _,
-                Overlapped
+                overlapped
             );
 
             if (ioctl)
             {
-                System.Threading.Overlapped.Free(Overlapped);
+                Overlapped.Free(overlapped);
             }
 
             return ioctl;
