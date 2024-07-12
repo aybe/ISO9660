@@ -61,23 +61,21 @@ internal sealed class TrackRaw : Track
     }
 
     [SupportedOSPlatform("windows")]
-    private Task<ISector> ReadSectorAsyncWindows(int index, uint timeout = 3u)
+    private async Task<ISector> ReadSectorAsyncWindows(int index, uint timeout = 3u)
     {
 #pragma warning disable CA2000 // Dispose objects before losing scope // gets disposed in callback
-        var state = new ReadSectorAsyncWindowsState(Sector, Handle, (uint)index, timeout);
+        var state = new ReadSectorAsyncWindowsState(Handle, (uint)index, timeout);
 #pragma warning restore CA2000 // Dispose objects before losing scope
 
         try
         {
             if (state.Execute(Handle))
             {
-                var sector = state.GetResult();
+                var sector = ISector.Read(Sector, state.Memory.Span);
 
                 state.Dispose();
 
-                var result = Task.FromResult(sector);
-
-                return result;
+                return sector;
             }
 
             var error = Marshal.GetLastPInvokeError();
@@ -91,10 +89,11 @@ internal sealed class TrackRaw : Track
                 state.Event, ReadSectorAsyncWindowsCallBack, state, TimeSpan.FromSeconds(timeout), true);
 
             var task = state.Source.Task;
+            var memory = await state.Source.Task;
 
             task.ContinueWith(_ => { handle.Unregister(null); }, TaskScheduler.Current);
 
-            return task;
+            return ISector.Read(Sector, memory.Span);
         }
         catch (Exception)
         {
@@ -116,9 +115,7 @@ internal sealed class TrackRaw : Track
             }
             else
             {
-                var sector = s.GetResult();
-
-                s.Source.SetResult(sector);
+                s.Source.SetResult(s.Memory.Memory);
             }
         }
         catch (Exception e)
@@ -133,10 +130,8 @@ internal sealed class TrackRaw : Track
 
     private sealed unsafe class ReadSectorAsyncWindowsState : Disposable
     {
-        public ReadSectorAsyncWindowsState(ISector sector, SafeFileHandle handle, uint position, uint timeout = 3u)
+        public ReadSectorAsyncWindowsState(SafeFileHandle handle, uint position, uint timeout = 3u)
         {
-            Sector = sector;
-
             Memory = Disc.GetDeviceAlignedBuffer(2352, handle);
 
             Query = Disc.ReadSectorWindowsQuery(position, 1u, timeout, Memory.Pointer, Memory.Length);
@@ -144,11 +139,9 @@ internal sealed class TrackRaw : Track
             Event = new ManualResetEvent(false);
         }
 
-        public ISector Sector { get; }
-
         public ManualResetEvent Event { get; }
 
-        public TaskCompletionSource<ISector> Source { get; } = new();
+        public TaskCompletionSource<Memory<byte>> Source { get; } = new();
 
         public NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT> Query { get; }
 
@@ -181,13 +174,6 @@ internal sealed class TrackRaw : Track
             }
 
             return ioctl;
-        }
-
-        public ISector GetResult()
-        {
-            var result = ISector.Read(Sector, Memory.Span);
-
-            return result;
         }
     }
 }
