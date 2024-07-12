@@ -63,16 +63,17 @@ internal sealed class TrackRaw : Track
     [SupportedOSPlatform("windows")]
     private async Task<ISector> ReadSectorAsyncWindows(int index, uint timeout = 3u)
     {
-        var data = Disc.GetDeviceAlignedBuffer(2352, Handle);
-        var sptd = Disc.ReadSectorWindowsQuery((uint)index, 1u, timeout, data.Pointer, data.Length);
+        var bytes = Disc.GetDeviceAlignedBuffer(2352, Handle);
+
+        var query = Disc.ReadSectorWindowsQuery((uint)index, 1u, timeout, bytes.Pointer, bytes.Length);
 
         var state = new ReadSectorAsyncWindowsState();
 
-        await using var x = data.ConfigureAwait(false);
-        await using var y = sptd.ConfigureAwait(false);
+        await using var x = bytes.ConfigureAwait(false);
+        await using var y = query.ConfigureAwait(false);
         await using var z = state.ConfigureAwait(false);
 
-        if (!state.Execute(Handle, sptd, TimeSpan.FromSeconds(timeout)))
+        if (!state.Execute(Handle, query, TimeSpan.FromSeconds(timeout)))
         {
             var error = Marshal.GetLastPInvokeError();
 
@@ -84,7 +85,7 @@ internal sealed class TrackRaw : Track
             await state.Source.Task;
         }
 
-        var sector = ISector.Read(Sector, data.Span);
+        var sector = ISector.Read(Sector, bytes.Span);
 
         return sector;
     }
