@@ -163,7 +163,6 @@ internal sealed class TrackRaw : Track
         protected override void DisposeNative()
         {
             Event.Dispose();
-            System.Threading.Overlapped.Free(Overlapped);
             Query.Dispose();
             Memory.Dispose();
         }
@@ -177,6 +176,11 @@ internal sealed class TrackRaw : Track
                 out _,
                 Overlapped
             );
+
+            if (ioctl)
+            {
+                System.Threading.Overlapped.Free(Overlapped);
+            }
 
             return ioctl;
         }
