@@ -104,14 +104,9 @@ internal sealed class TrackRaw : Track
 
     private sealed unsafe class ReadSectorAsyncWindowsState : Disposable
     {
+        private readonly ManualResetEvent Event = new(false);
+
         private RegisteredWaitHandle? Handle;
-
-        public ReadSectorAsyncWindowsState()
-        {
-            Event = new ManualResetEvent(false);
-        }
-
-        private ManualResetEvent Event { get; }
 
         public TaskCompletionSource Source { get; } = new();
 
