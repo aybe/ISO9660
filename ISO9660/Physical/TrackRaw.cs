@@ -72,23 +72,21 @@ internal sealed class TrackRaw : Track
         await using var y = sptd.ConfigureAwait(false);
         await using var z = state.ConfigureAwait(false);
 
-        if (state.Execute(Handle, sptd, TimeSpan.FromSeconds(timeout)))
+        if (!state.Execute(Handle, sptd, TimeSpan.FromSeconds(timeout)))
         {
-            var sector = ISector.Read(Sector, data.Span);
+            var error = Marshal.GetLastPInvokeError();
 
-            return sector;
+            if (error is not (NativeConstants.ERROR_SUCCESS or NativeConstants.ERROR_IO_PENDING))
+            {
+                throw new Win32Exception(error);
+            }
+
+            await state.Source.Task;
         }
 
-        var error = Marshal.GetLastPInvokeError();
+        var sector = ISector.Read(Sector, data.Span);
 
-        if (error is not (NativeConstants.ERROR_SUCCESS or NativeConstants.ERROR_IO_PENDING))
-        {
-            throw new Win32Exception(error);
-        }
-
-        await state.Source.Task;
-
-        return ISector.Read(Sector, data.Span);
+        return sector;
     }
 
     private sealed unsafe class ReadSectorAsyncWindowsState : DisposableAsync
