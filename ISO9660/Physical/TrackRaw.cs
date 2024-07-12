@@ -66,20 +66,17 @@ internal sealed class TrackRaw : Track
         var data = Disc.GetDeviceAlignedBuffer(2352, Handle);
         var sptd = Disc.ReadSectorWindowsQuery((uint)index, 1u, timeout, data.Pointer, data.Length);
 
+        var state = new ReadSectorAsyncWindowsState();
+
         await using var x = data.ConfigureAwait(false);
         await using var y = sptd.ConfigureAwait(false);
-
-#pragma warning disable CA2000 // Dispose objects before losing scope // gets disposed in callback
-        var state = new ReadSectorAsyncWindowsState();
-#pragma warning restore CA2000 // Dispose objects before losing scope
+        await using var z = state.ConfigureAwait(false);
 
         try
         {
             if (state.Execute(Handle, sptd, TimeSpan.FromSeconds(timeout)))
             {
                 var sector = ISector.Read(Sector, data.Span);
-
-                state.Dispose();
 
                 return sector;
             }
@@ -97,12 +94,11 @@ internal sealed class TrackRaw : Track
         }
         catch (Exception)
         {
-            state.Dispose();
             throw;
         }
     }
 
-    private sealed unsafe class ReadSectorAsyncWindowsState : Disposable
+    private sealed unsafe class ReadSectorAsyncWindowsState : DisposableAsync
     {
         private readonly ManualResetEvent Event = new(false);
 
@@ -110,11 +106,23 @@ internal sealed class TrackRaw : Track
 
         public TaskCompletionSource Source { get; } = new();
 
-        protected override void DisposeManaged()
+        private void DisposeCore()
         {
             Handle?.Unregister(null);
 
             Event.Dispose();
+        }
+
+        protected override void DisposeManaged()
+        {
+            DisposeCore();
+        }
+
+        protected override ValueTask DisposeAsyncCore()
+        {
+            DisposeCore();
+
+            return ValueTask.CompletedTask;
         }
 
         private void Callback(object? state, bool timedOut)
