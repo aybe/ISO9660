@@ -91,7 +91,7 @@ internal sealed class TrackRaw : Track
                 throw new Win32Exception(error);
             }
 
-            var handle = state.GetHandle(ReadSectorAsyncWindowsCallBack, TimeSpan.FromSeconds(timeout));
+            var handle = state.GetHandle(TimeSpan.FromSeconds(timeout));
 
             await state.Source.Task;
 
@@ -103,32 +103,6 @@ internal sealed class TrackRaw : Track
         {
             state.Dispose();
             throw;
-        }
-    }
-
-    [SupportedOSPlatform("windows")]
-    private static void ReadSectorAsyncWindowsCallBack(object? state, bool timedOut)
-    {
-        var s = (ReadSectorAsyncWindowsState)state!;
-
-        try
-        {
-            if (timedOut)
-            {
-                s.Source.SetCanceled();
-            }
-            else
-            {
-                s.Source.SetResult();
-            }
-        }
-        catch (Exception e)
-        {
-            s.Source.SetException(e);
-        }
-        finally
-        {
-            s.Dispose();
         }
     }
 
@@ -146,6 +120,29 @@ internal sealed class TrackRaw : Track
         protected override void DisposeNative()
         {
             Event.Dispose();
+        }
+
+        private void Callback(object? state, bool timedOut)
+        {
+            try
+            {
+                if (timedOut)
+                {
+                    Source.SetCanceled();
+                }
+                else
+                {
+                    Source.SetResult();
+                }
+            }
+            catch (Exception e)
+            {
+                Source.SetException(e);
+            }
+            finally
+            {
+                Dispose();
+            }
         }
 
         public bool Execute(SafeFileHandle handle, NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT> sptd)
@@ -170,9 +167,9 @@ internal sealed class TrackRaw : Track
             return ioctl;
         }
 
-        public RegisteredWaitHandle GetHandle(WaitOrTimerCallback callback, TimeSpan timeout)
+        public RegisteredWaitHandle GetHandle(TimeSpan timeout)
         {
-            return ThreadPool.RegisterWaitForSingleObject(Event, callback, this, timeout, true);
+            return ThreadPool.RegisterWaitForSingleObject(Event, Callback, this, timeout, true);
         }
     }
 }
