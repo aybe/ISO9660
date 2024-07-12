@@ -73,7 +73,9 @@ internal sealed class TrackRaw : Track
         await using var y = query.ConfigureAwait(false);
         await using var z = state.ConfigureAwait(false);
 
-        if (!state.Execute(Handle, query, TimeSpan.FromSeconds(timeout)))
+        var tcs = new TaskCompletionSource();
+
+        if (!state.Execute(Handle, query, TimeSpan.FromSeconds(timeout), ReadSectorAsyncWindowsCallback, tcs))
         {
             var error = Marshal.GetLastPInvokeError();
 
@@ -82,7 +84,7 @@ internal sealed class TrackRaw : Track
                 throw new Win32Exception(error);
             }
 
-            await state.Source.Task;
+            await tcs.Task;
         }
 
         var sector = ISector.Read(Sector, bytes.Span);
@@ -90,13 +92,34 @@ internal sealed class TrackRaw : Track
         return sector;
     }
 
+    [SupportedOSPlatform("windows")]
+    private static void ReadSectorAsyncWindowsCallback(object? state, bool timedOut)
+    {
+        var source = state as TaskCompletionSource
+                     ?? throw new ArgumentOutOfRangeException(nameof(state));
+
+        try
+        {
+            if (timedOut)
+            {
+                source.SetCanceled();
+            }
+            else
+            {
+                source.SetResult();
+            }
+        }
+        catch (Exception e)
+        {
+            source.SetException(e);
+        }
+    }
+
     private sealed unsafe class ReadSectorAsyncWindowsState : DisposableAsync
     {
         private readonly ManualResetEvent Event = new(false);
 
         private RegisteredWaitHandle? Handle;
-
-        public TaskCompletionSource Source { get; } = new();
 
         private void DisposeCore()
         {
@@ -117,26 +140,12 @@ internal sealed class TrackRaw : Track
             return ValueTask.CompletedTask;
         }
 
-        private void Callback(object? state, bool timedOut)
-        {
-            try
-            {
-                if (timedOut)
-                {
-                    Source.SetCanceled();
-                }
-                else
-                {
-                    Source.SetResult();
-                }
-            }
-            catch (Exception e)
-            {
-                Source.SetException(e);
-            }
-        }
-
-        public bool Execute(SafeFileHandle handle, NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT> sptd, TimeSpan timeout)
+        public bool Execute(
+            SafeFileHandle handle,
+            NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT> sptd,
+            TimeSpan timeout,
+            WaitOrTimerCallback callback,
+            TaskCompletionSource source)
         {
             var overlapped =
                 new Overlapped(0, 0, Event.SafeWaitHandle.DangerousGetHandle(), null)
@@ -156,7 +165,7 @@ internal sealed class TrackRaw : Track
             }
             else
             {
-                Handle = ThreadPool.RegisterWaitForSingleObject(Event, Callback, this, timeout, true);
+                Handle = ThreadPool.RegisterWaitForSingleObject(Event, callback, source, timeout, true);
             }
 
             return ioctl;
