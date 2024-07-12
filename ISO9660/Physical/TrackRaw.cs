@@ -110,7 +110,7 @@ internal sealed class TrackRaw : Track
 
         public TaskCompletionSource Source { get; } = new();
 
-        protected override void DisposeNative()
+        protected override void DisposeManaged()
         {
             Handle?.Unregister(null);
 
