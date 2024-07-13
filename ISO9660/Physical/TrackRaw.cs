@@ -117,7 +117,7 @@ internal sealed class TrackRaw : Track
 
         if (ioctl is false)
         {
-            return ThreadPool.RegisterWaitForSingleObject(state.Event, ReadSectorAsyncWindowsCallback, source, timeout, true);
+            return ThreadPool.RegisterWaitForSingleObject(state.Event, ReadSectorAsyncWindows, source, timeout, true);
         }
 
         Overlapped.Free(overlapped); // implicit when async...
@@ -126,7 +126,7 @@ internal sealed class TrackRaw : Track
     }
 
     [SupportedOSPlatform("windows")]
-    private static void ReadSectorAsyncWindowsCallback(object? state, bool timedOut)
+    private static void ReadSectorAsyncWindows(object? state, bool timedOut)
     {
         var source = state as TaskCompletionSource
                      ?? throw new ArgumentOutOfRangeException(nameof(state));
