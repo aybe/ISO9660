@@ -46,7 +46,7 @@ public sealed class NativeMemory<T> : DisposableAsync where T : unmanaged
 
     protected override ValueTask DisposeAsyncCore()
     {
-        DisposePointer();
+        DisposeNative();
 
         return ValueTask.CompletedTask;
     }

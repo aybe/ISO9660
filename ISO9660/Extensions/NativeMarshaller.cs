@@ -44,7 +44,7 @@ public sealed class NativeMarshaller<T> : DisposableAsync where T : struct
 
     protected override ValueTask DisposeAsyncCore()
     {
-        DisposePointer();
+        DisposeNative();
 
         return ValueTask.CompletedTask;
     }
