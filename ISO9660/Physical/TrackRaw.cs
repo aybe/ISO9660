@@ -73,9 +73,9 @@ internal sealed class TrackRaw : Track
         await using var y = query.ConfigureAwait(false);
         await using var z = state.ConfigureAwait(false);
 
-        var tcs = new TaskCompletionSource();
+        var source = new TaskCompletionSource();
 
-        var handle = ReadSectorAsyncWindows(query, state, tcs, TimeSpan.FromSeconds(timeout));
+        var handle = ReadSectorAsyncWindows(query, state, source, TimeSpan.FromSeconds(timeout));
 
         if (handle != null)
         {
@@ -86,7 +86,7 @@ internal sealed class TrackRaw : Track
                 throw new Win32Exception(error);
             }
 
-            await tcs.Task.ConfigureAwait(false);
+            await source.Task.ConfigureAwait(false);
 
             handle.Unregister(null);
         }
