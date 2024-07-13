@@ -1,8 +1,9 @@
 ﻿using System.Runtime.InteropServices;
+using Whatever.Extensions;
 
 namespace ISO9660.Extensions;
 
-public sealed class NativeMemory<T> : IDisposable, IAsyncDisposable where T : unmanaged
+public sealed class NativeMemory<T> : DisposableAsync where T : unmanaged
 {
     public unsafe NativeMemory(uint count, uint alignment = 1)
     {
@@ -17,20 +18,17 @@ public sealed class NativeMemory<T> : IDisposable, IAsyncDisposable where T : un
         Span.Clear();
     }
 
-    private NativeMemoryManager<T>? Manager { get; set; }
+    private NativeMemoryManager<T> Manager { get; }
 
     public uint Length { get; }
 
-    public nint Pointer { get; private set; }
+    public nint Pointer { get; }
 
     public Memory<T> Memory
     {
         get
         {
-            if (Manager is null)
-            {
-                throw new ObjectDisposedException(GetType().Name);
-            }
+            ObjectDisposedException.ThrowIf(IsDisposed, this);
 
             return Manager.Memory;
         }
@@ -40,30 +38,13 @@ public sealed class NativeMemory<T> : IDisposable, IAsyncDisposable where T : un
     {
         get
         {
-            if (Manager is null)
-            {
-                throw new ObjectDisposedException(GetType().Name);
-            }
+            ObjectDisposedException.ThrowIf(IsDisposed, this);
 
             return Memory.Span;
         }
     }
 
-    public async ValueTask DisposeAsync()
-    {
-        await DisposeAsyncCore().ConfigureAwait(false);
-
-        Dispose(false);
-        GC.SuppressFinalize(this);
-    }
-
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    private ValueTask DisposeAsyncCore()
+    protected override ValueTask DisposeAsyncCore()
     {
         DisposeManager();
 
@@ -72,42 +53,20 @@ public sealed class NativeMemory<T> : IDisposable, IAsyncDisposable where T : un
         return ValueTask.CompletedTask;
     }
 
-    ~NativeMemory()
+    protected override void DisposeNative()
     {
-        Dispose(false);
-    }
+        DisposeManager();
 
-    private void Dispose(bool disposing)
-    {
         DisposePointer();
-
-        if (disposing)
-        {
-            DisposeManager();
-        }
     }
 
     private void DisposeManager()
     {
-        if (Manager is not IDisposable disposable)
-        {
-            return;
-        }
-
-        disposable.Dispose();
-
-        Manager = null;
+        ((IDisposable)Manager).Dispose();
     }
 
     private unsafe void DisposePointer()
     {
-        if (Pointer == nint.Zero)
-        {
-            return;
-        }
-
         NativeMemory.AlignedFree(Pointer.ToPointer());
-
-        Pointer = nint.Zero;
     }
 }

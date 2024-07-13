@@ -1,8 +1,9 @@
 ﻿using System.Runtime.InteropServices;
+using Whatever.Extensions;
 
 namespace ISO9660.Extensions;
 
-public sealed class NativeMarshaller<T> : IDisposable, IAsyncDisposable where T : struct
+public sealed class NativeMarshaller<T> : DisposableAsync where T : struct
 {
     public NativeMarshaller(T structure = default)
     {
@@ -23,75 +24,38 @@ public sealed class NativeMarshaller<T> : IDisposable, IAsyncDisposable where T 
 
     public int Length { get; }
 
-    public nint Pointer { get; private set; }
+    public nint Pointer { get; }
 
     public T Structure
     {
         get
         {
-            if (Pointer == nint.Zero)
-            {
-                throw new ObjectDisposedException(GetType().Name);
-            }
+            ObjectDisposedException.ThrowIf(IsDisposed, this);
 
             return Marshal.PtrToStructure<T>(Pointer);
         }
         set
         {
-            if (Pointer == nint.Zero)
-            {
-                throw new ObjectDisposedException(GetType().Name);
-            }
+            ObjectDisposedException.ThrowIf(IsDisposed, this);
 
             Marshal.StructureToPtr(value, Pointer, true);
         }
     }
 
-    public async ValueTask DisposeAsync()
-    {
-        await DisposeAsyncCore().ConfigureAwait(false);
-
-        Dispose(false);
-        GC.SuppressFinalize(this);
-    }
-
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    private ValueTask DisposeAsyncCore()
+    protected override ValueTask DisposeAsyncCore()
     {
         DisposePointer();
 
         return ValueTask.CompletedTask;
     }
 
-    ~NativeMarshaller()
-    {
-        Dispose(false);
-    }
-
-    private void Dispose(bool disposing)
+    protected override void DisposeNative()
     {
         DisposePointer();
-
-        if (disposing)
-        {
-            // NOP
-        }
     }
 
     private void DisposePointer()
     {
-        if (Pointer == nint.Zero)
-        {
-            return;
-        }
-
         Marshal.FreeHGlobal(Pointer);
-
-        Pointer = nint.Zero;
     }
 }
