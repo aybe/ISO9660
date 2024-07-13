@@ -260,7 +260,7 @@ public sealed class Disc : DisposableAsync
             }
             else
             {
-                var buffer = memory.Span;
+                var buffer = memory.Manager.Memory.Span;
 
                 ReadSector(handle.DangerousGetHandle(), (uint)address1, buffer);
 

@@ -15,34 +15,14 @@ public sealed class NativeMemory<T> : DisposableAsync where T : unmanaged
 
         Manager = new NativeMemoryManager<T>((T*)Pointer, (int)Length);
 
-        Span.Clear();
+        Manager.Memory.Span.Clear();
     }
 
-    private NativeMemoryManager<T> Manager { get; }
+    public NativeMemoryManager<T> Manager { get; }
 
     public uint Length { get; }
 
     public nint Pointer { get; }
-
-    public Memory<T> Memory
-    {
-        get
-        {
-            ObjectDisposedException.ThrowIf(IsDisposed, this);
-
-            return Manager.Memory;
-        }
-    }
-
-    public Span<T> Span
-    {
-        get
-        {
-            ObjectDisposedException.ThrowIf(IsDisposed, this);
-
-            return Memory.Span;
-        }
-    }
 
     protected override ValueTask DisposeAsyncCore()
     {

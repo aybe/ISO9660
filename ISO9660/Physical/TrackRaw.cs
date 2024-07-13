@@ -41,7 +41,7 @@ internal sealed class TrackRaw : Track
     {
         using var memory = Disc.GetDeviceAlignedBuffer(2352, Handle);
 
-        var buffer = memory.Span;
+        var buffer = memory.Manager.Memory.Span;
 
         Disc.ReadSector(Handle.DangerousGetHandle(), (uint)index, buffer);
 
@@ -91,7 +91,7 @@ internal sealed class TrackRaw : Track
             handle.Unregister(null);
         }
 
-        var sector = ISector.Read(Sector, bytes.Span);
+        var sector = ISector.Read(Sector, bytes.Manager.Memory.Span);
 
         return sector;
     }
