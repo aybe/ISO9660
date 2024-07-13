@@ -22,6 +22,17 @@ public sealed class UnitTestRealDevice : UnitTestBase
 
         var fs = IsoFileSystem.Read(disc);
 
+        if (fs.TryFindFile("/SYSTEM.CNF", out var file0))
+        {
+            using var stream = new MemoryStream();
+            await disc.ReadFileUserAsync(file0, stream);
+            stream.Position = 0;
+            var hash = await SHA1.HashDataAsync(stream);
+            const string expected = "13d88fe6086d55aaba354bd43c8ce2f0679d6aad";
+            var actual = string.Concat(hash.Select(s => s.ToString("x2")));
+            Assert.AreEqual(expected, actual, true);
+        }
+
         if (fs.TryFindFile("/SCES_000.10", out var file1))
         {
             using var stream = new MemoryStream();
