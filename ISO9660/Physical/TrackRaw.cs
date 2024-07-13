@@ -86,7 +86,7 @@ internal sealed class TrackRaw : Track
                 throw new Win32Exception(error);
             }
 
-            await tcs.Task;
+            await tcs.Task.ConfigureAwait(false);
 
             handle.Unregister(null);
         }
