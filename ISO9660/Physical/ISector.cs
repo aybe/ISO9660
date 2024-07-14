@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -63,39 +64,59 @@ public interface ISector
         return length;
     }
 
+    /// <exception cref="InvalidEnumArgumentException" />
+    /// <exception cref="NotSupportedException" />
     internal static ISector GetSectorTypeCue(CueSheetTrackType type)
     {
+        if (!Enum.IsDefined(typeof(CueSheetTrackType), type))
+        {
+            throw new InvalidEnumArgumentException(nameof(type), (int)type, typeof(CueSheetTrackType));
+        }
+
+        var name = type.ToString();
+
         ISector sector = type switch
         {
             CueSheetTrackType.Audio             => new SectorRawAudio(),
-            CueSheetTrackType.Karaoke           => throw new NotSupportedException(type.ToString()),
+            CueSheetTrackType.Karaoke           => throw new NotSupportedException(name),
             CueSheetTrackType.Mode1Cooked       => new SectorCooked2048(),
             CueSheetTrackType.Mode1Raw          => new SectorRawMode1(),
             CueSheetTrackType.Mode2Form1Cooked  => new SectorCooked2324(),
             CueSheetTrackType.Mode2Form2Cooked  => new SectorCooked2336(),
-            CueSheetTrackType.Mode2Mixed        => throw new NotSupportedException(type.ToString()),
+            CueSheetTrackType.Mode2Mixed        => throw new NotSupportedException(name),
             CueSheetTrackType.Mode2Raw          => new SectorRawMode2Form1(),
-            CueSheetTrackType.InteractiveCooked => throw new NotSupportedException(type.ToString()),
-            CueSheetTrackType.InteractiveRaw    => throw new NotSupportedException(type.ToString()),
-            _                                   => throw new NotSupportedException(type.ToString()),
+            CueSheetTrackType.InteractiveCooked => throw new NotSupportedException(name),
+            CueSheetTrackType.InteractiveRaw    => throw new NotSupportedException(name),
+            _                                   => throw new NotSupportedException(name),
         };
 
         return sector;
     }
 
+    /// <exception cref="InvalidOperationException" />
+    /// <exception cref="NotSupportedException" />
     internal static ISector GetSectorTypeIso(Stream stream)
     {
+        // TODO try to get hold of such weird images (hard)
+
         ISector[] sectors = // TODO check ECMA-119 + CDRWIN
         [
             new SectorCooked2048(),
             new SectorCooked2336(),
         ];
 
-        var sector = sectors.Single(s => stream.Length % s.GetUserDataLength() == 0);
+        var sector = sectors.SingleOrDefault(s => stream.Length % s.GetUserDataLength() == 0);
+
+        if (sector == null)
+        {
+            throw new NotSupportedException("Failed to determine sector type for .ISO file.");
+        }
 
         return sector;
     }
 
+    /// <exception cref="InvalidOperationException" />
+    /// <exception cref="NotSupportedException" />
     [SuppressMessage("ReSharper", "RedundantIfElseBlock")]
     internal static ISector GetSectorTypeRaw(Span<byte> buffer, bool verify = true)
     {

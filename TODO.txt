@@ -26,7 +26,6 @@ Disc:
 		then merge DeviceIoControl externs
 
 Sector:
-	fix GetSectorType*
 	ISector
 		GetSpan???
 			comment
