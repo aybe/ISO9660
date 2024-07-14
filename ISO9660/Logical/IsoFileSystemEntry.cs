@@ -1,20 +1,25 @@
 using System.Text;
 using System.Text.RegularExpressions;
+using JetBrains.Annotations;
 
 namespace ISO9660.Logical;
 
 public abstract partial class IsoFileSystemEntry(IsoFileSystemEntryDirectory? parent, DirectoryRecord record)
 {
+    [PublicAPI]
     public const char DirectorySeparator = '/';
 
     protected readonly DirectoryRecord Record = record;
 
     private string Identifier => Record.FileIdentifier;
 
+    [PublicAPI]
     public IsoFileSystemEntryDirectory? Parent { get; } = parent;
 
+    [PublicAPI]
     public DateTimeOffset Modified => Record.RecordingDateAndTime.ToDateTimeOffset();
 
+    [PublicAPI]
     public string FullName
     {
         get
@@ -46,6 +51,7 @@ public abstract partial class IsoFileSystemEntry(IsoFileSystemEntryDirectory? pa
         }
     }
 
+    [PublicAPI]
     public string FileName
     {
         get

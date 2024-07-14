@@ -26,7 +26,6 @@ Disc:
 		then merge DeviceIoControl externs
 
 ISOFS:
-	remove IsoFileSystemEntry.Modified
 	???
 
 CDRWIN:
