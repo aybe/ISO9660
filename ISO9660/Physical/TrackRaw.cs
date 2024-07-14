@@ -54,20 +54,20 @@ internal sealed class TrackRaw : Track
     {
         if (OperatingSystem.IsWindows())
         {
-            return ReadSectorAsyncWindows(index);
+            return ReadSectorWindowsAsync(index);
         }
 
         throw new PlatformNotSupportedException();
     }
 
     [SupportedOSPlatform("windows")]
-    private async Task<ISector> ReadSectorAsyncWindows(int index, uint timeout = 3u)
+    private async Task<ISector> ReadSectorWindowsAsync(int index, uint timeout = 3u)
     {
         var bytes = Disc.GetDeviceAlignedBuffer(2352, Handle);
 
         var query = Disc.ReadSectorWindowsQuery((uint)index, 1u, timeout, bytes.Pointer, bytes.Length);
 
-        var state = new ReadSectorAsyncWindowsState();
+        var state = new ReadSectorWindowsAsyncState();
 
         await using var x = bytes.ConfigureAwait(false);
         await using var y = query.ConfigureAwait(false);
@@ -75,7 +75,7 @@ internal sealed class TrackRaw : Track
 
         var source = new TaskCompletionSource();
 
-        var handle = ReadSectorAsyncWindows(query, state, source, TimeSpan.FromSeconds(timeout));
+        var handle = ReadSectorWindowsAsync(query, state, source, TimeSpan.FromSeconds(timeout));
 
         if (handle != null)
         {
@@ -97,9 +97,9 @@ internal sealed class TrackRaw : Track
     }
 
     [SupportedOSPlatform("windows")]
-    private unsafe RegisteredWaitHandle? ReadSectorAsyncWindows(
+    private unsafe RegisteredWaitHandle? ReadSectorWindowsAsync(
         NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT> query,
-        ReadSectorAsyncWindowsState state,
+        ReadSectorWindowsAsyncState state,
         TaskCompletionSource source,
         TimeSpan timeout)
     {
@@ -117,7 +117,7 @@ internal sealed class TrackRaw : Track
 
         if (ioctl is false)
         {
-            return ThreadPool.RegisterWaitForSingleObject(state.Event, ReadSectorAsyncWindows, source, timeout, true);
+            return ThreadPool.RegisterWaitForSingleObject(state.Event, ReadSectorWindowsAsync, source, timeout, true);
         }
 
         Overlapped.Free(overlapped); // implicit when async...
@@ -126,7 +126,7 @@ internal sealed class TrackRaw : Track
     }
 
     [SupportedOSPlatform("windows")]
-    private static void ReadSectorAsyncWindows(object? state, bool timedOut)
+    private static void ReadSectorWindowsAsync(object? state, bool timedOut)
     {
         var source = state as TaskCompletionSource
                      ?? throw new ArgumentOutOfRangeException(nameof(state));
@@ -149,7 +149,7 @@ internal sealed class TrackRaw : Track
     }
 
     [SupportedOSPlatform("windows")]
-    private sealed class ReadSectorAsyncWindowsState : DisposableAsync
+    private sealed class ReadSectorWindowsAsyncState : DisposableAsync
     // for the magic of 'await using'
     {
         public readonly ManualResetEvent Event = new(false);

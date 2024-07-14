@@ -12,7 +12,6 @@ Track:
 	rework track properties order/ctors
 	move track cue methods to cue sheet track
 	track cue/iso only differ by ctor
-	rename track raw read methods
 
 Disc:
 	try replace SpanMemoryManager with NativeMemory
