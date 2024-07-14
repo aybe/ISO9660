@@ -169,6 +169,7 @@ public interface ISector
 
     internal static Span<byte> GetSpan<T>(scoped ref T sector, int start, int length)
         where T : struct, ISector
+    // this removes the need of using fixed/unsafe
     {
         var span = MemoryMarshal.CreateSpan(ref sector, 1);
 

@@ -27,8 +27,6 @@ Disc:
 
 Sector:
 	ISector
-		GetSpan???
-			comment
 		make stuff public
 		maybe move Read back to Track
 
