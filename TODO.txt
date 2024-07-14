@@ -1,7 +1,6 @@
 General:
 	region members by access level
 	use ToInt extensions
-	add missing     [SupportedOSPlatform("windows")]
 	try make EDC as HashAlgorithm
 	NativeMarshaller|Memory.DisposeCore
 	extract 2352 to const

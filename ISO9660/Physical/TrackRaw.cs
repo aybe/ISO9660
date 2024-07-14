@@ -148,6 +148,7 @@ internal sealed class TrackRaw : Track
         }
     }
 
+    [SupportedOSPlatform("windows")]
     private sealed class ReadSectorAsyncWindowsState : DisposableAsync
     // for the magic of 'await using'
     {

@@ -191,6 +191,7 @@ public sealed class Disc : DisposableAsync
         return disc;
     }
 
+    [SupportedOSPlatform("windows")]
     private static Disc OpenRawWindows(DriveInfo info)
     {
         var handle = File.OpenHandle($@"\\.\{info.Name[..2]}", FileMode.Open, FileAccess.ReadWrite, FileShare.Read, FileOptions.Asynchronous);
