@@ -1,0 +1,53 @@
+General:
+	remove [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	remove in -> DateTimeParser, StreamExtensions
+	region members by access level
+	use ToInt extensions
+	add missing     [SupportedOSPlatform("windows")]
+	try make EDC as HashAlgorithm
+	NativeMarshaller|Memory.DisposeCore
+	remote native classes partial parts?
+	evaluate props once
+	extract 2352 to const
+	push extensions to library/pull package
+	C# 12 ctors?
+	fix ndepend warnings
+	docs
+	remove TODO.TXT
+
+Track:
+	rework track properties order/ctors
+	move track cue methods to cue sheet track
+	track cue/iso only differ by ctor
+	rename track raw read methods
+
+Disc:
+	try replace SpanMemoryManager with NativeMemory
+	NativeMarshaller
+		GetDeviceAlignmentMaskWindows
+		OpenRawWindows
+	see if we can have ioctl async class
+		to make async
+			OpenRawWindows
+			GetDeviceAlignmentMaskWindows
+		then merge DeviceIoControl externs
+
+Sector:
+	fix header mode
+	fix GetSectorType*
+	ISector
+		GetSpan???
+			comment
+		make stuff public
+		maybe move Read back to Track
+	remove 2324?
+
+ISOFS:
+	DateTimeParser TryParse -> inline
+	???
+
+CDRWIN:
+	???
+
+CLI:
+	???
