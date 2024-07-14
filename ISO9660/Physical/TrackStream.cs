@@ -129,7 +129,6 @@ internal sealed class TrackStream : Stream
         return $"{nameof(SectorNumber)}: {SectorNumber}, {nameof(SectorOffset)}: {SectorOffset}, {nameof(SectorLength)}: {SectorLength}";
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ValidatePosition(long position, [CallerArgumentExpression(nameof(position))] string positionName = null!)
     {
         if (position < Track.Position * SectorLength || position >= (Track.Position + Track.Length) * SectorLength)

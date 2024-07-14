@@ -1,5 +1,4 @@
 General:
-	remove [MethodImpl(MethodImplOptions.AggressiveInlining)]
 	remove in -> DateTimeParser, StreamExtensions
 	region members by access level
 	use ToInt extensions

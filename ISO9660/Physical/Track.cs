@@ -51,7 +51,6 @@ public abstract class Track : DisposableAsync
         stream.Position = index * Sector.Length;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ValidateSectorIndex(int index, [CallerArgumentExpression(nameof(index))] string indexName = null!)
     {
         if (index < Position || index >= Position + Length)
