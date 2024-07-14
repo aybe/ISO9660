@@ -28,7 +28,7 @@ public sealed class DirectoryRecordDateTime(Stream stream)
         var f = SecondOfTheMinute;
         var h = TimeSpan.FromMinutes(15 * OffsetFromGreenwichMeanTime);
 
-        return DateTimeParser.TryParse(a, b, c, d, e, f, 0, h, out var result) ? result : DateTimeOffset.UnixEpoch;
+        return new DateTimeOffset(a, b, c, d, e, f, 0, h);
     }
 
     public override string ToString()

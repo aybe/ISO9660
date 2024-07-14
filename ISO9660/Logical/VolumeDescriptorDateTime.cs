@@ -32,7 +32,7 @@ public sealed class VolumeDescriptorDateTime(Stream stream)
         var g = int.Parse(HundredthsOfASecond, CultureInfo.InvariantCulture);
         var h = TimeSpan.FromMinutes(15 * OffsetFromGreenwichMeanTime);
 
-        return DateTimeParser.TryParse(a, b, c, d, e, f, g * 10, h, out var result) ? result : DateTimeOffset.UnixEpoch;
+        return new DateTimeOffset(a, b, c, d, e, f, g * 10, h);
     }
 
     public override string ToString()
