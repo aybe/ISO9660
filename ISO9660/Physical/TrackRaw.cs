@@ -36,6 +36,16 @@ internal sealed class TrackRaw : Track
         throw new PlatformNotSupportedException();
     }
 
+    public override Task<ISector> ReadSectorAsync(int index)
+    {
+        if (OperatingSystem.IsWindows())
+        {
+            return ReadSectorWindowsAsync(index);
+        }
+
+        throw new PlatformNotSupportedException();
+    }
+
     [SupportedOSPlatform("windows")]
     private ISector ReadSectorWindows(int index)
     {
@@ -48,16 +58,6 @@ internal sealed class TrackRaw : Track
         var sector = ISector.Read(Sector, buffer);
 
         return sector;
-    }
-
-    public override Task<ISector> ReadSectorAsync(int index)
-    {
-        if (OperatingSystem.IsWindows())
-        {
-            return ReadSectorWindowsAsync(index);
-        }
-
-        throw new PlatformNotSupportedException();
     }
 
     [SupportedOSPlatform("windows")]
