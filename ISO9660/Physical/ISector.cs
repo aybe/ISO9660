@@ -101,7 +101,7 @@ public interface ISector
     {
         var header = MemoryMarshal.Read<SectorHeader>(buffer[12..16]);
 
-        var mode = (SectorMode)((int)header.Mode & 0b111); // TODO fix
+        var mode = header.Mode;
 
         switch (mode)
         {

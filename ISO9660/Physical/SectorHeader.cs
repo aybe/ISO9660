@@ -7,7 +7,9 @@ public readonly struct SectorHeader
 {
     public readonly byte Minute, Second, Frame;
 
-    public readonly SectorMode Mode; // TODO block identifier
+    private readonly byte ModePrivate; // TODO block identifier
+
+    public SectorMode Mode => (SectorMode)(ModePrivate & 0b111);
 
     public override string ToString()
     {
