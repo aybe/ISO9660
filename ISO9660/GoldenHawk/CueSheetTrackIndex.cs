@@ -1,19 +1,13 @@
 ﻿namespace ISO9660.GoldenHawk;
 
-public sealed class CueSheetTrackIndex : CueSheetElement
+public sealed class CueSheetTrackIndex(CueSheetTrack track, int number, MSF position)
+    : CueSheetElement
 {
-    public CueSheetTrackIndex(CueSheetTrack track, int number, MSF position)
-    {
-        Track    = track;
-        Number   = number;
-        Position = position;
-    }
+    public CueSheetTrack Track { get; } = track;
 
-    public CueSheetTrack Track { get; }
+    public int Number { get; } = number;
 
-    public int Number { get; }
-
-    public MSF Position { get; }
+    public MSF Position { get; } = position;
 
     public override string ToString()
     {

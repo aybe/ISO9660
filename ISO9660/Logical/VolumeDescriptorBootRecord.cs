@@ -2,19 +2,12 @@ using Whatever.Extensions;
 
 namespace ISO9660.Logical;
 
-public sealed class VolumeDescriptorBootRecord : VolumeDescriptor
+public sealed class VolumeDescriptorBootRecord(VolumeDescriptor descriptor, Stream stream)
+    : VolumeDescriptor(descriptor)
 {
-    public VolumeDescriptorBootRecord(VolumeDescriptor descriptor, Stream stream)
-        : base(descriptor)
-    {
-        BootSystemIdentifier = stream.ReadIsoString(32, IsoStringFlags.ACharacters);
-        BootIdentifier       = stream.ReadIsoString(32, IsoStringFlags.ACharacters);
-        BootSystemUse        = stream.ReadExactly(1977);
-    }
+    public string BootSystemIdentifier { get; } = stream.ReadIsoString(32, IsoStringFlags.ACharacters);
 
-    public string BootSystemIdentifier { get; }
+    public string BootIdentifier { get; } = stream.ReadIsoString(32, IsoStringFlags.ACharacters);
 
-    public string BootIdentifier { get; }
-
-    public byte[] BootSystemUse { get; }
+    public byte[] BootSystemUse { get; } = stream.ReadExactly(1977);
 }

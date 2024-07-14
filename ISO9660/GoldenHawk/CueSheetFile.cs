@@ -1,19 +1,13 @@
 ﻿namespace ISO9660.GoldenHawk;
 
-public sealed class CueSheetFile : CueSheetElement
+public sealed class CueSheetFile(CueSheet sheet, string name, CueSheetFileType type)
+    : CueSheetElement
 {
-    public CueSheetFile(CueSheet sheet, string name, CueSheetFileType type)
-    {
-        Sheet = sheet;
-        Name  = name;
-        Type  = type;
-    }
+    public CueSheet Sheet { get; } = sheet;
 
-    public CueSheet Sheet { get; }
+    public string Name { get; } = name;
 
-    public string Name { get; }
-
-    public CueSheetFileType Type { get; }
+    public CueSheetFileType Type { get; } = type;
 
     public IList<CueSheetTrack> Tracks { get; } = new List<CueSheetTrack>();
 

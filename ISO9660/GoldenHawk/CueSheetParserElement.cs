@@ -1,16 +1,10 @@
 ﻿namespace ISO9660.GoldenHawk;
 
-internal sealed class CueSheetParserElement
+internal sealed class CueSheetParserElement(int indent, CueSheetElement target)
 {
-    public CueSheetParserElement(int indent, CueSheetElement target)
-    {
-        Indent = indent;
-        Target = target;
-    }
+    public int Indent { get; } = indent;
 
-    public int Indent { get; }
-
-    public CueSheetElement Target { get; }
+    public CueSheetElement Target { get; } = target;
 
     public override string ToString()
     {

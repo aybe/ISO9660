@@ -1,19 +1,13 @@
 ﻿namespace ISO9660.GoldenHawk;
 
-public sealed class CueSheetTrack : CueSheetElement
+public sealed class CueSheetTrack(CueSheetFile file, int index, CueSheetTrackType type)
+    : CueSheetElement
 {
-    public CueSheetTrack(CueSheetFile file, int index, CueSheetTrackType type)
-    {
-        File  = file;
-        Index = index;
-        Type  = type;
-    }
+    public CueSheetFile File { get; } = file;
 
-    public CueSheetFile File { get; }
+    public int Index { get; } = index;
 
-    public int Index { get; }
-
-    public CueSheetTrackType Type { get; }
+    public CueSheetTrackType Type { get; } = type;
 
     public CueSheetTrackIndex? Index0 => Indices.SingleOrDefault(s => s.Number is 0);
 

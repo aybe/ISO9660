@@ -2,13 +2,8 @@ using Whatever.Extensions;
 
 namespace ISO9660.Logical;
 
-public sealed class VolumeDescriptorSetTerminator : VolumeDescriptor
+public sealed class VolumeDescriptorSetTerminator(VolumeDescriptor descriptor, Stream stream)
+    : VolumeDescriptor(descriptor)
 {
-    public VolumeDescriptorSetTerminator(VolumeDescriptor descriptor, Stream stream)
-        : base(descriptor)
-    {
-        Reserved = stream.ReadExactly(2041);
-    }
-
-    public byte[] Reserved { get; }
+    public byte[] Reserved { get; } = stream.ReadExactly(2041);
 }

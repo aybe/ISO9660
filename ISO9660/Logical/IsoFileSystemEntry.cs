@@ -3,21 +3,15 @@ using System.Text.RegularExpressions;
 
 namespace ISO9660.Logical;
 
-public abstract partial class IsoFileSystemEntry
+public abstract partial class IsoFileSystemEntry(IsoFileSystemEntryDirectory? parent, DirectoryRecord record)
 {
     public const char DirectorySeparator = '/';
 
-    protected readonly DirectoryRecord Record;
-
-    protected IsoFileSystemEntry(IsoFileSystemEntryDirectory? parent, DirectoryRecord record)
-    {
-        Parent = parent;
-        Record = record;
-    }
+    protected readonly DirectoryRecord Record = record;
 
     private string Identifier => Record.FileIdentifier;
 
-    public IsoFileSystemEntryDirectory? Parent { get; }
+    public IsoFileSystemEntryDirectory? Parent { get; } = parent;
 
     public DateTimeOffset Modified => Record.RecordingDateAndTime.ToDateTimeOffset();
 

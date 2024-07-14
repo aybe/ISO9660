@@ -2,32 +2,21 @@ using System.Globalization;
 
 namespace ISO9660.Logical;
 
-public sealed class DirectoryRecordDateTime
+public sealed class DirectoryRecordDateTime(Stream stream)
 {
-    public DirectoryRecordDateTime(Stream stream)
-    {
-        NumberOfYearsSince1900      = stream.ReadIso711();
-        MonthOfTheYear              = stream.ReadIso711();
-        DayOfTheMonth               = stream.ReadIso711();
-        HourOfTheDay                = stream.ReadIso711();
-        MinuteOfTheHour             = stream.ReadIso711();
-        SecondOfTheMinute           = stream.ReadIso711();
-        OffsetFromGreenwichMeanTime = stream.ReadIso712();
-    }
+    public byte NumberOfYearsSince1900 { get; } = stream.ReadIso711();
 
-    public byte NumberOfYearsSince1900 { get; }
+    public byte MonthOfTheYear { get; } = stream.ReadIso711();
 
-    public byte MonthOfTheYear { get; }
+    public byte DayOfTheMonth { get; } = stream.ReadIso711();
 
-    public byte DayOfTheMonth { get; }
+    public byte HourOfTheDay { get; } = stream.ReadIso711();
 
-    public byte HourOfTheDay { get; }
+    public byte MinuteOfTheHour { get; } = stream.ReadIso711();
 
-    public byte MinuteOfTheHour { get; }
+    public byte SecondOfTheMinute { get; } = stream.ReadIso711();
 
-    public byte SecondOfTheMinute { get; }
-
-    public sbyte OffsetFromGreenwichMeanTime { get; }
+    public sbyte OffsetFromGreenwichMeanTime { get; } = stream.ReadIso712();
 
     public DateTimeOffset ToDateTimeOffset()
     {

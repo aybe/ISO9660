@@ -3,42 +3,23 @@ using Whatever.Extensions;
 
 namespace ISO9660.Logical;
 
-public sealed class VolumeDescriptorDateTime
+public sealed class VolumeDescriptorDateTime(Stream stream)
 {
-    public VolumeDescriptorDateTime(Stream stream)
-    {
-        Year = stream.ReadStringAscii(4);
+    public string Year { get; } = stream.ReadStringAscii(4);
 
-        MonthOfTheYear = stream.ReadStringAscii(2);
+    public string MonthOfTheYear { get; } = stream.ReadStringAscii(2);
 
-        DayOfTheMonth = stream.ReadStringAscii(2);
+    public string DayOfTheMonth { get; } = stream.ReadStringAscii(2);
 
-        HourOfTheDay = stream.ReadStringAscii(2);
+    public string HourOfTheDay { get; } = stream.ReadStringAscii(2);
 
-        MinuteOfTheHour = stream.ReadStringAscii(2);
+    public string MinuteOfTheHour { get; } = stream.ReadStringAscii(2);
 
-        SecondOfTheMinute = stream.ReadStringAscii(2);
+    public string SecondOfTheMinute { get; } = stream.ReadStringAscii(2);
 
-        HundredthsOfASecond = stream.ReadStringAscii(2);
+    public string HundredthsOfASecond { get; } = stream.ReadStringAscii(2);
 
-        OffsetFromGreenwichMeanTime = stream.ReadIso712();
-    }
-
-    public string Year { get; }
-
-    public string MonthOfTheYear { get; }
-
-    public string DayOfTheMonth { get; }
-
-    public string HourOfTheDay { get; }
-
-    public string MinuteOfTheHour { get; }
-
-    public string SecondOfTheMinute { get; }
-
-    public string HundredthsOfASecond { get; }
-
-    public sbyte OffsetFromGreenwichMeanTime { get; }
+    public sbyte OffsetFromGreenwichMeanTime { get; } = stream.ReadIso712();
 
     public DateTimeOffset ToDateTimeOffset()
     {
