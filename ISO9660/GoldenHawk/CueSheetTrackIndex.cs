@@ -1,10 +1,8 @@
 ﻿namespace ISO9660.GoldenHawk;
 
-public sealed class CueSheetTrackIndex(CueSheetTrack track, int number, MSF position)
+public sealed class CueSheetTrackIndex(int number, MSF position)
     : CueSheetElement
 {
-    public CueSheetTrack Track { get; } = track;
-
     public int Number { get; } = number;
 
     public MSF Position { get; } = position;

@@ -228,7 +228,7 @@ public static partial class CueSheetParser
         var s = Parse(context.TextMatch.Groups[3], byte.Parse);
         var f = Parse(context.TextMatch.Groups[4], byte.Parse);
 
-        var index = new CueSheetTrackIndex(track, i, new MSF(m, s, f));
+        var index = new CueSheetTrackIndex(i, new MSF(m, s, f));
 
         if (track.Indices.Count == 0)
         {

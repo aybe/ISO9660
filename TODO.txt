@@ -29,7 +29,6 @@ ISOFS:
 	???
 
 CDRWIN:
-	remove CueSheetTrackIndex.Track
 	???
 
 CLI:
