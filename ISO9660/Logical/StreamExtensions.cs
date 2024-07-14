@@ -75,7 +75,7 @@ public static class StreamExtensions
     }
 
     [SuppressMessage("ReSharper", "StringLiteralTypo")]
-    public static string ReadIsoString(this Stream stream, in int length, IsoStringFlags flags)
+    public static string ReadIsoString(this Stream stream, int length, IsoStringFlags flags)
         // the Linux retards were whining for Rock Ridge extensions yet don't use it, handle the shit
         // fun fact: even if we'd implement it, it would fail as they cram garbage as early as in PVD
     {

@@ -3,7 +3,7 @@ namespace ISO9660.Logical;
 public static class DateTimeParser
 {
     public static bool TryParse(
-        in int year, in int month, in int day, in int hour, in int minute, in int second, int millisecond, in TimeSpan offset, out DateTimeOffset result)
+        int year, int month, int day, int hour, int minute, int second, int millisecond, TimeSpan offset, out DateTimeOffset result)
     {
         result = default;
 

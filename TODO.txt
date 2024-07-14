@@ -1,5 +1,4 @@
 General:
-	remove in -> DateTimeParser, StreamExtensions
 	region members by access level
 	use ToInt extensions
 	add missing     [SupportedOSPlatform("windows")]
