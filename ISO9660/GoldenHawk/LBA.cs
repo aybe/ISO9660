@@ -5,11 +5,9 @@ namespace ISO9660.GoldenHawk;
 
 public readonly struct LBA : IComparable<LBA>, IEquatable<LBA>
 {
-    public const int PreGap = 150;
+    private const int MinPosition = -150;
 
-    private const int MinPosition = -PreGap;
-
-    private const int MaxPosition = 99 * 60 * 75 + 59 * 75 + 74 - PreGap;
+    private const int MaxPosition = 99 * 60 * 75 + 59 * 75 + 74 - 150;
 
     [PublicAPI]
     public static LBA Min { get; } = new(MinPosition);
@@ -32,7 +30,7 @@ public readonly struct LBA : IComparable<LBA>, IEquatable<LBA>
     [PublicAPI]
     public MSF ToMSF()
     {
-        var lba = Position - PreGap;
+        var lba = Position - 150;
 
         var msf = new MSF(lba / (60 * 75), lba / 75 % 60, lba % 75);
 

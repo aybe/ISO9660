@@ -5,8 +5,6 @@ namespace ISO9660.Physical;
 
 internal sealed class TrackCue : Track
 {
-    private const int PreGapSize = 150;
-
     public TrackCue(CueSheetTrack track)
     {
         var sector = ISector.GetSectorTypeCue(track.Type);
@@ -80,12 +78,12 @@ internal sealed class TrackCue : Track
 
                 if (a || b)
                 {
-                    length -= PreGapSize;
+                    length -= 150;
                 }
 
                 if (c)
                 {
-                    length -= PreGapSize;
+                    length -= 150;
                 }
 
                 if (value == track)
@@ -96,7 +94,7 @@ internal sealed class TrackCue : Track
         }
         else
         {
-            length = lengthStream - PreGapSize - track.Index1.Position.ToLBA();
+            length = lengthStream - 150 - track.Index1.Position.ToLBA();
         }
 
         return length;
@@ -108,7 +106,7 @@ internal sealed class TrackCue : Track
 
         var tracks = new LinkedList<CueSheetTrack>(files.SelectMany(s => s.Tracks));
 
-        var position = -PreGapSize; // MSF 00:00.00 is LBA -150
+        var position = -150; // MSF 00:00.00 is LBA -150
 
         for (var node = tracks.First; node != null; node = node.Next)
         {
@@ -144,7 +142,7 @@ internal sealed class TrackCue : Track
 
             if (a || b || c)
             {
-                position += PreGapSize;
+                position += 150;
             }
 
             if (value == track)
