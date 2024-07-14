@@ -11,8 +11,6 @@ public abstract partial class IsoFileSystemEntry(IsoFileSystemEntryDirectory? pa
 
     protected readonly DirectoryRecord Record = record;
 
-    private string Identifier => Record.FileIdentifier;
-
     [PublicAPI]
     public IsoFileSystemEntryDirectory? Parent { get; } = parent;
 
@@ -56,7 +54,7 @@ public abstract partial class IsoFileSystemEntry(IsoFileSystemEntryDirectory? pa
     {
         get
         {
-            var value = FileNameRegex().Match(Identifier).Value;
+            var value = FileNameRegex().Match(Record.FileIdentifier).Value;
 
             var name = Path.GetFileName(value);
 
