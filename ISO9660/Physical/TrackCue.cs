@@ -3,7 +3,7 @@ using Whatever.Extensions;
 
 namespace ISO9660.Physical;
 
-internal sealed class TrackCue : Track
+internal sealed class TrackCue : TrackFileBase
 {
     public TrackCue(CueSheetTrack track)
     {
@@ -20,28 +20,6 @@ internal sealed class TrackCue : Track
         Stream = File.OpenRead(track.File.Name);
 
         Sector = sector;
-    }
-
-    private Stream Stream { get; }
-
-    protected override async ValueTask DisposeAsyncCore()
-    {
-        await Stream.DisposeAsync().ConfigureAwait(false);
-    }
-
-    protected override void DisposeManaged()
-    {
-        Stream.Dispose();
-    }
-
-    public override ISector ReadSector(int index)
-    {
-        return ReadSector(index, Stream);
-    }
-
-    public override Task<ISector> ReadSectorAsync(int index)
-    {
-        return ReadSectorAsync(index, Stream);
     }
 
     private static int GetCueLength(CueSheetTrack track, int sectorSize)
