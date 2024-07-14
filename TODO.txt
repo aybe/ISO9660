@@ -5,10 +5,8 @@ General:
 	NativeMarshaller|Memory.DisposeCore
 	extract 2352 to const
 	push extensions to library/pull package
-	C# 12 ctors?
 	fix ndepend warnings
 	docs
-	remove TODO.TXT
 
 Track:
 	rework track properties order/ctors
