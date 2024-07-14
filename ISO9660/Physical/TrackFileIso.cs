@@ -2,9 +2,9 @@
 
 namespace ISO9660.Physical;
 
-internal sealed class TrackIso : TrackFileBase
+internal sealed class TrackFileIso : TrackFileBase
 {
-    public TrackIso(Stream stream, int index, int position)
+    public TrackFileIso(Stream stream, int index, int position)
     {
         Audio = false;
 

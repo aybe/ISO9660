@@ -173,7 +173,7 @@ public sealed class Disc : DisposableAsync
     {
         var sheet = CueSheetParser.Parse(path);
 
-        var tracks = sheet.Files.SelectMany(s => s.Tracks).Select(s => new TrackCue(s)).ToList().AsReadOnly();
+        var tracks = sheet.Files.SelectMany(s => s.Tracks).Select(s => new TrackFileCue(s)).ToList().AsReadOnly();
 
         var disc = new Disc(tracks);
 
@@ -184,7 +184,7 @@ public sealed class Disc : DisposableAsync
     {
         var stream = File.OpenRead(path);
 
-        var track = new TrackIso(stream, 1, 0);
+        var track = new TrackFileIso(stream, 1, 0);
 
         var disc = new Disc(new ReadOnlyObservableCollection<Track>([track]));
 

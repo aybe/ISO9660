@@ -3,9 +3,9 @@ using Whatever.Extensions;
 
 namespace ISO9660.Physical;
 
-internal sealed class TrackCue : TrackFileBase
+internal sealed class TrackFileCue : TrackFileBase
 {
-    public TrackCue(CueSheetTrack track)
+    public TrackFileCue(CueSheetTrack track)
     {
         var sector = ISector.GetSectorTypeCue(track.Type);
 
