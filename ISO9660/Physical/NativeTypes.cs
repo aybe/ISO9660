@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace ISO9660.Physical;
 
-internal static partial class NativeTypes
+internal static class NativeTypes
 {
     #region ntddcdrm.h
 
@@ -95,10 +95,7 @@ internal static partial class NativeTypes
     }
 
     #endregion
-}
 
-internal static partial class NativeTypes
-{
     #region ntddscsi.h
 
     /// <summary>
@@ -155,10 +152,7 @@ internal static partial class NativeTypes
     }
 
     #endregion
-}
 
-internal static partial class NativeTypes
-{
     #region ntddstor.h
 
     /// <summary>

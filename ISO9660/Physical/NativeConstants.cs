@@ -1,6 +1,6 @@
 ﻿namespace ISO9660.Physical;
 
-internal static partial class NativeConstants
+internal static class NativeConstants
 {
     #region devioctl.h
 
@@ -24,10 +24,7 @@ internal static partial class NativeConstants
     }
 
     #endregion
-}
 
-internal static partial class NativeConstants
-{
     #region ntddcdrm.h
 
     public const int CDROM_READ_TOC_EX_FORMAT_TOC = 0x00;
@@ -42,10 +39,7 @@ internal static partial class NativeConstants
     public static uint IOCTL_CDROM_READ_TOC_EX { get; } = CTL_CODE(IOCTL_CDROM_BASE, 0x0015, METHOD_BUFFERED, FILE_READ_ACCESS);
 
     #endregion
-}
 
-internal static partial class NativeConstants
-{
     #region ntddscsi.h
 
     public const int IOCTL_SCSI_BASE = FILE_DEVICE_CONTROLLER;
@@ -59,10 +53,7 @@ internal static partial class NativeConstants
     public const int SCSI_IOCTL_DATA_IN = 1;
 
     #endregion
-}
 
-internal static partial class NativeConstants
-{
     #region ntddstor.h
 
     public const int IOCTL_STORAGE_BASE = FILE_DEVICE_MASS_STORAGE;
@@ -74,10 +65,7 @@ internal static partial class NativeConstants
         => CTL_CODE(IOCTL_STORAGE_BASE, 0x0500, METHOD_BUFFERED, FILE_ANY_ACCESS);
 
     #endregion
-}
 
-internal static partial class NativeConstants
-{
     #region winerror.h
 
     public const int ERROR_SUCCESS = 0;

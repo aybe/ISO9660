@@ -4,7 +4,6 @@ General:
 	add missing     [SupportedOSPlatform("windows")]
 	try make EDC as HashAlgorithm
 	NativeMarshaller|Memory.DisposeCore
-	remote native classes partial parts?
 	extract 2352 to const
 	push extensions to library/pull package
 	C# 12 ctors?
