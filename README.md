@@ -1,10 +1,10 @@
 # ISO9660
 
-Extracts files/tracks from CD images.
+Extract files/tracks from CD drive/image.
 
 ## Introduction
 
-There are a lot of compact disc image reading libraries out there on the web.
+There are a lot of compact disc reading libraries out there on the web.
 
 However, none appear able to do the simple task of reading a file in RAW mode.
 
