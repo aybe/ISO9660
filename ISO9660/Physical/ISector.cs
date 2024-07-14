@@ -45,7 +45,7 @@ public interface ISector
     /// </summary>
     int GetUserDataLength();
 
-    private static int GetLength(ISector sector)
+    public static int GetLength(ISector sector)
     {
         var length = sector switch
         {
@@ -66,7 +66,7 @@ public interface ISector
 
     /// <exception cref="InvalidEnumArgumentException" />
     /// <exception cref="NotSupportedException" />
-    internal static ISector GetSectorTypeCue(CueSheetTrackType type)
+    public static ISector GetSectorTypeCue(CueSheetTrackType type)
     {
         if (!Enum.IsDefined(typeof(CueSheetTrackType), type))
         {
@@ -95,7 +95,7 @@ public interface ISector
 
     /// <exception cref="InvalidOperationException" />
     /// <exception cref="NotSupportedException" />
-    internal static ISector GetSectorTypeIso(Stream stream)
+    public static ISector GetSectorTypeIso(Stream stream)
     {
         // TODO try to get hold of such weird images (hard)
 
@@ -118,7 +118,7 @@ public interface ISector
     /// <exception cref="InvalidOperationException" />
     /// <exception cref="NotSupportedException" />
     [SuppressMessage("ReSharper", "RedundantIfElseBlock")]
-    internal static ISector GetSectorTypeRaw(Span<byte> buffer, bool verify = true)
+    public static ISector GetSectorTypeRaw(Span<byte> buffer, bool verify = true)
     {
         var header = MemoryMarshal.Read<SectorHeader>(buffer[12..16]);
 
@@ -167,7 +167,7 @@ public interface ISector
         }
     }
 
-    internal static Span<byte> GetSpan<T>(scoped ref T sector, int start, int length)
+    public static Span<byte> GetSpan<T>(scoped ref T sector, int start, int length)
         where T : struct, ISector
     // this removes the need of using fixed/unsafe
     {
@@ -180,7 +180,7 @@ public interface ISector
         return slice;
     }
 
-    internal static ISector Read(ISector sector, Span<byte> buffer)
+    public static ISector Read(ISector sector, Span<byte> buffer)
     {
         ISector result = sector switch
         {
@@ -199,7 +199,7 @@ public interface ISector
         return result;
     }
 
-    internal static ISector Read(ISector sector, Stream stream)
+    public static ISector Read(ISector sector, Stream stream)
     {
         using var scope = new ArrayPoolScope<byte>(GetLength(sector));
 
@@ -210,7 +210,7 @@ public interface ISector
         return result;
     }
 
-    internal static async Task<ISector> ReadAsync(ISector sector, Stream stream)
+    public static async Task<ISector> ReadAsync(ISector sector, Stream stream)
     {
         using var scope = new ArrayPoolScope<byte>(GetLength(sector));
 

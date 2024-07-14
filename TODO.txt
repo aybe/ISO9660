@@ -25,10 +25,6 @@ Disc:
 			GetDeviceAlignmentMaskWindows
 		then merge DeviceIoControl externs
 
-Sector:
-	ISector
-		make stuff public
-
 ISOFS:
 	DateTimeParser TryParse -> inline
 	fix possible bug VolumeDescriptorDateTime.ToDateTimeOffset
