@@ -1,4 +1,5 @@
 using System.Globalization;
+using JetBrains.Annotations;
 
 namespace ISO9660.GoldenHawk;
 
@@ -10,8 +11,10 @@ public readonly struct LBA : IComparable<LBA>, IEquatable<LBA>
 
     private const int MaxPosition = 99 * 60 * 75 + 59 * 75 + 74 - PreGap;
 
+    [PublicAPI]
     public static LBA Min { get; } = new(MinPosition);
 
+    [PublicAPI]
     public static LBA Max { get; } = new(MaxPosition);
 
     private readonly int Position;
@@ -26,6 +29,7 @@ public readonly struct LBA : IComparable<LBA>, IEquatable<LBA>
         Position = position;
     }
 
+    [PublicAPI]
     public MSF ToMSF()
     {
         var lba = Position - PreGap;

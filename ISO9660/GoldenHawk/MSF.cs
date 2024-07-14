@@ -1,11 +1,16 @@
+using JetBrains.Annotations;
+
 namespace ISO9660.GoldenHawk;
 
 public readonly struct MSF : IComparable<MSF>, IEquatable<MSF>
 {
+    [PublicAPI]
     public static MSF Min { get; } = new(0, 0, 0);
 
+    [PublicAPI]
     public static MSF Max { get; } = new(99, 59, 74);
 
+    [PublicAPI]
     public readonly byte M, S, F;
 
     public MSF(int m, int s, int f)
@@ -31,6 +36,7 @@ public readonly struct MSF : IComparable<MSF>, IEquatable<MSF>
     }
 
 
+    [PublicAPI]
     public LBA ToLBA()
     {
         return new LBA(M * 60 * 75 + S * 75 + F - 150);
