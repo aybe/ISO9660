@@ -42,10 +42,18 @@ Sector:
 
 ISOFS:
 	DateTimeParser TryParse -> inline
+	fix possible bug VolumeDescriptorDateTime.ToDateTimeOffset
+		DRY with DirectoryRecordDateTime
+	remove IsoFileSystemEntry.Modified
 	???
 
 CDRWIN:
+	remove CueSheetTrackIndex.Track
 	???
 
 CLI:
+	???
+
+Tests:
+	move extensions
 	???
