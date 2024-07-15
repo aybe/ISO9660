@@ -2,10 +2,12 @@
 
 namespace ISO9660.Physical;
 
-public static class EDC
+public struct EDC
 // https://github.dev/claunia/edccchk
 {
     private static readonly uint[] Table = new uint[256];
+
+    public uint Value { get; private set; }
 
     static EDC()
     {
@@ -22,21 +24,31 @@ public static class EDC
         }
     }
 
-    private static uint Compute(Span<byte> data)
+    public void Hash(Span<byte> data)
     {
-        var edc = 0u;
-
         foreach (var b in data)
         {
-            edc = edc >> 8 ^ Table[(edc ^ b) & 0xFF];
+            Value = Value >> 8 ^ Table[(Value ^ b) & 0xFF];
         }
+    }
 
-        return edc;
+    public void Reset()
+    {
+        Value = 0;
+    }
+
+    public override string ToString()
+    {
+        return $"0x{Value:X8}";
     }
 
     public static void Validate(Span<byte> data, Span<byte> code)
     {
-        var x = Compute(data);
+        var edc = new EDC();
+
+        edc.Hash(data);
+
+        var x = edc.Value;
         var y = BinaryPrimitives.ReadUInt32LittleEndian(code);
 
         if (x != y)
