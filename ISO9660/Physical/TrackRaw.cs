@@ -10,6 +10,8 @@ namespace ISO9660.Physical;
 internal sealed class TrackRaw(int index, int position, int length, bool audio, ISector sector, SafeFileHandle handle)
     : Track(audio, index, length, position, sector)
 {
+    private NativeMemory<byte> Buffer { get; } = Disc.GetDeviceAlignedBuffer(2352, handle);
+
     private SafeFileHandle Handle { get; } = handle;
 
     public override ISector ReadSector(int index)
@@ -20,6 +22,22 @@ internal sealed class TrackRaw(int index, int position, int length, bool audio, 
         }
 
         throw new PlatformNotSupportedException();
+    }
+
+    private void DisposeCore()
+    {
+        Buffer.Dispose();
+    }
+
+    protected override ValueTask DisposeAsyncCore()
+    {
+        DisposeCore();
+        return ValueTask.CompletedTask;
+    }
+
+    protected override void DisposeManaged()
+    {
+        DisposeCore();
     }
 
     public override Task<ISector> ReadSectorAsync(int index)
@@ -35,9 +53,7 @@ internal sealed class TrackRaw(int index, int position, int length, bool audio, 
     [SupportedOSPlatform("windows")]
     private ISector ReadSectorWindows(int index)
     {
-        using var memory = Disc.GetDeviceAlignedBuffer(2352, Handle);
-
-        var buffer = memory.Manager.Memory.Span;
+        var buffer = Buffer.Manager.Memory.Span;
 
         Disc.ReadSector(Handle.DangerousGetHandle(), (uint)index, buffer);
 
@@ -49,13 +65,10 @@ internal sealed class TrackRaw(int index, int position, int length, bool audio, 
     [SupportedOSPlatform("windows")]
     private async Task<ISector> ReadSectorWindowsAsync(int index, uint timeout = 3u)
     {
-        var bytes = Disc.GetDeviceAlignedBuffer(2352, Handle);
-
-        var query = Disc.ReadSectorWindowsQuery((uint)index, 1u, timeout, bytes.Pointer, bytes.Length);
+        var query = Disc.ReadSectorWindowsQuery((uint)index, 1u, timeout, Buffer.Pointer, Buffer.Length);
 
         var state = new ReadSectorWindowsAsyncState();
 
-        await using var x = bytes.ConfigureAwait(false);
         await using var y = query.ConfigureAwait(false);
         await using var z = state.ConfigureAwait(false);
 
@@ -77,7 +90,7 @@ internal sealed class TrackRaw(int index, int position, int length, bool audio, 
             handle.Unregister(null);
         }
 
-        var sector = ISector.Read(Sector, bytes.Manager.Memory.Span);
+        var sector = ISector.Read(Sector, Buffer.Manager.Memory.Span);
 
         return sector;
     }
