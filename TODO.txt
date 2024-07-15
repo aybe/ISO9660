@@ -8,10 +8,6 @@ General:
 	fix ndepend warnings
 	docs
 
-Track:
-	rework track properties order
-	move track cue methods to cue sheet track
-
 Disc:
 	try replace SpanMemoryManager with NativeMemory
 	NativeMarshaller
