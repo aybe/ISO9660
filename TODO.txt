@@ -27,3 +27,8 @@ CLI:
 Tests:
 	move extensions
 	???
+
+Extensions:
+	check DisposableAsync
+		https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-disposeasync#implement-both-dispose-and-async-dispose-patterns
+		https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-disposeasync#unacceptable-pattern
