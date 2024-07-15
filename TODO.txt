@@ -9,8 +9,6 @@ General:
 	docs
 
 Disc:
-	NativeMarshaller
-		OpenRawWindows
 	see if we can have ioctl async class
 		to make async
 			OpenRawWindows

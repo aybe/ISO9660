@@ -211,41 +211,31 @@ public sealed class Disc : DisposableAsync
     {
         var handle = File.OpenHandle($@"\\.\{info.Name[..2]}", FileMode.Open, FileAccess.ReadWrite, FileShare.Read, FileOptions.Asynchronous);
 
-        var inBufferSize = (uint)Marshal.SizeOf<NativeTypes.CDROM_READ_TOC_EX>();
-        var inBuffer = Marshal.AllocHGlobal((int)inBufferSize);
+        using var src = new NativeMarshaller<NativeTypes.CDROM_READ_TOC_EX>(
+            new NativeTypes.CDROM_READ_TOC_EX
+            {
+                Format       = NativeConstants.CDROM_READ_TOC_EX_FORMAT_TOC,
+                SessionTrack = 1,
+            }
+        );
 
-        var outBufferSize = (uint)Marshal.SizeOf<NativeTypes.CDROM_TOC>();
-        var outBuffer = Marshal.AllocHGlobal((int)outBufferSize);
-
-        var ex = new NativeTypes.CDROM_READ_TOC_EX
-        {
-            Format       = NativeConstants.CDROM_READ_TOC_EX_FORMAT_TOC,
-            SessionTrack = 1,
-        };
-
-        Marshal.StructureToPtr(ex, inBuffer, false);
+        using var tgt = new NativeMarshaller<NativeTypes.CDROM_TOC>();
 
         var ioctl = NativeMethods.DeviceIoControl(
             handle.DangerousGetHandle(),
             NativeConstants.IOCTL_CDROM_READ_TOC_EX,
-            inBuffer,
-            inBufferSize,
-            outBuffer,
-            outBufferSize,
+            src.Pointer, (uint)src.Length, tgt.Pointer, (uint)tgt.Length,
             out _
         );
-
-        var toc = ioctl ? Marshal.PtrToStructure<NativeTypes.CDROM_TOC>(outBuffer) : default;
-
-        Marshal.FreeHGlobal(inBuffer);
-        Marshal.FreeHGlobal(outBuffer);
 
         if (ioctl is false)
         {
             throw new Win32Exception();
         }
 
-        var datas = toc.TrackData!;
+        var toc = tgt.Structure;
+
+        var datas = toc.TrackData;
 
         if (Array.FindIndex(datas, s => s.TrackNumber == toc.FirstTrack) is var index && index is -1)
         {
