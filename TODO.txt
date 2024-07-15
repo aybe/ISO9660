@@ -10,7 +10,6 @@ General:
 
 Disc:
 	NativeMarshaller
-		GetDeviceAlignmentMaskWindows
 		OpenRawWindows
 	see if we can have ioctl async class
 		to make async

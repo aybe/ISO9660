@@ -98,46 +98,29 @@ public sealed class Disc : DisposableAsync
     [SupportedOSPlatform("windows")]
     private static uint GetDeviceAlignmentMaskWindows(nint handle)
     {
-        var inBufferSize = (uint)Marshal.SizeOf<NativeTypes.STORAGE_PROPERTY_QUERY>();
-        var inBuffer = Marshal.AllocHGlobal((int)inBufferSize);
+        using var src = new NativeMarshaller<NativeTypes.STORAGE_PROPERTY_QUERY>(
+            new NativeTypes.STORAGE_PROPERTY_QUERY
+            {
+                QueryType  = NativeTypes.STORAGE_QUERY_TYPE.PropertyStandardQuery,
+                PropertyId = NativeTypes.STORAGE_PROPERTY_ID.StorageAdapterProperty,
+            }
+        );
 
-        var outBufferSize = (uint)Marshal.SizeOf<NativeTypes.STORAGE_ADAPTER_DESCRIPTOR>();
-        var outBuffer = Marshal.AllocHGlobal((int)outBufferSize);
-
-        var query = new NativeTypes.STORAGE_PROPERTY_QUERY
-        {
-            QueryType  = NativeTypes.STORAGE_QUERY_TYPE.PropertyStandardQuery,
-            PropertyId = NativeTypes.STORAGE_PROPERTY_ID.StorageAdapterProperty,
-        };
-
-        Marshal.StructureToPtr(query, inBuffer, false);
+        using var tgt = new NativeMarshaller<NativeTypes.STORAGE_ADAPTER_DESCRIPTOR>();
 
         var ioctl = NativeMethods.DeviceIoControl(
             handle,
             NativeConstants.IOCTL_STORAGE_QUERY_PROPERTY,
-            inBuffer,
-            inBufferSize,
-            outBuffer,
-            outBufferSize,
+            src.Pointer, (uint)src.Length, tgt.Pointer, (uint)tgt.Length,
             out _
         );
-
-        var alignmentMask = 0u;
-
-        if (ioctl)
-        {
-            var descriptor = Marshal.PtrToStructure<NativeTypes.STORAGE_ADAPTER_DESCRIPTOR>(outBuffer);
-
-            alignmentMask = descriptor.AlignmentMask;
-        }
-
-        Marshal.FreeHGlobal(inBuffer);
-        Marshal.FreeHGlobal(outBuffer);
 
         if (ioctl is false)
         {
             throw new Win32Exception();
         }
+
+        var alignmentMask = tgt.Structure.AlignmentMask;
 
         return alignmentMask;
     }
