@@ -1,10 +1,13 @@
 ﻿using ISO9660.Logical;
+using Microsoft.Extensions.ObjectPool;
 using Whatever.Extensions;
 
 namespace ISO9660.Physical;
 
 public static class DiscExtensions
 {
+    private static readonly DefaultObjectPool<SpanMemoryManager<byte>> ReadFileManager = new(new ReadFileManagerPolicy());
+
     public static async Task ReadFileRawAsync(this Disc disc, IsoFileSystemEntryFile file, Stream stream, IProgress<double>? progress = null)
     {
         await ReadFileAsync(disc, file, stream, ReadFileRaw, progress).ConfigureAwait(false);
@@ -24,7 +27,7 @@ public static class DiscExtensions
 
         var sectors = (int)Math.Ceiling((double)file.Length / track.Sector.GetUserDataLength());
 
-        using var manager = new SpanMemoryManager<byte>();
+        using var manager = ReadFileManager.Get();
 
         for (var i = 0; i < sectors; i++)
         {
@@ -36,6 +39,8 @@ public static class DiscExtensions
 
             progress?.Report(1.0d / sectors * (i + 1));
         }
+
+        ReadFileManager.Return(manager);
     }
 
     private static void ReadFileRaw(IsoFileSystemEntryFile file, Stream stream, ISector sector, SpanMemoryManager<byte> manager)
@@ -58,6 +63,21 @@ public static class DiscExtensions
         var span = data[..size];
 
         manager.SetSpan(span);
+    }
+
+    private sealed class ReadFileManagerPolicy : IPooledObjectPolicy<SpanMemoryManager<byte>>
+    {
+        public SpanMemoryManager<byte> Create()
+        {
+            return new SpanMemoryManager<byte>();
+        }
+
+        public bool Return(SpanMemoryManager<byte> obj)
+        {
+            using var manager = obj;
+
+            return true;
+        }
     }
 
     private delegate void ReadFileHandler(IsoFileSystemEntryFile file, Stream stream, ISector sector, SpanMemoryManager<byte> manager);

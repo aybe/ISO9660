@@ -9,7 +9,6 @@ General:
 	docs
 
 Disc:
-	try replace SpanMemoryManager with NativeMemory
 	NativeMarshaller
 		GetDeviceAlignmentMaskWindows
 		OpenRawWindows
