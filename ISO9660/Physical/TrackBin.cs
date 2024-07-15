@@ -1,11 +1,9 @@
 ﻿namespace ISO9660.Physical;
 
-/// <summary>
-///     Base class for a track read from a file.
-/// </summary>
-internal abstract class TrackFileBase : Track
+internal sealed class TrackBin(bool audio, int index, int length, int position, ISector sector, Stream stream)
+    : Track(audio, index, length, position, sector)
 {
-    protected Stream Stream { get; init; } = null!;
+    private Stream Stream { get; } = stream;
 
     protected override async ValueTask DisposeAsyncCore()
     {

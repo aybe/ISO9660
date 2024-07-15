@@ -15,6 +15,19 @@ public abstract class Track : DisposableAsync
 
     public ISector Sector { get; protected init; } = null!;
 
+    protected Track()
+    {
+    }
+
+    protected Track(bool audio, int index, int length, int position, ISector sector)
+    {
+        Audio    = audio;
+        Index    = index;
+        Length   = length;
+        Position = position;
+        Sector   = sector;
+    }
+
     internal Stream GetStream(int sector)
     {
         ValidateSectorIndex(sector);

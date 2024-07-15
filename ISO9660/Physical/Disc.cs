@@ -173,22 +173,54 @@ public sealed class Disc : DisposableAsync
     {
         var sheet = CueSheetParser.Parse(path);
 
-        var tracks = sheet.Files.SelectMany(s => s.Tracks).Select(s => new TrackFileCue(s)).ToList().AsReadOnly();
+        var tracks = sheet.Files.SelectMany(s => s.Tracks).Select(OpenCueTrack).ToList().AsReadOnly();
 
         var disc = new Disc(tracks);
 
         return disc;
+
+        static TrackBin OpenCueTrack(CueSheetTrack track)
+        {
+            var sector = ISector.GetSectorTypeCue(track.Type);
+
+            var bin = new TrackBin(
+                track.Type == CueSheetTrackType.Audio,
+                track.Index,
+                track.GetLength(sector.Length),
+                track.GetPosition(sector.Length),
+                sector,
+                File.OpenRead(track.File.Name)
+            );
+
+            return bin;
+        }
     }
 
     private static Disc OpenIso(string path)
     {
-        var stream = File.OpenRead(path);
-
-        var track = new TrackFileIso(stream, 1, 0);
+        var track = OpenIsoTrack(path);
 
         var disc = new Disc(new ReadOnlyObservableCollection<Track>([track]));
 
         return disc;
+
+        static TrackBin OpenIsoTrack(string path)
+        {
+            var stream = File.OpenRead(path);
+
+            var sector = ISector.GetSectorTypeIso(stream);
+
+            var bin = new TrackBin(
+                false,
+                1,
+                (int)stream.Length / sector.Length,
+                0,
+                sector,
+                stream
+            );
+
+            return bin;
+        }
     }
 
     [SupportedOSPlatform("windows")]
