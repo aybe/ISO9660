@@ -3,30 +3,18 @@ using Whatever.Extensions;
 
 namespace ISO9660.Physical;
 
-public abstract class Track : DisposableAsync
+public abstract class Track(bool audio, int index, int length, int position, ISector sector)
+    : DisposableAsync
 {
-    public bool Audio { get; protected init; }
+    public bool Audio { get; } = audio;
 
-    public int Index { get; protected init; }
+    public int Index { get; } = index;
 
-    public int Length { get; protected init; }
+    public int Length { get; } = length;
 
-    public int Position { get; protected init; }
+    public int Position { get; } = position;
 
-    public ISector Sector { get; protected init; } = null!;
-
-    protected Track()
-    {
-    }
-
-    protected Track(bool audio, int index, int length, int position, ISector sector)
-    {
-        Audio    = audio;
-        Index    = index;
-        Length   = length;
-        Position = position;
-        Sector   = sector;
-    }
+    public ISector Sector { get; } = sector;
 
     internal Stream GetStream(int sector)
     {

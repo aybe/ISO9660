@@ -7,24 +7,10 @@ using Whatever.Extensions;
 
 namespace ISO9660.Physical;
 
-internal sealed class TrackRaw : Track
+internal sealed class TrackRaw(int index, int position, int length, bool audio, ISector sector, SafeFileHandle handle)
+    : Track(audio, index, length, position, sector)
 {
-    public TrackRaw(int index, int position, int length, bool audio, ISector sector, SafeFileHandle handle)
-    {
-        Index = index;
-
-        Position = position;
-
-        Length = length;
-
-        Audio = audio;
-
-        Sector = sector;
-
-        Handle = handle;
-    }
-
-    private SafeFileHandle Handle { get; }
+    private SafeFileHandle Handle { get; } = handle;
 
     public override ISector ReadSector(int index)
     {
